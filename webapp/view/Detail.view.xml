@@ -1,9 +1,93 @@
 <mvc:View controllerName="koehler.T2000.controller.Detail" xmlns:mvc="sap.ui.core.mvc" displayBlock="true" xmlns="sap.m">
-	<Shell id="shell">
+<Shell id="shell">
 		<App id="app">
 			<pages>
 				<Page id="page" title="{i18n>title}">
-					<content></content>
+					<content>
+						<!--<Title>Andreas Köhler</Title>-->
+						<Table alternateRowColors="true" growing="true" headerText="Andreas Köhler" autoPopinMode="true">
+							<columns>
+								<Column>
+									<Text text="{i18n>colCategory}" />
+								</Column>
+								<Column>
+									<Text text="{i18n>colArea}" />
+								</Column>
+								<Column>
+									<Text text="{i18n>colPlanned}" />
+								</Column>
+								<Column>
+									<Text text="{i18n>colCalendarWeek}" />
+								</Column>
+								<Column>
+									<Text text="{i18n>colTask}" />
+								</Column>
+								<Column>
+									<Text text="{i18n>colProject}" />
+								</Column>
+								<Column>
+									<Text text="{i18n>colJira}" />
+								</Column>
+								<Column>
+									<Text text="{i18n>colSpec}" />
+								</Column>
+								<Column>
+									<Text text="{i18n>colBC}" />
+								</Column>
+								<Column>
+									<Text text="{i18n>colStatus}" />
+								</Column>
+								<Column>
+									<Text text="{i18n>colBegin}" />
+								</Column>
+								<Column>
+									<Text text="{i18n>colRealBegin}" />
+								</Column>
+								<Column>
+									<Text text="{i18n>colEnd}" />
+								</Column>
+								<Column>
+									<Text text="{i18n>colRealEnd}" />
+								</Column>
+								<Column>
+									<Text text="{i18n>colPriority}" />
+								</Column>
+								<Column>
+									<Text text="{i18n>colSystem}" />
+								</Column>
+								<Column>
+									<Text text="{i18n>colTransport}" />
+								</Column>
+								<Column>
+									<Text text="{i18n>colComment}" />
+								</Column>
+							</columns>
+							<items>
+								<ColumnListItem>
+									<cells>
+										<Text text="Task"/>
+										<Link text="Anforderung" />
+										<Switch enabled="false" state="true" type="AcceptReject" />
+										<Text text="18" />
+										<Text text="VZ-Dispo 2020" />
+										<Link text="P0962" />
+										<Link text="FXDFKA-1913" />
+										<Link text="0098243" />
+										<Text text="Silke Wünsch" />
+										<Text text="Backlog" />
+										<Text text="07.05.2021" />
+										<Text text="07.05.2021" />
+										<Text text="07.05.2021" />
+										<Text text="08.05.2021" />
+										<Text text="1" />
+										<Link text="E00" />
+										<Link text="123456789" />
+										<TextArea value="Mehrzeiliges Kommentarfeld" enabled="false"/>
+									</cells>
+								</ColumnListItem>
+							</items>
+						</Table>
+					</content>
 				</Page>
 			</pages>
 		</App>

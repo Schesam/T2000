@@ -25,6 +25,15 @@ sap.ui.define([
 
 			// set the device model
 			this.setModel(models.createDeviceModel(), "device");
+			this.setFullscreen();
+		},
+		setFullscreen: function () {
+			if ($(".sapMShell").length === 0) {
+				setTimeout(this.setFullscreen.bind(this), 0);
+				return;
+			}
+			var oShell = $(".sapMShell").control()[0];
+			oShell.setAppWidthLimited(false);
 		}
 	});
 });
