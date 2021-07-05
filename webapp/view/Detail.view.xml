@@ -1,93 +1,329 @@
-<mvc:View controllerName="koehler.T2000.controller.Detail" xmlns:mvc="sap.ui.core.mvc" displayBlock="true" xmlns="sap.m">
-<Shell id="shell">
+<mvc:View controllerName="koehler.T2000.controller.Detail" xmlns:mvc="sap.ui.core.mvc" displayBlock="true" xmlns="sap.m"
+	xmlns:form="sap.ui.layout.form" xmlns:core="sap.ui.core">
+	<Shell id="shell">
 		<App id="app">
 			<pages>
-				<Page id="page" title="{i18n>title}">
+				<Page id="page" title="{i18n>title}" showHeader="true" showNavButton="true" showFooter="true">
 					<content>
-						<!--<Title>Andreas Köhler</Title>-->
-						<Table alternateRowColors="true" growing="true" headerText="Andreas Köhler" autoPopinMode="true">
-							<columns>
-								<Column>
-									<Text text="{i18n>colCategory}" />
-								</Column>
-								<Column>
-									<Text text="{i18n>colArea}" />
-								</Column>
-								<Column>
-									<Text text="{i18n>colPlanned}" />
-								</Column>
-								<Column>
-									<Text text="{i18n>colCalendarWeek}" />
-								</Column>
-								<Column>
-									<Text text="{i18n>colTask}" />
-								</Column>
-								<Column>
-									<Text text="{i18n>colProject}" />
-								</Column>
-								<Column>
-									<Text text="{i18n>colJira}" />
-								</Column>
-								<Column>
-									<Text text="{i18n>colSpec}" />
-								</Column>
-								<Column>
-									<Text text="{i18n>colBC}" />
-								</Column>
-								<Column>
-									<Text text="{i18n>colStatus}" />
-								</Column>
-								<Column>
-									<Text text="{i18n>colBegin}" />
-								</Column>
-								<Column>
-									<Text text="{i18n>colRealBegin}" />
-								</Column>
-								<Column>
-									<Text text="{i18n>colEnd}" />
-								</Column>
-								<Column>
-									<Text text="{i18n>colRealEnd}" />
-								</Column>
-								<Column>
-									<Text text="{i18n>colPriority}" />
-								</Column>
-								<Column>
-									<Text text="{i18n>colSystem}" />
-								</Column>
-								<Column>
-									<Text text="{i18n>colTransport}" />
-								</Column>
-								<Column>
-									<Text text="{i18n>colComment}" />
-								</Column>
-							</columns>
+						<IconTabBar expandable="false" expanded="true" applyContentPadding="true" backgroundDesign="Solid" selectedKey="Ok" select="_onChangeTab">
 							<items>
-								<ColumnListItem>
-									<cells>
-										<Text text="Task"/>
-										<Link text="Anforderung" />
-										<Switch enabled="false" state="true" type="AcceptReject" />
-										<Text text="18" />
-										<Text text="VZ-Dispo 2020" />
-										<Link text="P0962" />
-										<Link text="FXDFKA-1913" />
-										<Link text="0098243" />
-										<Text text="Silke Wünsch" />
-										<Text text="Backlog" />
-										<Text text="07.05.2021" />
-										<Text text="07.05.2021" />
-										<Text text="07.05.2021" />
-										<Text text="08.05.2021" />
-										<Text text="1" />
-										<Link text="E00" />
-										<Link text="123456789" />
-										<TextArea value="Mehrzeiliges Kommentarfeld" enabled="false"/>
-									</cells>
-								</ColumnListItem>
+								<IconTabFilter icon="sap-icon://notes" text="{i18n>show}" design="Vertical" iconDensityAware="false" id="showEntriesTab">
+									<content>
+										<Toolbar>
+											<!--<Input width="100%" placeholder="{i18n>suchen}" id="search" liveChange="_onSearch"/>-->
+											<Select id="employeeSelect" change="_onEmployeeSelect">
+												<core:ListItem text="Andreas Köhler"/>
+												<core:ListItem text="Thomas Rempel"/>
+												<core:ListItem text="Jurij Rudi"/>
+												<core:ListItem text="Igor Aronov"/>
+											</Select>
+											<Select id="statusSelect" change="_onStatusSelect">
+												<core:ListItem text="{i18n>chooseStatus}" key="0"/>
+												<core:ListItem text="Backlog" key="1"/>
+												<core:ListItem text="Sonstiges 1" key="2"/>
+												<core:ListItem text="Sonstiges 2" key="3"/>
+											</Select>
+										</Toolbar>
+										<Table id="valueTable" alternateRowColors="true" growing="true" headerText="Andreas Köhler" growingScrollToLoad="true" showSeparators="All"
+											items="{/rows}">
+											<columns>
+												<Column demandPopin="true" minScreenWidth="Phone">
+													<Text text="{i18n>colCategory}"/>
+												</Column>
+												<Column demandPopin="true" minScreenWidth="Phone">
+													<Text text="{i18n>colArea}"/>
+												</Column>
+												<Column demandPopin="true" minScreenWidth="XXLarge">
+													<Text text="{i18n>colPlanned}"/>
+												</Column>
+												<Column demandPopin="true" minScreenWidth="XXLarge">
+													<Text text="{i18n>colCalendarWeek}"/>
+												</Column>
+												<Column demandPopin="true" minScreenWidth="XXLarge">
+													<Text text="{i18n>colTask}"/>
+												</Column>
+												<Column demandPopin="true" minScreenWidth="XXLarge">
+													<Text text="{i18n>colProject}"/>
+												</Column>
+												<Column demandPopin="true" minScreenWidth="XXLarge">
+													<Text text="{i18n>colJira}"/>
+												</Column>
+												<Column demandPopin="true" minScreenWidth="XXLarge">
+													<Text text="{i18n>colSpec}"/>
+												</Column>
+												<Column demandPopin="true" minScreenWidth="XXLarge">
+													<Text text="{i18n>colBC}"/>
+												</Column>
+												<Column demandPopin="true" minScreenWidth="Medium">
+													<Text text="{i18n>colStatus}"/>
+												</Column>
+												<Column demandPopin="true" minScreenWidth="Medium">
+													<Text text="{i18n>colBegin}"/>
+												</Column>
+												<Column demandPopin="true" minScreenWidth="Medium">
+													<Text text="{i18n>colRealBegin}"/>
+												</Column>
+												<Column demandPopin="true" minScreenWidth="Medium">
+													<Text text="{i18n>colEnd}"/>
+												</Column>
+												<Column demandPopin="true" minScreenWidth="Medium">
+													<Text text="{i18n>colRealEnd}"/>
+												</Column>
+												<Column demandPopin="true" minScreenWidth="XXLarge">
+													<Text text="{i18n>colPriority}"/>
+												</Column>
+												<Column demandPopin="true" minScreenWidth="XXLarge">
+													<Text text="{i18n>colSystem}"/>
+												</Column>
+												<Column demandPopin="true" minScreenWidth="XXLarge">
+													<Text text="{i18n>colTransport}"/>
+												</Column>
+												<Column demandPopin="true" minScreenWidth="XXLarge">
+													<Text text="{i18n>colComment}"/>
+												</Column>
+											</columns>
+											<items>
+												<!--<ColumnListItem>-->
+												<!--	<cells>-->
+												<!--		<Text text="Task"/>-->
+												<!--		<Link text="Anforderung"/>-->
+												<!--		<Switch enabled="false" state="true" type="AcceptReject"/>-->
+												<!--		<Text text="18"/>-->
+												<!--		<Text text="VZ-Dispo 2020"/>-->
+												<!--		<Link text="P0962"/>-->
+												<!--		<Link text="FXDFKA-1913"/>-->
+												<!--		<Link text="0098243"/>-->
+												<!--		<Text text="Silke Wünsch"/>-->
+												<!--		<Text text="Backlog"/>-->
+												<!--		<Text text="07.05.2021"/>-->
+												<!--		<Text text="07.05.2021"/>-->
+												<!--		<Text text="07.05.2021"/>-->
+												<!--		<Text text="08.05.2021"/>-->
+												<!--		<Text text="1"/>-->
+												<!--		<VBox>-->
+												<!--			<Link text="E00"/>-->
+												<!--			<Link text="ET1"/>-->
+												<!--		</VBox>-->
+												<!--		<VBox>-->
+												<!--			<Link text="123456789"/>-->
+												<!--			<Link text="987654321"/>-->
+												<!--		</VBox>-->
+												<!--		<TextArea value="Mehrzeiliges Kommentarfeld" editable="false" growing="true" wrapping="Soft"/>-->
+												<!--	</cells>-->
+												<!--</ColumnListItem>-->
+												<ColumnListItem>
+													<cells>
+														<Text text="{Category}"/>
+														<Link text="{Area}"/>
+														<Switch enabled="false" state="{Planned}" type="AcceptReject"/>
+														<Text text="{CalendarWeek}"/>
+														<Text text="{Task}"/>
+														<Link text="{Project}"/>
+														<Link text="{Jira}"/>
+														<Link text="{Spec}"/>
+														<Text text="{BC}"/>
+														<Text text="{Status}"/>
+														<Text text="{Begin}"/>
+														<Text text="{RealBegin}"/>
+														<Text text="{End}"/>
+														<Text text="{RealEnd}"/>
+														<Text text="{Priority}"/>
+														<Panel content="{System}" expandable="false" expanded="true">
+															<VBox>
+																<Link text="{name}"/>
+															</VBox>
+														</Panel>
+														<Panel content="{Transport}" expandable="false" expanded="true">
+															<VBox>
+																<Link text="{name}"/>
+															</VBox>
+														</Panel>
+														<TextArea value="{Comment}" editable="false" growing="true" wrapping="Soft"/>
+													</cells>
+												</ColumnListItem>
+											</items>
+										</Table>
+									</content>
+								</IconTabFilter>
+								<IconTabFilter icon="sap-icon://write-new-document" text="{i18n>new}" design="Vertical" iconDensityAware="false" id="newEntryTab">
+									<content>
+										<form:Form width="100%" title="Anlegen">
+											<form:formContainers>
+												<form:FormContainer>
+													<form:formElements>
+														<form:FormElement>
+															<form:label>
+																<Label text="{i18n>colCategory}" width="100%"/>
+															</form:label>
+															<form:fields>
+																<Select id="crCategorySelect">
+																	<core:ListItem text="Task"/>
+																</Select>
+															</form:fields>
+														</form:FormElement>
+														<form:FormElement>
+															<form:label>
+																<Label text="{i18n>colArea}"/>
+															</form:label>
+															<form:fields>
+																<Select id="crAreaSelect">
+																	<core:ListItem text="Anforderung"/>
+																</Select>
+															</form:fields>
+														</form:FormElement>
+														<form:FormElement>
+															<form:label>
+																<Label text="{i18n>colPlanned}"/>
+															</form:label>
+															<form:fields>
+																<Switch type="AcceptReject"/>
+															</form:fields>
+														</form:FormElement>
+														<form:FormElement>
+															<form:label>
+																<Label text="{i18n>colCalendarWeek}"/>
+															</form:label>
+															<form:fields>
+																<DatePicker id="crCalendarWeek" displayFormat="ww" required="true"/>
+															</form:fields>
+														</form:FormElement>
+														<form:FormElement>
+															<form:label>
+																<Label text="{i18n>colTask}"/>
+															</form:label>
+															<form:fields>
+																<Select id="crTaskSelect">
+																	<core:ListItem text="VZ-Dispo 2020"/>
+																</Select>
+															</form:fields>
+														</form:FormElement>
+														<form:FormElement>
+															<form:label>
+																<Label text="{i18n>colProject}"/>
+															</form:label>
+															<form:fields>
+																<Input type="Text" id="crProject" required="true"/>
+															</form:fields>
+														</form:FormElement>
+														<form:FormElement>
+															<form:label>
+																<Label text="{i18n>colJira}"/>
+															</form:label>
+															<form:fields>
+																<Input type="Text" id="crJira" required="true"/>
+															</form:fields>
+														</form:FormElement>
+														<form:FormElement>
+															<form:label>
+																<Label text="{i18n>colSpec}"/>
+															</form:label>
+															<form:fields>
+																<Input type="Text" id="crSpec" required="true"/>
+															</form:fields>
+														</form:FormElement>
+														<form:FormElement>
+															<form:label>
+																<Label text="{i18n>colBC}"/>
+															</form:label>
+															<form:fields>
+																<Input type="Text" id="crBC" required="true"/>
+															</form:fields>
+														</form:FormElement>
+														<form:FormElement>
+															<form:label>
+																<Label text="{i18n>colStatus}"/>
+															</form:label>
+															<form:fields>
+																<Select id="crStatusSelect">
+																	<core:ListItem text="Backlog"/>
+																</Select>
+															</form:fields>
+														</form:FormElement>
+														<form:FormElement>
+															<form:label>
+																<Label text="{i18n>colBegin}"/>
+															</form:label>
+															<form:fields>
+																<DatePicker id="crBegin" displayFormat="EEEE, dd. MMMM YYYY" required="true"/>
+															</form:fields>
+														</form:FormElement>
+														<form:FormElement>
+															<form:label>
+																<Label text="{i18n>colRealBegin}"/>
+															</form:label>
+															<form:fields>
+																<Input enabled="false" id="crRealBegin"/>
+															</form:fields>
+														</form:FormElement>
+														<form:FormElement>
+															<form:label>
+																<Label text="{i18n>colEnd}"/>
+															</form:label>
+															<form:fields>
+																<DatePicker id="crEnd" displayFormat="EEEE, dd. MMMM YYYY" required="true"/>
+															</form:fields>
+														</form:FormElement>
+														<form:FormElement>
+															<form:label>
+																<Label text="{i18n>colRealEnd}"/>
+															</form:label>
+															<form:fields>
+																<Input enabled="false" id="crRealEnd"/>
+															</form:fields>
+														</form:FormElement>
+														<form:FormElement>
+															<form:label>
+																<Label text="{i18n>colPriority}"/>
+															</form:label>
+															<form:fields>
+																<Input type="Number" id="crPriority" required="true"/>
+															</form:fields>
+														</form:FormElement>
+														<form:FormElement>
+															<form:label>
+																<Label text="{i18n>colSystem}"/>
+															</form:label>
+															<form:fields>
+																<Input id="crSystem" required="true"/>
+															</form:fields>
+														</form:FormElement>
+														<form:FormElement>
+															<form:label>
+																<Label text="{i18n>colTransport}"/>
+															</form:label>
+															<form:fields>
+																<Input id="crTransport" required="true"/>
+															</form:fields>
+														</form:FormElement>
+														<form:FormElement>
+															<form:label>
+																<Label text="{i18n>colComment}"/>
+															</form:label>
+															<form:fields>
+																<TextArea growing="true" required="true" id="crComment"/>
+															</form:fields>
+														</form:FormElement>
+													</form:formElements>
+												</form:FormContainer>
+											</form:formContainers>
+											<form:layout>
+												<form:ResponsiveGridLayout adjustLabelSpan="false" columnsL="2" labelSpanL="1" columnsM="1" labelSpanM="2" labelSpanS="12"/>
+											</form:layout>
+										</form:Form>
+									</content>
+								</IconTabFilter>
 							</items>
-						</Table>
+						</IconTabBar>
 					</content>
+					<footer>
+						<Toolbar>
+							<ToolbarSpacer/>
+							<!--icon="sap-icon://save"-->
+							<Button text="{i18n>new}" type="Accept" iconFirst="true" iconDensityAware="false" press="_onSaveButtonClick" visible="false"
+								id="createButton"/>
+							<Button id="backlogButton" text="Backlog" type="Emphasized" press="_onBacklogButton"/>
+						</Toolbar>
+					</footer>
 				</Page>
 			</pages>
 		</App>
