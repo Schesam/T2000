@@ -5,27 +5,40 @@
 			<pages>
 				<Page id="page" title="{i18n>title}" showHeader="true" showNavButton="true" showFooter="true">
 					<content>
-						<IconTabBar expandable="false" expanded="true" applyContentPadding="true" backgroundDesign="Solid" selectedKey="Ok" select="_onChangeTab">
+						<IconTabBar expandable="false" expanded="true" applyContentPadding="true" backgroundDesign="Solid" selectedKey="Ok" select="onChangeTab">
 							<items>
 								<IconTabFilter icon="sap-icon://notes" text="{i18n>show}" design="Vertical" iconDensityAware="false" id="showEntriesTab">
 									<content>
 										<Toolbar>
 											<!--<Input width="100%" placeholder="{i18n>suchen}" id="search" liveChange="_onSearch"/>-->
-											<Select id="employeeSelect" change="_onEmployeeSelect">
+											<Select id="employeeSelect" change="onEmployeeSelect">
 												<core:ListItem text="Andreas Köhler"/>
 												<core:ListItem text="Thomas Rempel"/>
 												<core:ListItem text="Jurij Rudi"/>
 												<core:ListItem text="Igor Aronov"/>
 											</Select>
-											<Select id="statusSelect" change="_onStatusSelect">
-												<core:ListItem text="{i18n>chooseStatus}" key="0"/>
-												<core:ListItem text="Backlog" key="1"/>
-												<core:ListItem text="Sonstiges 1" key="2"/>
-												<core:ListItem text="Sonstiges 2" key="3"/>
-											</Select>
+											<!--<Select id="statusSelect" change="onStatusSelect" items="{/rows}">-->
+											<!--	<core:ListItem text="{Value}" key="{Key}"/>-->
+											<!--</Select>-->
 										</Toolbar>
-										<Table id="valueTable" alternateRowColors="true" growing="true" headerText="Andreas Köhler" growingScrollToLoad="true" showSeparators="All"
-											items="{/rows}">
+										<Table id="valueTable" alternateRowColors="true" growing="true" growingScrollToLoad="true" showSeparators="All" items="{/rows}">
+											<headerToolbar>
+												<OverflowToolbar>
+													<Title id="headerText" text="" level="H2"/>
+													<!--<Input width="100%" placeholder="{i18n>search}" id="search" liveChange="onSearch" type=""/>-->
+													<SearchField width="40%" placeholder="{i18n>search}" id="search" liveChange="onSearch"/>
+													<ToolbarSpacer/>
+													<Button tooltip="View Sort Settings" icon="sap-icon://sort" press="onSortButtonPress"/>
+													<Button tooltip="View Filter Settings" icon="sap-icon://filter" press="onFilterButtonClick"/>
+													<Button tooltip="View Group Settings" icon="sap-icon://group-2" press="onGroupButtonPress"/>
+													<ToggleButton icon="sap-icon://menu" tooltip="Enable / Disable Custom Context Menu" press="onToggleContextMenu"/>
+												</OverflowToolbar>
+											</headerToolbar>
+											<infoToolbar>
+												<OverflowToolbar id="filterBar" visible="false">
+													<Text id="filterLabel"/>
+												</OverflowToolbar>
+											</infoToolbar>
 											<columns>
 												<Column demandPopin="true" minScreenWidth="Phone">
 													<Text text="{i18n>colCategory}"/>
@@ -147,7 +160,7 @@
 								</IconTabFilter>
 								<IconTabFilter icon="sap-icon://write-new-document" text="{i18n>new}" design="Vertical" iconDensityAware="false" id="newEntryTab">
 									<content>
-										<form:Form width="100%" title="Anlegen">
+										<form:Form width="100%" title="{i18n>new}">
 											<form:formContainers>
 												<form:FormContainer>
 													<form:formElements>
@@ -156,9 +169,9 @@
 																<Label text="{i18n>colCategory}" width="100%"/>
 															</form:label>
 															<form:fields>
-																<Select id="crCategorySelect">
-																	<core:ListItem text="Task"/>
-																</Select>
+																<ComboBox id="crCategoryCombo" items="{/rows}" required="true">
+																	<core:ListItem text="{Value}" key="{Key}"/>
+																</ComboBox>
 															</form:fields>
 														</form:FormElement>
 														<form:FormElement>
@@ -166,9 +179,9 @@
 																<Label text="{i18n>colArea}"/>
 															</form:label>
 															<form:fields>
-																<Select id="crAreaSelect">
-																	<core:ListItem text="Anforderung"/>
-																</Select>
+																<ComboBox id="crAreaCombo" items="{/rows}" required="true">
+																	<core:ListItem text="{Value}" key="{Key}"/>
+																</ComboBox>
 															</form:fields>
 														</form:FormElement>
 														<form:FormElement>
@@ -192,9 +205,9 @@
 																<Label text="{i18n>colTask}"/>
 															</form:label>
 															<form:fields>
-																<Select id="crTaskSelect">
-																	<core:ListItem text="VZ-Dispo 2020"/>
-																</Select>
+																<ComboBox id="crTaskCombo" items="{/rows}" required="true">
+																	<core:ListItem text="{Value}" key="{Key}"/>
+																</ComboBox>
 															</form:fields>
 														</form:FormElement>
 														<form:FormElement>
@@ -226,7 +239,9 @@
 																<Label text="{i18n>colBC}"/>
 															</form:label>
 															<form:fields>
-																<Input type="Text" id="crBC" required="true"/>
+																<ComboBox id="crBCCombo" items="{/rows}" required="true">
+																	<core:ListItem text="{Value}" key="{Key}"/>
+																</ComboBox>
 															</form:fields>
 														</form:FormElement>
 														<form:FormElement>
@@ -234,9 +249,9 @@
 																<Label text="{i18n>colStatus}"/>
 															</form:label>
 															<form:fields>
-																<Select id="crStatusSelect">
-																	<core:ListItem text="Backlog"/>
-																</Select>
+																<ComboBox id="crStatusCombo" items="{/rows}" required="true">
+																	<core:ListItem text="{Value}" key="{Key}"/>
+																</ComboBox>
 															</form:fields>
 														</form:FormElement>
 														<form:FormElement>
@@ -319,9 +334,9 @@
 						<Toolbar>
 							<ToolbarSpacer/>
 							<!--icon="sap-icon://save"-->
-							<Button text="{i18n>new}" type="Accept" iconFirst="true" iconDensityAware="false" press="_onSaveButtonClick" visible="false"
+							<Button text="{i18n>new}" type="Accept" iconFirst="true" iconDensityAware="false" press="onSaveButtonClick" visible="false"
 								id="createButton"/>
-							<Button id="backlogButton" text="Backlog" type="Emphasized" press="_onBacklogButton"/>
+							<Button id="backlogButton" text="Backlog" type="Emphasized" press="onBacklogButtonClick"/>
 						</Toolbar>
 					</footer>
 				</Page>
