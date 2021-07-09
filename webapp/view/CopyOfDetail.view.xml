@@ -5,29 +5,33 @@
 			<pages>
 				<Page id="page" title="{i18n>title}" showHeader="true" showNavButton="true" showFooter="true">
 					<content>
-						<IconTabBar id="tabs" expandable="false" expanded="true" applyContentPadding="true" backgroundDesign="Solid" select="onChangeTab">
+						<IconTabBar expandable="false" expanded="true" applyContentPadding="true" backgroundDesign="Solid" selectedKey="Ok" select="onChangeTab">
 							<items>
 								<IconTabFilter icon="sap-icon://notes" text="{i18n>show}" design="Vertical" iconDensityAware="false" id="showEntriesTab">
 									<content>
 										<Toolbar>
+											<!--<Input width="100%" placeholder="{i18n>suchen}" id="search" liveChange="_onSearch"/>-->
 											<Select id="employeeSelect" change="onEmployeeSelect">
 												<core:ListItem text="Andreas Köhler"/>
 												<core:ListItem text="Thomas Rempel"/>
 												<core:ListItem text="Jurij Rudi"/>
 												<core:ListItem text="Igor Aronov"/>
 											</Select>
+											<!--<Select id="statusSelect" change="onStatusSelect" items="{/rows}">-->
+											<!--	<core:ListItem text="{Value}" key="{Key}"/>-->
+											<!--</Select>-->
 										</Toolbar>
-										<Table id="valueTable" alternateRowColors="true" growing="true" growingScrollToLoad="true" showSeparators="All" items="{/rows}"
-											autoPopinMode="true">
+										<Table id="valueTable" alternateRowColors="true" growing="true" growingScrollToLoad="true" showSeparators="All" items="{/rows}">
 											<headerToolbar>
 												<OverflowToolbar>
 													<Title id="headerText" text="" level="H2"/>
+													<!--<Input width="100%" placeholder="{i18n>search}" id="search" liveChange="onSearch" type=""/>-->
 													<SearchField width="40%" placeholder="{i18n>search}" id="search" liveChange="onSearch"/>
 													<ToolbarSpacer/>
-													<Button tooltip="{i18n>sortToolTip}" icon="sap-icon://sort" press="onSortButtonClick"/>
-													<Button tooltip="{i18n>filterToolTip}" icon="sap-icon://filter" press="onFilterButtonClick"/>
-													<Button tooltip="View Group Settings" icon="sap-icon://group-2" press="onGroupButtonClick"/>
-													<ToggleButton icon="sap-icon://edit" tooltip="Enable / Disable Custom Context Menu" press="onEditButtonClick"/>
+													<Button tooltip="View Sort Settings" icon="sap-icon://sort" press="onSortButtonPress"/>
+													<Button tooltip="View Filter Settings" icon="sap-icon://filter" press="onFilterButtonClick"/>
+													<Button tooltip="View Group Settings" icon="sap-icon://group-2" press="onGroupButtonPress"/>
+													<ToggleButton icon="sap-icon://menu" tooltip="Enable / Disable Custom Context Menu" press="onToggleContextMenu"/>
 												</OverflowToolbar>
 											</headerToolbar>
 											<infoToolbar>
@@ -36,62 +40,90 @@
 												</OverflowToolbar>
 											</infoToolbar>
 											<columns>
-												<Column>
+												<Column demandPopin="true" minScreenWidth="Phone">
 													<Text text="{i18n>colCategory}"/>
 												</Column>
-												<Column>
+												<Column demandPopin="true" minScreenWidth="Phone">
 													<Text text="{i18n>colArea}"/>
 												</Column>
-												<Column>
+												<Column demandPopin="true" minScreenWidth="XXLarge">
 													<Text text="{i18n>colPlanned}"/>
 												</Column>
-												<Column>
+												<Column demandPopin="true" minScreenWidth="XXLarge">
 													<Text text="{i18n>colCalendarWeek}"/>
 												</Column>
-												<Column>
+												<Column demandPopin="true" minScreenWidth="XXLarge">
 													<Text text="{i18n>colTask}"/>
 												</Column>
-												<Column>
+												<Column demandPopin="true" minScreenWidth="XXLarge">
 													<Text text="{i18n>colProject}"/>
 												</Column>
-												<Column>
+												<Column demandPopin="true" minScreenWidth="XXLarge">
 													<Text text="{i18n>colJira}"/>
 												</Column>
-												<Column>
+												<Column demandPopin="true" minScreenWidth="XXLarge">
 													<Text text="{i18n>colSpec}"/>
 												</Column>
-												<Column>
+												<Column demandPopin="true" minScreenWidth="XXLarge">
 													<Text text="{i18n>colBC}"/>
 												</Column>
-												<Column>
+												<Column demandPopin="true" minScreenWidth="Medium">
 													<Text text="{i18n>colStatus}"/>
 												</Column>
-												<Column>
+												<Column demandPopin="true" minScreenWidth="Medium">
 													<Text text="{i18n>colBegin}"/>
 												</Column>
-												<Column>
+												<Column demandPopin="true" minScreenWidth="Medium">
 													<Text text="{i18n>colRealBegin}"/>
 												</Column>
-												<Column>
+												<Column demandPopin="true" minScreenWidth="Medium">
 													<Text text="{i18n>colEnd}"/>
 												</Column>
-												<Column>
+												<Column demandPopin="true" minScreenWidth="Medium">
 													<Text text="{i18n>colRealEnd}"/>
 												</Column>
-												<Column>
+												<Column demandPopin="true" minScreenWidth="XXLarge">
 													<Text text="{i18n>colPriority}"/>
 												</Column>
-												<Column>
+												<Column demandPopin="true" minScreenWidth="XXLarge">
 													<Text text="{i18n>colSystem}"/>
 												</Column>
-												<Column>
+												<Column demandPopin="true" minScreenWidth="XXLarge">
 													<Text text="{i18n>colTransport}"/>
 												</Column>
-												<Column>
+												<Column demandPopin="true" minScreenWidth="XXLarge">
 													<Text text="{i18n>colComment}"/>
 												</Column>
 											</columns>
 											<items>
+												<!--<ColumnListItem>-->
+												<!--	<cells>-->
+												<!--		<Text text="Task"/>-->
+												<!--		<Link text="Anforderung"/>-->
+												<!--		<Switch enabled="false" state="true" type="AcceptReject"/>-->
+												<!--		<Text text="18"/>-->
+												<!--		<Text text="VZ-Dispo 2020"/>-->
+												<!--		<Link text="P0962"/>-->
+												<!--		<Link text="FXDFKA-1913"/>-->
+												<!--		<Link text="0098243"/>-->
+												<!--		<Text text="Silke Wünsch"/>-->
+												<!--		<Text text="Backlog"/>-->
+												<!--		<Text text="07.05.2021"/>-->
+												<!--		<Text text="07.05.2021"/>-->
+												<!--		<Text text="07.05.2021"/>-->
+												<!--		<Text text="08.05.2021"/>-->
+												<!--		<Text text="1"/>-->
+												<!--		<VBox>-->
+												<!--			<Link text="E00"/>-->
+												<!--			<Link text="ET1"/>-->
+												<!--		</VBox>-->
+												<!--		<VBox>-->
+												<!--			<Link text="123456789"/>-->
+												<!--			<Link text="987654321"/>-->
+												<!--		</VBox>-->
+												<!--		<TextArea value="Mehrzeiliges Kommentarfeld" editable="false" growing="true" wrapping="Soft"/>-->
+												<!--	</cells>-->
+												<!--</ColumnListItem>-->
 												<ColumnListItem>
 													<cells>
 														<Text text="{Category}"/>
@@ -128,7 +160,7 @@
 								</IconTabFilter>
 								<IconTabFilter icon="sap-icon://write-new-document" text="{i18n>new}" design="Vertical" iconDensityAware="false" id="newEntryTab">
 									<content>
-										<form:Form width="100%" title="{i18n>new}" id="newEntryForm">
+										<form:Form width="100%" title="{i18n>new}">
 											<form:formContainers>
 												<form:FormContainer>
 													<form:formElements>
@@ -157,7 +189,7 @@
 																<Label text="{i18n>colPlanned}"/>
 															</form:label>
 															<form:fields>
-																<Switch id="crPlanned" type="AcceptReject"/>
+																<Switch type="AcceptReject"/>
 															</form:fields>
 														</form:FormElement>
 														<form:FormElement>
@@ -165,7 +197,7 @@
 																<Label text="{i18n>colCalendarWeek}"/>
 															</form:label>
 															<form:fields>
-																<DatePicker id="crCalendarWeek" valueFormat="ww" displayFormat="ww" required="true"/>
+																<DatePicker id="crCalendarWeek" displayFormat="ww" required="true"/>
 															</form:fields>
 														</form:FormElement>
 														<form:FormElement>
@@ -224,28 +256,36 @@
 														</form:FormElement>
 														<form:FormElement>
 															<form:label>
-																<Label text="{i18n>timeRange}"/>
+																<Label text="{i18n>colBegin}"/>
 															</form:label>
 															<form:fields>
-																<DateRangeSelection id="crTimerange" displayFormat="EEEE, dd. MMMM YYYY" valueFormat="dd.MM.YYYY" required="true"/>
+																<DatePicker id="crBegin" displayFormat="EEEE, dd. MMMM YYYY" required="true"/>
 															</form:fields>
 														</form:FormElement>
-														<!--<form:FormElement>-->
-														<!--	<form:label>-->
-														<!--		<Label text="{i18n>colRealBegin}"/>-->
-														<!--	</form:label>-->
-														<!--	<form:fields>-->
-														<!--		<Input enabled="false" id="crRealBegin"/>-->
-														<!--	</form:fields>-->
-														<!--</form:FormElement>-->
-														<!--<form:FormElement>-->
-														<!--	<form:label>-->
-														<!--		<Label text="{i18n>colRealEnd}"/>-->
-														<!--	</form:label>-->
-														<!--	<form:fields>-->
-														<!--		<Input enabled="false" id="crRealEnd"/>-->
-														<!--	</form:fields>-->
-														<!--</form:FormElement>-->
+														<form:FormElement>
+															<form:label>
+																<Label text="{i18n>colRealBegin}"/>
+															</form:label>
+															<form:fields>
+																<Input enabled="false" id="crRealBegin"/>
+															</form:fields>
+														</form:FormElement>
+														<form:FormElement>
+															<form:label>
+																<Label text="{i18n>colEnd}"/>
+															</form:label>
+															<form:fields>
+																<DatePicker id="crEnd" displayFormat="EEEE, dd. MMMM YYYY" required="true"/>
+															</form:fields>
+														</form:FormElement>
+														<form:FormElement>
+															<form:label>
+																<Label text="{i18n>colRealEnd}"/>
+															</form:label>
+															<form:fields>
+																<Input enabled="false" id="crRealEnd"/>
+															</form:fields>
+														</form:FormElement>
 														<form:FormElement>
 															<form:label>
 																<Label text="{i18n>colPriority}"/>
@@ -259,7 +299,7 @@
 																<Label text="{i18n>colSystem}"/>
 															</form:label>
 															<form:fields>
-																<MultiInput id="crSystemMulti" required="true" showValueHelp="false"/>
+																<Input id="crSystem" required="true"/>
 															</form:fields>
 														</form:FormElement>
 														<form:FormElement>
@@ -267,7 +307,7 @@
 																<Label text="{i18n>colTransport}"/>
 															</form:label>
 															<form:fields>
-																<MultiInput id="crTransportMulti" required="true" showValueHelp="false"/>
+																<Input id="crTransport" required="true"/>
 															</form:fields>
 														</form:FormElement>
 														<form:FormElement>
@@ -285,12 +325,6 @@
 												<form:ResponsiveGridLayout adjustLabelSpan="false" columnsL="2" labelSpanL="1" columnsM="1" labelSpanM="2" labelSpanS="12"/>
 											</form:layout>
 										</form:Form>
-										<!--<OverflowToolbar width="100%" height="46px" design="Info" enabled="true" visible="true">-->
-										<!--	<content>-->
-										<!--		<ToolbarSpacer width=""/>-->
-										<!--		<Button text="{i18n>new}" type="Accept" icon="sap-icon://save" iconFirst="true" iconDensityAware="false" press="onSaveButtonClick"/>-->
-										<!--	</content>-->
-										<!--</OverflowToolbar>-->
 									</content>
 								</IconTabFilter>
 							</items>
@@ -299,7 +333,9 @@
 					<footer>
 						<Toolbar>
 							<ToolbarSpacer/>
-							<Button text="{i18n>new}" type="Accept" iconDensityAware="false" press="onSaveButtonClick" visible="false" id="createButton"/>
+							<!--icon="sap-icon://save"-->
+							<Button text="{i18n>new}" type="Accept" iconFirst="true" iconDensityAware="false" press="onSaveButtonClick" visible="false"
+								id="createButton"/>
 							<Button id="backlogButton" text="Backlog" type="Emphasized" press="onBacklogButtonClick"/>
 						</Toolbar>
 					</footer>
