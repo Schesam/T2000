@@ -39,7 +39,7 @@
 			"id": "Detail"
 		},
 		"dependencies": {
-			"minUI5Version": "1.90.0",
+			"minUI5Version": "1.71.18",
 			"libs": {
 				"sap.m": {},
 				"sap.ui.core": {},
@@ -59,11 +59,9 @@
 			}
 		},
 		"resources": {
-			"css": [
-				{
-					"uri": "css/style.css"
-				}
-			]
+			"css": [{
+				"uri": "css/style.css"
+			}]
 		},
 		"routing": {
 			"config": {
@@ -76,15 +74,11 @@
 				"clearControlAggregation": false,
 				"viewLevel": 1
 			},
-			"routes": [
-				{
-					"name": "RouteDetail",
-					"pattern": "RouteDetail",
-					"target": [
-						"TargetDetail"
-					]
-				}
-			],
+			"routes": [{
+				"name": "RouteDetail",
+				"pattern": "RouteDetail",
+				"target": ["TargetDetail"]
+			}],
 			"targets": {
 				"TargetDetail": {
 					"viewType": "XML",

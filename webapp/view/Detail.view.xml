@@ -17,8 +17,8 @@
 												<core:ListItem text="Igor Aronov"/>
 											</Select>
 										</Toolbar>
-										<Table id="valueTable" alternateRowColors="true" growing="true" growingScrollToLoad="true" showSeparators="All" items="{/rows}"
-											autoPopinMode="true">
+										<Table id="valueTable" alternateRowColors="true" growing="true" growingScrollToLoad="true" showSeparators="All" items="{/rows}">
+											<!--autoPopinMode="true" //Erst ab 1.76 möglich -> Wäre aber besser -->
 											<headerToolbar>
 												<OverflowToolbar>
 													<Title id="headerText" text="" level="H2"/>
@@ -36,58 +36,58 @@
 												</OverflowToolbar>
 											</infoToolbar>
 											<columns>
-												<Column>
+												<Column demandPopin="true" minScreenWidth="Phone">
 													<Text text="{i18n>colCategory}"/>
 												</Column>
-												<Column>
+												<Column demandPopin="true" minScreenWidth="Phone">
 													<Text text="{i18n>colArea}"/>
 												</Column>
-												<Column>
+												<Column demandPopin="true" minScreenWidth="XXLarge">
 													<Text text="{i18n>colPlanned}"/>
 												</Column>
-												<Column>
+												<Column demandPopin="true" minScreenWidth="XXLarge">
 													<Text text="{i18n>colCalendarWeek}"/>
 												</Column>
-												<Column>
+												<Column demandPopin="true" minScreenWidth="XXLarge">
 													<Text text="{i18n>colTask}"/>
 												</Column>
-												<Column>
+												<Column demandPopin="true" minScreenWidth="XXLarge">
 													<Text text="{i18n>colProject}"/>
 												</Column>
-												<Column>
+												<Column demandPopin="true" minScreenWidth="1800px">
 													<Text text="{i18n>colJira}"/>
 												</Column>
-												<Column>
+												<Column demandPopin="true" minScreenWidth="XXLarge">
 													<Text text="{i18n>colSpec}"/>
 												</Column>
-												<Column>
+												<Column demandPopin="true" minScreenWidth="1800px">
 													<Text text="{i18n>colBC}"/>
 												</Column>
-												<Column>
+												<Column demandPopin="true" minScreenWidth="Medium">
 													<Text text="{i18n>colStatus}"/>
 												</Column>
-												<Column>
+												<Column demandPopin="true" minScreenWidth="Medium">
 													<Text text="{i18n>colBegin}"/>
 												</Column>
-												<Column>
+												<Column demandPopin="true" minScreenWidth="Medium">
 													<Text text="{i18n>colRealBegin}"/>
 												</Column>
-												<Column>
+												<Column demandPopin="true" minScreenWidth="Medium">
 													<Text text="{i18n>colEnd}"/>
 												</Column>
-												<Column>
+												<Column demandPopin="true" minScreenWidth="Medium">
 													<Text text="{i18n>colRealEnd}"/>
 												</Column>
-												<Column>
+												<Column demandPopin="true" minScreenWidth="1800px">
 													<Text text="{i18n>colPriority}"/>
 												</Column>
-												<Column>
+												<Column demandPopin="true" minScreenWidth="2100px">
 													<Text text="{i18n>colSystem}"/>
 												</Column>
-												<Column>
+												<Column demandPopin="true" minScreenWidth="2100px">
 													<Text text="{i18n>colTransport}"/>
 												</Column>
-												<Column>
+												<Column demandPopin="true" minScreenWidth="2100px">
 													<Text text="{i18n>colComment}"/>
 												</Column>
 											</columns>
