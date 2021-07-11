@@ -61,6 +61,7 @@ sap.ui.define([
 			this._registerGlobals();
 			this._fillData();
 			this._fillTestData(50);
+			this._updateFilterModel();
 		},
 		_addValidator: function (multiInput) {
 			multiInput.addValidator(function (args) {
@@ -72,10 +73,10 @@ sap.ui.define([
 			});
 		},
 		_registerGlobals: function () {
-			this._columNames = [];
+			this._columnNames = [];
 			var columns = this.byId("valueTable").getColumns();
 			for (var i = 0; i < columns.length; i++) {
-				this._columNames.push(columns[i].getHeader().getText());
+				this._columnNames.push(columns[i].getHeader().getText());
 			}
 			this._columnIds = ["Category", "Area", "Planned", "CalendarWeek", "Task", "Project", "Jira", "Spec", "BC", "Status", "Begin",
 				"RealBegin", "End", "RealEnd", "Priority", "System", "Transport", "Comment"
@@ -106,6 +107,7 @@ sap.ui.define([
 				oldText = oldText.substring(0, oldText.lastIndexOf("("));
 			}
 			oTitle.setText(oldText + " (" + this.byId("valueTable").getBinding("items").getLength() + ")");
+			// this._updateFilterModel();
 		},
 		_createDialog: function (fragmentName) {
 			var oDialog = this._dialogs[fragmentName];
@@ -117,7 +119,60 @@ sap.ui.define([
 			return oDialog;
 		},
 		onFilterButtonClick: function (oEvent) {
-			this._createDialog("koehler.T2000.fragment.FilterDialog").open();
+			var oFilterDialog = this._createDialog("koehler.T2000.fragment.FilterDialog");
+			oFilterDialog.setModel(this._filterModel);
+			oFilterDialog.open();
+		},
+		_uniqBy: function (a, key) {
+			let seen = new Set();
+			return a.filter(item => {
+				let k = key(item);
+				return seen.has(k) ? false : seen.add(k);
+			});
+		},
+		_updateFilterModel: function () {
+			var oJSONModel = new JSONModel(),
+				rows = this.byId("valueTable").getBinding("items").getModel().getData().rows,
+				arr = new Array(rows.length);
+			for (var i = 0; i < rows.length; i++) {
+				Object.entries(rows[i]).forEach(prop => {
+					arr[prop[0]] = [];
+				});
+			}
+			arr["Names"] = [];
+			for (i = 0; i < this._columnIds.length; i++) {
+				arr["Names"].push({
+					Key: this._columnIds[i],
+					Value: this._columnNames[i],
+					Items: []
+				});
+			}
+			for (i = 0; i < rows.length; i++) {
+				var entries = Object.entries(rows[i]);
+				for (var j = 0; j < entries.length; j++) {
+					if (!Array.isArray(entries[j][1])) {
+						arr["Names"][j].Items.push({
+							Key: this._columnIds[j],
+							Name: entries[j][1]
+						});
+					} else {
+						for (var k = 0; k < entries[j][1].length; k++) {
+							// debugger;
+							arr["Names"][j].Items.push({
+								Key: this._columnIds[j],
+								Name: entries[j][1][k].Name
+							});
+						}
+					}
+				}
+			}
+			for (i = 0; i < arr["Names"].length; i++) {
+				arr["Names"][i].Items = this._uniqBy(arr["Names"][i].Items, JSON.stringify);
+			}
+			oJSONModel.setData({
+				rows: arr
+			});
+			this._filterModel = oJSONModel;
 		},
 		onGroupButtonClick: function (oEvent) {
 			this._createDialog("koehler.T2000.fragment.GroupDialog").open();
@@ -163,9 +218,20 @@ sap.ui.define([
 					oFilter = new Filter({
 						path: sPath,
 						test: function (oValue) {
-							return oValue.toString().localeCompare(sVal, sap.ui.getCore().getConfiguration().getLanguage(), {
-								sensitivity: "accent"
-							}) === 0;
+							if (!Array.isArray(oValue)) {
+								return oValue.toString().localeCompare(sVal, sap.ui.getCore().getConfiguration().getLanguage(), {
+									sensitivity: "accent"
+								}) === 0;
+							} else {
+								for (var i = 0; i < oValue.length; i++) {
+									if (oValue[i].Name.toString().localeCompare(sVal, sap.ui.getCore().getConfiguration().getLanguage(), {
+											sensitivity: "accent"
+										}) === 0) {
+										return true;
+									}
+								}
+								return false;
+							}
 						}
 					});
 				aFilters.push(oFilter);
@@ -207,15 +273,13 @@ sap.ui.define([
 			this.byId("crBCCombo").setModel(this._getModelForArray(this._bcs, ""));
 
 			var oFilterDialog = this._createDialog("koehler.T2000.fragment.FilterDialog");
-			oFilterDialog.setModel(this._getModelForArray(this._status, ""));
 			oFilterDialog.setModel(this.getOwnerComponent().getModel("i18n"), "i18n");
-			// oFilterDialog.setModel(this._getModelForArray(this._columNames, ""));
 
 			var oSortDialog = this._createDialog("koehler.T2000.fragment.SortDialog");
-			oSortDialog.setModel(this._getModelForArray(this._columNames, ""));
+			oSortDialog.setModel(this._getModelForArray(this._columnNames, ""));
 
 			var oGroupDialog = this._createDialog("koehler.T2000.fragment.GroupDialog");
-			oGroupDialog.setModel(this._getModelForArray(this._columNames, ""));
+			oGroupDialog.setModel(this._getModelForArray(this._columnNames, ""));
 		},
 		_getModelForArray: function (arr, firstElementText) {
 			var oJSONModel = new JSONModel(),
@@ -246,10 +310,11 @@ sap.ui.define([
 		onBacklogButtonClick: function (oEvent) {
 			var oTable = this.byId("valueTable"),
 				aFilters = [],
+				i18n = this._i18n,
 				oFilter = new Filter({
 					path: "Status",
 					test: function (oValue) {
-						return oValue.toString().localeCompare(this._i18n.getText("backlog"), sap.ui.getCore().getConfiguration().getLanguage(), {
+						return oValue.toString().localeCompare(i18n.getText("backlog"), sap.ui.getCore().getConfiguration().getLanguage(), {
 							sensitivity: "accent"
 						}) === 0;
 					}
@@ -283,14 +348,14 @@ sap.ui.define([
 				oData.results[i].RealEnd = "08.05.2021";
 				oData.results[i].Priority = i + 1;
 				oData.results[i].System = [{
-					name: "E" + i
+					Name: "E" + i
 				}, {
-					name: "ET1"
+					Name: "ET1"
 				}];
 				oData.results[i].Transport = [{
-					name: "123456789"
+					Name: "123456789"
 				}, {
-					name: "987654321"
+					Name: "987654321"
 				}];
 				oData.results[i].Comment = "Mehrzeiliges Kommentarfeld";
 			}
@@ -322,11 +387,11 @@ sap.ui.define([
 
 				obj.System = [];
 				this.byId("crSystemMulti").getTokens().forEach(token => obj.System.push({
-					name: token.getText().toUpperCase()
+					Name: token.getText().toUpperCase()
 				}));
 				obj.Transport = [];
 				this.byId("crTransportMulti").getTokens().forEach(token => obj.Transport.push({
-					name: token.getText()
+					Name: token.getText()
 				}));
 
 				obj.Comment = this.byId("crComment").getValue();

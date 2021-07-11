@@ -1,45 +1,101 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
-	<ViewSettingsDialog confirm="onFilterDialogConfirm" filterItems="{/rows}">
+	<ViewSettingsDialog confirm="onFilterDialogConfirm">
 		<filterItems>
-			<ViewSettingsFilterItem text="{Value}" key="status" multiSelect="false">
+			<ViewSettingsFilterItem text="{i18n>colStatus}" key="status" multiSelect="false" items="{/rows}">
 				<items>
 					<ViewSettingsItem text="{Value}" key="Status___{Value}"/>
 				</items>
 			</ViewSettingsFilterItem>
-			<!--<ViewSettingsFilterItem text="{i18n>colPriority}" key="priority" multiSelect="false">-->
-			<!--	<items>-->
-			<!--		<ViewSettingsItem text="1" key="Priority___1"/>-->
-			<!--		<ViewSettingsItem text="2" key="Priority___2"/>-->
-			<!--		<ViewSettingsItem text="3" key="Priority___3"/>-->
-			<!--		<ViewSettingsItem text="4" key="Priority___4"/>-->
-			<!--		<ViewSettingsItem text="5" key="Priority___5"/>-->
-			<!--		<ViewSettingsItem text="6" key="Priority___6"/>-->
-			<!--		<ViewSettingsItem text="7" key="Priority___7"/>-->
-			<!--		<ViewSettingsItem text="8" key="Priority___8"/>-->
-			<!--		<ViewSettingsItem text="9" key="Priority___9"/>-->
-			<!--		<ViewSettingsItem text="10" key="Priority___10"/>-->
-			<!--		<ViewSettingsItem text="11" key="Priority___11"/>-->
-			<!--		<ViewSettingsItem text="12" key="Priority___12"/>-->
-			<!--		<ViewSettingsItem text="13" key="Priority___13"/>-->
-			<!--		<ViewSettingsItem text="14" key="Priority___14"/>-->
-			<!--		<ViewSettingsItem text="15" key="Priority___15"/>-->
-			<!--		<ViewSettingsItem text="16" key="Priority___16"/>-->
-			<!--		<ViewSettingsItem text="17" key="Priority___17"/>-->
-			<!--		<ViewSettingsItem text="18" key="Priority___18"/>-->
-			<!--		<ViewSettingsItem text="19" key="Priority___19"/>-->
-			<!--		<ViewSettingsItem text="20" key="Priority___20"/>-->
-			<!--		<ViewSettingsItem text="21" key="Priority___21"/>-->
-			<!--		<ViewSettingsItem text="22" key="Priority___22"/>-->
-			<!--		<ViewSettingsItem text="23" key="Priority___23"/>-->
-			<!--		<ViewSettingsItem text="24" key="Priority___24"/>-->
-			<!--		<ViewSettingsItem text="25" key="Priority___25"/>-->
-			<!--		<ViewSettingsItem text="26" key="Priority___26"/>-->
-			<!--		<ViewSettingsItem text="27" key="Priority___27"/>-->
-			<!--		<ViewSettingsItem text="28" key="Priority___28"/>-->
-			<!--		<ViewSettingsItem text="29" key="Priority___29"/>-->
-			<!--		<ViewSettingsItem text="30" key="Priority___30"/>-->
-			<!--	</items>-->
-			<!--</ViewSettingsFilterItem>-->
+			<ViewSettingsFilterItem text="{i18n>colPriority}" key="priority" multiSelect="false">
+				<items>
+					<ViewSettingsItem text="1" key="Priority___1"/>
+					<ViewSettingsItem text="2" key="Priority___2"/>
+					<ViewSettingsItem text="3" key="Priority___3"/>
+					<ViewSettingsItem text="4" key="Priority___4"/>
+					<ViewSettingsItem text="5" key="Priority___5"/>
+					<ViewSettingsItem text="6" key="Priority___6"/>
+					<ViewSettingsItem text="7" key="Priority___7"/>
+					<ViewSettingsItem text="8" key="Priority___8"/>
+					<ViewSettingsItem text="9" key="Priority___9"/>
+					<ViewSettingsItem text="10" key="Priority___10"/>
+					<ViewSettingsItem text="11" key="Priority___11"/>
+					<ViewSettingsItem text="12" key="Priority___12"/>
+					<ViewSettingsItem text="13" key="Priority___13"/>
+					<ViewSettingsItem text="14" key="Priority___14"/>
+					<ViewSettingsItem text="15" key="Priority___15"/>
+					<ViewSettingsItem text="16" key="Priority___16"/>
+					<ViewSettingsItem text="17" key="Priority___17"/>
+					<ViewSettingsItem text="18" key="Priority___18"/>
+					<ViewSettingsItem text="19" key="Priority___19"/>
+					<ViewSettingsItem text="20" key="Priority___20"/>
+					<ViewSettingsItem text="21" key="Priority___21"/>
+					<ViewSettingsItem text="22" key="Priority___22"/>
+					<ViewSettingsItem text="23" key="Priority___23"/>
+					<ViewSettingsItem text="24" key="Priority___24"/>
+					<ViewSettingsItem text="25" key="Priority___25"/>
+					<ViewSettingsItem text="26" key="Priority___26"/>
+					<ViewSettingsItem text="27" key="Priority___27"/>
+					<ViewSettingsItem text="28" key="Priority___28"/>
+					<ViewSettingsItem text="29" key="Priority___29"/>
+					<ViewSettingsItem text="30" key="Priority___30"/>
+				</items>
+			</ViewSettingsFilterItem>
+			<ViewSettingsFilterItem text="{i18n>colCalendarWeek}" key="calendarWeek" multiSelect="false">
+				<items>
+					<ViewSettingsItem text="1" key="CalendarWeek___1"/>
+					<ViewSettingsItem text="2" key="CalendarWeek___2"/>
+					<ViewSettingsItem text="3" key="CalendarWeek___3"/>
+					<ViewSettingsItem text="4" key="CalendarWeek___4"/>
+					<ViewSettingsItem text="5" key="CalendarWeek___5"/>
+					<ViewSettingsItem text="6" key="CalendarWeek___6"/>
+					<ViewSettingsItem text="7" key="CalendarWeek___7"/>
+					<ViewSettingsItem text="8" key="CalendarWeek___8"/>
+					<ViewSettingsItem text="9" key="CalendarWeek___9"/>
+					<ViewSettingsItem text="10" key="CalendarWeek___10"/>
+					<ViewSettingsItem text="11" key="CalendarWeek___11"/>
+					<ViewSettingsItem text="12" key="CalendarWeek___12"/>
+					<ViewSettingsItem text="13" key="CalendarWeek___13"/>
+					<ViewSettingsItem text="14" key="CalendarWeek___14"/>
+					<ViewSettingsItem text="15" key="CalendarWeek___15"/>
+					<ViewSettingsItem text="16" key="CalendarWeek___16"/>
+					<ViewSettingsItem text="17" key="CalendarWeek___17"/>
+					<ViewSettingsItem text="18" key="CalendarWeek___18"/>
+					<ViewSettingsItem text="19" key="CalendarWeek___19"/>
+					<ViewSettingsItem text="20" key="CalendarWeek___20"/>
+					<ViewSettingsItem text="21" key="CalendarWeek___21"/>
+					<ViewSettingsItem text="22" key="CalendarWeek___22"/>
+					<ViewSettingsItem text="23" key="CalendarWeek___23"/>
+					<ViewSettingsItem text="24" key="CalendarWeek___24"/>
+					<ViewSettingsItem text="25" key="CalendarWeek___25"/>
+					<ViewSettingsItem text="26" key="CalendarWeek___26"/>
+					<ViewSettingsItem text="27" key="CalendarWeek___27"/>
+					<ViewSettingsItem text="28" key="CalendarWeek___28"/>
+					<ViewSettingsItem text="29" key="CalendarWeek___29"/>
+					<ViewSettingsItem text="30" key="CalendarWeek___30"/>
+					<ViewSettingsItem text="31" key="CalendarWeek___31"/>
+					<ViewSettingsItem text="32" key="CalendarWeek___32"/>
+					<ViewSettingsItem text="33" key="CalendarWeek___33"/>
+					<ViewSettingsItem text="34" key="CalendarWeek___34"/>
+					<ViewSettingsItem text="35" key="CalendarWeek___35"/>
+					<ViewSettingsItem text="36" key="CalendarWeek___36"/>
+					<ViewSettingsItem text="37" key="CalendarWeek___37"/>
+					<ViewSettingsItem text="38" key="CalendarWeek___38"/>
+					<ViewSettingsItem text="39" key="CalendarWeek___39"/>
+					<ViewSettingsItem text="40" key="CalendarWeek___40"/>
+					<ViewSettingsItem text="41" key="CalendarWeek___41"/>
+					<ViewSettingsItem text="42" key="CalendarWeek___42"/>
+					<ViewSettingsItem text="43" key="CalendarWeek___43"/>
+					<ViewSettingsItem text="44" key="CalendarWeek___44"/>
+					<ViewSettingsItem text="45" key="CalendarWeek___45"/>
+					<ViewSettingsItem text="46" key="CalendarWeek___46"/>
+					<ViewSettingsItem text="47" key="CalendarWeek___47"/>
+					<ViewSettingsItem text="48" key="CalendarWeek___48"/>
+					<ViewSettingsItem text="49" key="CalendarWeek___49"/>
+					<ViewSettingsItem text="50" key="CalendarWeek___50"/>
+					<ViewSettingsItem text="51" key="CalendarWeek___51"/>
+					<ViewSettingsItem text="52" key="CalendarWeek___52"/>
+				</items>
+			</ViewSettingsFilterItem>
 		</filterItems>
 	</ViewSettingsDialog>
 </core:FragmentDefinition>

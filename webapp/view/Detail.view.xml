@@ -111,12 +111,12 @@
 														<Text text="{Priority}"/>
 														<Panel content="{System}" expandable="false" expanded="true">
 															<VBox>
-																<Link text="{name}"/>
+																<Link text="{Name}"/>
 															</VBox>
 														</Panel>
 														<Panel content="{Transport}" expandable="false" expanded="true">
 															<VBox>
-																<Link text="{name}"/>
+																<Link text="{Name}"/>
 															</VBox>
 														</Panel>
 														<TextArea value="{Comment}" editable="false" growing="true" wrapping="Soft"/>
