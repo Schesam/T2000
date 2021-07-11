@@ -354,7 +354,13 @@
 		"browser": true,
 		"amd": true,
 		"mocha": true,
-		"jasmine": false,
-		"es6": true
-	}
+		"jasmine": false
+	},
+	"parserOptions": {
+        "ecmaVersion": 9,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true
+        }
+    }
 }

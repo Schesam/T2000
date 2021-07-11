@@ -22,7 +22,7 @@
 											<headerToolbar>
 												<OverflowToolbar>
 													<Title id="headerText" text="" level="H2"/>
-													<SearchField width="40%" placeholder="{i18n>search}" id="search" liveChange="onSearch"/>
+													<SearchField width="40%" placeholder="{i18n>search}" id="search" liveChange="onLiveSearch" search="onSearch"/>
 													<ToolbarSpacer/>
 													<Button tooltip="{i18n>sortToolTip}" icon="sap-icon://sort" press="onSortButtonClick"/>
 													<Button tooltip="{i18n>filterToolTip}" icon="sap-icon://filter" press="onFilterButtonClick"/>

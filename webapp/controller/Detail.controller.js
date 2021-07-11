@@ -1,6 +1,6 @@
-/* eslint-disable no-console*/
+/* eslint-disable no-console, max-params, sap-timeout-usage*/
 /* eslint complexity: [error, 19] */
-/* global koehler:true */
+/* global koehler:true, moment:true, Set:true */
 (function () {
 	jQuery.sap.declare("koehler.T2000.Formatter");
 	jQuery.sap.require("sap.ui.base.Object");
@@ -38,8 +38,9 @@ sap.ui.define([
 	"koehler/T2000/Formatter",
 	"sap/m/MessageBox",
 	"sap/m/MessageToast",
-	"sap/m/Token"
-], function (Controller, JSONModel, Filter, Sorter, Formatter, MessageBox, MessageToast, Token) {
+	"sap/m/Token",
+	"koehler/T2000/moment-with-locales"
+], function (Controller, JSONModel, Filter, Sorter, Formatter, MessageBox, MessageToast, Token, Moment) {
 	"use strict";
 
 	return Controller.extend("koehler.T2000.controller.Detail", {
@@ -59,9 +60,25 @@ sap.ui.define([
 			this._addValidator(this.byId("crTransportMulti"));
 
 			this._registerGlobals();
-			this._fillData();
-			this._fillTestData(50);
-			this._updateFilterModel();
+			this._load();
+		},
+		_load: async function () {
+			console.log("Loading");
+			const result = await this._loader();
+			console.log(result);
+		},
+		_loader: function () {
+			var that = this;
+			that.byId("valueTable").setBusy(true);
+			return new Promise(function (resolved, rejected) {
+				setTimeout(function () {
+					that._fillData();
+					that._fillTestData(500000);
+					that._updateFilterModel();
+					that.byId("valueTable").setBusy(false);
+					resolved("Done");
+				}, 2000);
+			});
 		},
 		_addValidator: function (multiInput) {
 			multiInput.addValidator(function (args) {
@@ -106,8 +123,11 @@ sap.ui.define([
 			if (oldText.includes("(")) {
 				oldText = oldText.substring(0, oldText.lastIndexOf("("));
 			}
-			oTitle.setText(oldText + " (" + this.byId("valueTable").getBinding("items").getLength() + ")");
+			oTitle.setText(oldText + " (" + this._getRowCount() + ")");
 			// this._updateFilterModel();
+		},
+		_getRowCount: function () {
+			return this.byId("valueTable").getBinding("items").getLength();
 		},
 		_createDialog: function (fragmentName) {
 			var oDialog = this._dialogs[fragmentName];
@@ -139,9 +159,9 @@ sap.ui.define([
 					arr[prop[0]] = [];
 				});
 			}
-			arr["Names"] = [];
+			arr.Names = [];
 			for (i = 0; i < this._columnIds.length; i++) {
-				arr["Names"].push({
+				arr.Names.push({
 					Key: this._columnIds[i],
 					Value: this._columnNames[i],
 					Items: []
@@ -151,14 +171,14 @@ sap.ui.define([
 				var entries = Object.entries(rows[i]);
 				for (var j = 0; j < entries.length; j++) {
 					if (!Array.isArray(entries[j][1])) {
-						arr["Names"][j].Items.push({
+						arr.Names[j].Items.push({
 							Key: this._columnIds[j],
 							Name: entries[j][1]
 						});
 					} else {
 						for (var k = 0; k < entries[j][1].length; k++) {
 							// debugger;
-							arr["Names"][j].Items.push({
+							arr.Names[j].Items.push({
 								Key: this._columnIds[j],
 								Name: entries[j][1][k].Name
 							});
@@ -166,8 +186,8 @@ sap.ui.define([
 					}
 				}
 			}
-			for (i = 0; i < arr["Names"].length; i++) {
-				arr["Names"][i].Items = this._uniqBy(arr["Names"][i].Items, JSON.stringify);
+			for (i = 0; i < arr.Names.length; i++) {
+				arr.Names[i].Items = this._uniqBy(arr.Names[i].Items, JSON.stringify);
 			}
 			oJSONModel.setData({
 				rows: arr
@@ -241,6 +261,11 @@ sap.ui.define([
 			this.byId("filterBar").setVisible(aFilters.length > 0);
 			this.byId("filterLabel").setText(mParams.filterString);
 			this._updateRowCount();
+		},
+		onLiveSearch: function (oEvent) {
+			if (this._getRowCount() <= 8000) {
+				this.onSearch(oEvent);
+			}
 		},
 		onSearch: function (oEvent) {
 			var aFilter = [],
@@ -342,10 +367,10 @@ sap.ui.define([
 				oData.results[i].Spec = "009824" + i;
 				oData.results[i].BC = this._bcs[this._bcs.length * Math.random() | 0];
 				oData.results[i].Status = this._status[this._status.length * Math.random() | 0];
-				oData.results[i].Begin = "07.05.2021";
-				oData.results[i].RealBegin = "07.05.2021";
-				oData.results[i].End = "07.05.2021";
-				oData.results[i].RealEnd = "08.05.2021";
+				oData.results[i].Begin = moment().add(i, "days").format("DD.MM.YYYY");
+				oData.results[i].RealBegin = moment().add(i, "days").format("DD.MM.YYYY");
+				oData.results[i].End = moment().add(i + 3, "days").format("DD.MM.YYYY");
+				oData.results[i].RealEnd = moment().add(i + 3, "days").format("DD.MM.YYYY");
 				oData.results[i].Priority = i + 1;
 				oData.results[i].System = [{
 					Name: "E" + i
