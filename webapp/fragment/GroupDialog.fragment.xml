@@ -1,0 +1,7 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+	<ViewSettingsDialog confirm="onGroupDialogConfirm" groupItems="{/rows}">
+		<groupItems>
+			<ViewSettingsItem text="{Value}" key="{Key}"/>
+		</groupItems>
+	</ViewSettingsDialog>
+</core:FragmentDefinition>
