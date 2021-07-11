@@ -60,7 +60,7 @@ sap.ui.define([
 
 			this._registerGlobals();
 			this._fillData();
-			this._fillTestData(5);
+			this._fillTestData(50);
 		},
 		_addValidator: function (multiInput) {
 			multiInput.addValidator(function (args) {
