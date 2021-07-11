@@ -249,7 +249,7 @@ sap.ui.define([
 				oFilter = new Filter({
 					path: "Status",
 					test: function (oValue) {
-						return oValue.toString().localeCompare("Backlog", sap.ui.getCore().getConfiguration().getLanguage(), {
+						return oValue.toString().localeCompare(this._i18n.getText("backlog"), sap.ui.getCore().getConfiguration().getLanguage(), {
 							sensitivity: "accent"
 						}) === 0;
 					}
@@ -257,6 +257,9 @@ sap.ui.define([
 			aFilters.push(oFilter);
 			oTable.getBinding("items").filter(aFilters);
 			this._updateRowCount();
+			this.byId("filterBar").setVisible(aFilters.length > 0);
+			this.byId("filterLabel").setText(this._i18n.getText("filteredBy") + ": " + this._i18n.getText("colStatus") + " (" + this._i18n.getText(
+				"backlog") + ")");
 		},
 		_fillTestData: function (num) {
 			var oJSONModel = new JSONModel(),

@@ -294,7 +294,7 @@
 						<Toolbar>
 							<ToolbarSpacer/>
 							<Button text="{i18n>new}" type="Accept" iconDensityAware="false" press="onSaveButtonClick" visible="false" id="createButton"/>
-							<Button id="backlogButton" text="Backlog" type="Emphasized" press="onBacklogButtonClick"/>
+							<Button id="backlogButton" text="{i18n>backlog}" type="Emphasized" press="onBacklogButtonClick"/>
 						</Toolbar>
 					</footer>
 				</Page>
