@@ -26,7 +26,7 @@
 													<ToolbarSpacer/>
 													<Button tooltip="{i18n>sortToolTip}" icon="sap-icon://sort" press="onSortButtonClick"/>
 													<Button tooltip="{i18n>filterToolTip}" icon="sap-icon://filter" press="onFilterButtonClick"/>
-													<Button tooltip="View Group Settings" icon="sap-icon://group-2" press="onGroupButtonClick"/>
+													<Button tooltip="{i18n>groupToolTip}" icon="sap-icon://group-2" press="onGroupButtonClick"/>
 													<ToggleButton icon="sap-icon://edit" tooltip="Enable / Disable Custom Context Menu" press="onEditButtonClick"/>
 												</OverflowToolbar>
 											</headerToolbar>
@@ -285,12 +285,6 @@
 												<form:ResponsiveGridLayout adjustLabelSpan="false" columnsL="2" labelSpanL="1" columnsM="1" labelSpanM="2" labelSpanS="12"/>
 											</form:layout>
 										</form:Form>
-										<!--<OverflowToolbar width="100%" height="46px" design="Info" enabled="true" visible="true">-->
-										<!--	<content>-->
-										<!--		<ToolbarSpacer width=""/>-->
-										<!--		<Button text="{i18n>new}" type="Accept" icon="sap-icon://save" iconFirst="true" iconDensityAware="false" press="onSaveButtonClick"/>-->
-										<!--	</content>-->
-										<!--</OverflowToolbar>-->
 									</content>
 								</IconTabFilter>
 							</items>

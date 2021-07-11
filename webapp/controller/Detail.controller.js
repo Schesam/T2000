@@ -1,4 +1,5 @@
-/* eslint-disable no-console, complexity*/
+/* eslint-disable no-console*/
+/* eslint complexity: [error, 19] */
 /* global koehler:true */
 (function () {
 	jQuery.sap.declare("koehler.T2000.Formatter");
@@ -10,7 +11,7 @@
 		this._formatDate(oDate, false);
 	};
 
-	koehler.T2000.Formatter._formatDate = function (oDate, withWeekDay) {
+	koehler.T2000.Formatter._formatDate = function (oDateParam, withWeekDay) {
 		var options = {
 			year: "numeric",
 			month: "2-digit",
@@ -19,8 +20,9 @@
 		if (withWeekDay) {
 			options.weekday = "long";
 		}
-		if (oDate) {
-			if (!(oDate instanceof Date)) {
+		if (oDateParam) {
+			var oDate = oDateParam;
+			if (!(oDateParam instanceof Date)) {
 				oDate = new Date(oDate);
 			}
 			return oDate.toLocaleDateString("de-de", options);
@@ -75,6 +77,9 @@ sap.ui.define([
 			for (var i = 0; i < columns.length; i++) {
 				this._columNames.push(columns[i].getHeader().getText());
 			}
+			this._columnIds = ["Category", "Area", "Planned", "CalendarWeek", "Task", "Project", "Jira", "Spec", "BC", "Status", "Begin",
+				"RealBegin", "End", "RealEnd", "Priority", "System", "Transport", "Comment"
+			];
 			this._areas = ["Abwesenheit", "Organisation", "Produkt", "Anforderung"];
 			this._categories = ["I Timebox", "K Timebox", "Task"];
 			this._tasks = ["Krankheit, Urlaub, Teilzeit", "Schulung, Ausbildung", "Team- und eigene Orga", "Incidents/Problems/Support",
@@ -83,134 +88,16 @@ sap.ui.define([
 			this._bcs = ["Silke Wünsch", "Amine Abida", "Emanuel", "Andreas", "Mike", "Sonstige", "Andreas"];
 			this._status = ["Backlog", "Umsetzung", "Analyse", "Begleitung"];
 			this._dialogs = {};
-			this._groupFunctions = {
-				Category: function (oContext) {
-					var cat = oContext.getProperty("Category");
+			this._groupFunctions = {};
+			this._columnIds.forEach(id => {
+				this._groupFunctions[id] = function (oContext) {
+					var name = oContext.getProperty(id);
 					return {
-						key: cat,
-						text: cat
+						key: name,
+						text: name
 					};
-				},
-				Area: function (oContext) {
-					var area = oContext.getProperty("Area");
-					return {
-						key: area,
-						text: area
-					};
-				},
-				Planned: function (oContext) {
-					var planned = oContext.getProperty("Planned");
-					return {
-						key: planned,
-						text: planned
-					};
-				},
-				CalendarWeek: function (oContext) {
-					var week = oContext.getProperty("CalendarWeek");
-					return {
-						key: week,
-						text: week
-					};
-				},
-				Task: function (oContext) {
-					var task = oContext.getProperty("Task");
-					return {
-						key: task,
-						text: task
-					};
-				},
-				Project: function (oContext) {
-					var project = oContext.getProperty("Project");
-					return {
-						key: project,
-						text: project
-					};
-				},
-				Jira: function (oContext) {
-					var jira = oContext.getProperty("Jira");
-					return {
-						key: jira,
-						text: jira
-					};
-				},
-				Spec: function (oContext) {
-					var spec = oContext.getProperty("Spec");
-					return {
-						key: spec,
-						text: spec
-					};
-				},
-				BC: function (oContext) {
-					var bc = oContext.getProperty("BC");
-					return {
-						key: bc,
-						text: bc
-					};
-				},
-				Status: function (oContext) {
-					var status = oContext.getProperty("Status");
-					return {
-						key: status,
-						text: status
-					};
-				},
-				Begin: function (oContext) {
-					var begin = oContext.getProperty("Begin");
-					return {
-						key: begin,
-						text: begin
-					};
-				},
-				RealBegin: function (oContext) {
-					var realB = oContext.getProperty("RealBegin");
-					return {
-						key: realB,
-						text: realB
-					};
-				},
-				End: function (oContext) {
-					var end = oContext.getProperty("End");
-					return {
-						key: end,
-						text: end
-					};
-				},
-				RealEnd: function (oContext) {
-					var realE = oContext.getProperty("RealEnd");
-					return {
-						key: realE,
-						text: realE
-					};
-				},
-				Priority: function (oContext) {
-					var prio = oContext.getProperty("Priority");
-					return {
-						key: prio,
-						text: prio
-					};
-				},
-				System: function (oContext) {
-					var sys = oContext.getProperty("System");
-					return {
-						key: sys[0].name,
-						text: sys[0].name
-					};
-				},
-				Transport: function (oContext) {
-					var trans = oContext.getProperty("Transport");
-					return {
-						key: trans[0].name,
-						text: trans[0].name
-					};
-				},
-				Comment: function (oContext) {
-					var comment = oContext.getProperty("Comment");
-					return {
-						key: comment,
-						text: comment
-					};
-				}
-			};
+				};
+			});
 		},
 		_updateRowCount: function () {
 			var oTitle = this.byId("headerText"),
@@ -262,66 +149,7 @@ sap.ui.define([
 			this.byId("valueTable").getBinding("items").sort(aSorters);
 		},
 		_getColIdForIndex: function (index) {
-			var sKey;
-			switch (this._columNames[index]) {
-			case this._i18n.getText("colCategory"):
-				sKey = "Category";
-				break;
-			case this._i18n.getText("colArea"):
-				sKey = "Area";
-				break;
-			case this._i18n.getText("colPlanned"):
-				sKey = "Planned";
-				break;
-			case this._i18n.getText("colCalendarWeek"):
-				sKey = "CalendarWeek";
-				break;
-			case this._i18n.getText("colTask"):
-				sKey = "Task";
-				break;
-			case this._i18n.getText("colProject"):
-				sKey = "Project";
-				break;
-			case this._i18n.getText("colJira"):
-				sKey = "Jira";
-				break;
-			case this._i18n.getText("colSpec"):
-				sKey = "Spec";
-				break;
-			case this._i18n.getText("colBC"):
-				sKey = "BC";
-				break;
-			case this._i18n.getText("colStatus"):
-				sKey = "Status";
-				break;
-			case this._i18n.getText("colBegin"):
-				sKey = "Begin";
-				break;
-			case this._i18n.getText("colRealBegin"):
-				sKey = "RealBegin";
-				break;
-			case this._i18n.getText("colEnd"):
-				sKey = "End";
-				break;
-			case this._i18n.getText("colRealEnd"):
-				sKey = "RealEnd";
-				break;
-			case this._i18n.getText("colPriority"):
-				sKey = "Priority";
-				break;
-			case this._i18n.getText("colSystem"):
-				sKey = "System";
-				break;
-			case this._i18n.getText("colTransport"):
-				sKey = "Transport";
-				break;
-			case this._i18n.getText("colComment"):
-				sKey = "Comment";
-				break;
-			default:
-				sKey = "Category";
-			}
-			return sKey;
+			return this._columnIds[index];
 		},
 		onFilterDialogConfirm: function (oEvent) {
 			var oTable = this.byId("valueTable"),
