@@ -90,6 +90,18 @@
 												<Column demandPopin="true" minScreenWidth="2100px">
 													<Text text="{i18n>colComment}"/>
 												</Column>
+												<Column demandPopin="true" minScreenWidth="2200px">
+													<Text text="{i18n>colCreator}"/>
+												</Column>
+												<Column demandPopin="true" minScreenWidth="2200px">
+													<Text text="{i18n>colCreationDate}"/>
+												</Column>
+												<Column demandPopin="true" minScreenWidth="2200px">
+													<Text text="{i18n>colChanger}"/>
+												</Column>
+												<Column demandPopin="true" minScreenWidth="2200px">
+													<Text text="{i18n>colChangingDate}"/>
+												</Column>
 											</columns>
 											<items>
 												<ColumnListItem>
@@ -100,7 +112,7 @@
 														<Text text="{CalendarWeek}"/>
 														<Text text="{Task}"/>
 														<Link text="{Project}"/>
-														<Link text="{Jira}"/>
+														<Link text="{Jira}" target="_blank" href="https://jira.schwarz/browse/{Jira}"/>
 														<Link text="{Spec}"/>
 														<Text text="{BC}"/>
 														<Text text="{Status}"/>
@@ -120,6 +132,10 @@
 															</VBox>
 														</Panel>
 														<TextArea value="{Comment}" editable="false" growing="true" wrapping="Soft"/>
+														<Text text="{Creator}"/>
+														<Text text="{CreationDate}"/>
+														<Text text="{Changer}"/>
+														<Text text="{ChangingDate}"/>
 													</cells>
 												</ColumnListItem>
 											</items>

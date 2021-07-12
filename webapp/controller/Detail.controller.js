@@ -48,13 +48,8 @@ sap.ui.define([
 			if (Controller.prototype.onInit) {
 				Controller.prototype.onInit.apply(this, arguments);
 			}
-			var oView = this.getView();
-			// this.getOwnerComponent().addView(view);
-			var oModel = new JSONModel({});
-			oModel.setSizeLimit(999999999);
 			this._oI18n = this.getOwnerComponent().getModel("i18n").getResourceBundle();
-			oView.setModel(oModel);
-			oView.setBusyIndicatorDelay(0);
+			this.getView().setBusyIndicatorDelay(0);
 
 			this._addValidator(this.byId("crSystemMulti"));
 			this._addValidator(this.byId("crTransportMulti"));
@@ -96,7 +91,7 @@ sap.ui.define([
 				this._columnNames.push(column.getHeader().getText());
 			});
 			this._columnIds = ["Category", "Area", "Planned", "CalendarWeek", "Task", "Project", "Jira", "Spec", "BC", "Status", "Begin",
-				"RealBegin", "End", "RealEnd", "Priority", "System", "Transport", "Comment"
+				"RealBegin", "End", "RealEnd", "Priority", "System", "Transport", "Comment", "Creator", "CreationDate", "Changer", "ChangingDate"
 			];
 			this._areas = ["Abwesenheit", "Organisation", "Produkt", "Anforderung"];
 			this._categories = ["I Timebox", "K Timebox", "Task"];
@@ -353,24 +348,18 @@ sap.ui.define([
 			this._updateRowCount();
 		},
 		onBacklogButtonClick: function (oEvent) {
-			var oTable = this.byId("valueTable"),
-				aFilters = [],
-				oI18n = this._oI18n,
-				oFilter = new Filter({
-					path: "Status",
-					test: function (oValue) {
-						return oValue.toString().localeCompare(oI18n.getText("backlog"), sap.ui.getCore().getConfiguration().getLanguage(), {
-							sensitivity: "accent"
-						}) === 0;
+			var oEventOwn = {},
+				oI18n = this._oI18n;
+			oEventOwn.getParameters = function () {
+				var params = {};
+				params.filterItems = [{
+					getKey: function () {
+						return "Status___" + oI18n.getText("backlog");
 					}
-				});
-			aFilters.push(oFilter);
-			oTable.getBinding("items").filter(aFilters);
-			this._updateRowCount();
-			this.byId("filterBar").setVisible(aFilters.length > 0);
-			this.byId("filterLabel").setText(this._oI18n.getText("filteredBy") + ": " + this._oI18n.getText("colStatus") + " (" + this._oI18n
-				.getText(
-					"backlog") + ")");
+				}];
+				return params;
+			};
+			this.onFilterDialogConfirm(oEventOwn);
 		},
 		_fillTestData: function (num) {
 			var oJSONModel = new JSONModel(),
@@ -404,6 +393,10 @@ sap.ui.define([
 					Name: "987654321"
 				}];
 				oData.results[i].Comment = "Mehrzeiliges Kommentarfeld";
+				oData.results[i].Creator = "Andreas Köhler";
+				oData.results[i].CreationDate = moment().format("DD.MM.YYYY HH:mm:ss");
+				oData.results[i].Changer = "Andreas Köhler";
+				oData.results[i].ChangingDate = moment().format("DD.MM.YYYY HH:mm:ss");
 			}
 			oJSONModel.setData({
 				rows: oData.results
@@ -441,6 +434,10 @@ sap.ui.define([
 				}));
 
 				oObj.Comment = this.byId("crComment").getValue();
+				oObj.Creator = "Andreas Köhler";
+				oObj.CreationDate = moment().format("DD.MM.YYYY HH:mm:ss");
+				oObj.Changer = "Andreas Köhler";
+				oObj.ChangingDate = moment().format("DD.MM.YYYY HH:mm:ss");
 				oRowData.rows.push(oObj);
 
 				var oJSONModel = new JSONModel();
