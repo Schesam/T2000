@@ -12,20 +12,20 @@
 	};
 
 	koehler.T2000.Formatter._formatDate = function (oDateParam, withWeekDay) {
-		var options = {
+		var oOptions = {
 			year: "numeric",
 			month: "2-digit",
 			day: "2-digit"
 		};
 		if (withWeekDay) {
-			options.weekday = "long";
+			oOptions.weekday = "long";
 		}
 		if (oDateParam) {
 			var oDate = oDateParam;
 			if (!(oDateParam instanceof Date)) {
 				oDate = new Date(oDate);
 			}
-			return oDate.toLocaleDateString("de-de", options);
+			return oDate.toLocaleDateString("de-de", oOptions);
 		}
 		return "";
 	};
@@ -48,13 +48,13 @@ sap.ui.define([
 			if (Controller.prototype.onInit) {
 				Controller.prototype.onInit.apply(this, arguments);
 			}
-			var view = this.getView();
+			var oView = this.getView();
 			// this.getOwnerComponent().addView(view);
-			var model = new JSONModel({});
-			model.setSizeLimit(999999999);
-			this._i18n = this.getOwnerComponent().getModel("i18n").getResourceBundle();
-			view.setModel(model);
-			view.setBusyIndicatorDelay(0);
+			var oModel = new JSONModel({});
+			oModel.setSizeLimit(999999999);
+			this._oI18n = this.getOwnerComponent().getModel("i18n").getResourceBundle();
+			oView.setModel(oModel);
+			oView.setBusyIndicatorDelay(0);
 
 			this._addValidator(this.byId("crSystemMulti"));
 			this._addValidator(this.byId("crTransportMulti"));
@@ -69,32 +69,32 @@ sap.ui.define([
 		},
 		_loader: function () {
 			var that = this;
-			that.byId("valueTable").setBusy(true);
+			var oView = this.getView();
+			oView.setBusy(true);
 			return new Promise(function (resolved, rejected) {
 				setTimeout(function () {
 					that._fillData();
-					that._fillTestData(500000);
+					that._fillTestData(500);
 					that._updateFilterModel();
-					that.byId("valueTable").setBusy(false);
+					oView.setBusy(false);
 					resolved("Done");
 				}, 2000);
 			});
 		},
 		_addValidator: function (multiInput) {
 			multiInput.addValidator(function (args) {
-				var text = args.text;
+				var sText = args.text;
 				return new Token({
-					key: text,
-					text: text
+					key: sText,
+					text: sText
 				});
 			});
 		},
 		_registerGlobals: function () {
 			this._columnNames = [];
-			var columns = this.byId("valueTable").getColumns();
-			for (var i = 0; i < columns.length; i++) {
-				this._columnNames.push(columns[i].getHeader().getText());
-			}
+			this.byId("valueTable").getColumns().forEach(column => {
+				this._columnNames.push(column.getHeader().getText());
+			});
 			this._columnIds = ["Category", "Area", "Planned", "CalendarWeek", "Task", "Project", "Jira", "Spec", "BC", "Status", "Begin",
 				"RealBegin", "End", "RealEnd", "Priority", "System", "Transport", "Comment"
 			];
@@ -109,10 +109,10 @@ sap.ui.define([
 			this._groupFunctions = {};
 			this._columnIds.forEach(id => {
 				this._groupFunctions[id] = function (oContext) {
-					var name = oContext.getProperty(id);
+					var sName = oContext.getProperty(id);
 					return {
-						key: name,
-						text: name
+						key: sName,
+						text: sName
 					};
 				};
 			});
@@ -152,45 +152,45 @@ sap.ui.define([
 		},
 		_updateFilterModel: function () {
 			var oJSONModel = new JSONModel(),
-				rows = this.byId("valueTable").getBinding("items").getModel().getData().rows,
-				arr = new Array(rows.length);
-			for (var i = 0; i < rows.length; i++) {
-				Object.entries(rows[i]).forEach(prop => {
-					arr[prop[0]] = [];
-				});
-			}
-			arr.Names = [];
-			for (i = 0; i < this._columnIds.length; i++) {
-				arr.Names.push({
+				aRows = this.byId("valueTable").getBinding("items").getModel().getData().rows,
+				aArr = new Array(aRows.length);
+			aRows.forEach(row =>
+				Object.entries(row).forEach(prop => {
+					aArr[prop[0]] = [];
+				})
+			);
+			aArr.Names = [];
+			for (var i = 0; i < this._columnIds.length; i++) {
+				aArr.Names.push({
 					Key: this._columnIds[i],
 					Value: this._columnNames[i],
 					Items: []
 				});
 			}
-			for (i = 0; i < rows.length; i++) {
-				var entries = Object.entries(rows[i]);
-				for (var j = 0; j < entries.length; j++) {
-					if (!Array.isArray(entries[j][1])) {
-						arr.Names[j].Items.push({
+			aRows.forEach(row => {
+				var aEntries = Object.entries(row);
+				for (var j = 0; j < aEntries.length; j++) {
+					if (!Array.isArray(aEntries[j][1])) {
+						aArr.Names[j].Items.push({
 							Key: this._columnIds[j],
-							Name: entries[j][1]
+							Name: aEntries[j][1]
 						});
 					} else {
-						for (var k = 0; k < entries[j][1].length; k++) {
+						for (var k = 0; k < aEntries[j][1].length; k++) {
 							// debugger;
-							arr.Names[j].Items.push({
+							aArr.Names[j].Items.push({
 								Key: this._columnIds[j],
-								Name: entries[j][1][k].Name
+								Name: aEntries[j][1][k].Name
 							});
 						}
 					}
 				}
-			}
-			for (i = 0; i < arr.Names.length; i++) {
-				arr.Names[i].Items = this._uniqBy(arr.Names[i].Items, JSON.stringify);
+			});
+			for (i = 0; i < aArr.Names.length; i++) {
+				aArr.Names[i].Items = this._uniqBy(aArr.Names[i].Items, JSON.stringify);
 			}
 			oJSONModel.setData({
-				rows: arr
+				rows: aArr
 			});
 			this._filterModel = oJSONModel;
 		},
@@ -267,27 +267,47 @@ sap.ui.define([
 				this.onSearch(oEvent);
 			}
 		},
-		onSearch: function (oEvent) {
-			var aFilter = [],
-				sQuery = this.byId("search").getValue();
+		onSearch: async function (oEvent) {
+			console.log("Searching...");
+			await this._doSearch();
+			console.log("Done");
+		},
+		_doSearch: function () {
+			var that = this;
+			return new Promise(function (resolved, rejected) {
+				setTimeout(function () {
+					var aFilter = [],
+						sQuery = that.byId("search").getValue();
 
-			if (sQuery) {
-				aFilter.push(new Filter({
-					path: "",
-					test: function (oValue) {
-						var entries = Object.entries(oValue);
-						for (var i = 0; i < entries.length; i++) {
-							if (entries[i][1].toString().toLocaleLowerCase().includes(sQuery.toString().toLocaleLowerCase())) {
-								return true;
+					that.byId("valueTable").setBusy(true);
+					if (sQuery) {
+						aFilter.push(new Filter({
+							path: "",
+							test: function (oValue) {
+								var entries = Object.entries(oValue);
+								for (var i = 0; i < entries.length; i++) {
+									if (!Array.isArray(entries[i][1])) {
+										if (entries[i][1].toString().toLocaleLowerCase().includes(sQuery.toString().toLocaleLowerCase())) {
+											return true;
+										}
+									} else {
+										for (var j = 0; j < entries[i][1].length; j++) {
+											if (entries[i][1][j].Name.toString().toLocaleLowerCase().includes(sQuery.toString().toLocaleLowerCase())) {
+												return true;
+											}
+										}
+									}
+								}
+								return false;
 							}
-						}
-						return false;
+						}));
 					}
-				}));
-			}
 
-			this.byId("valueTable").getBinding("items").filter(aFilter);
-			this._updateRowCount();
+					that.byId("valueTable").getBinding("items").filter(aFilter);
+					that._updateRowCount();
+					that.byId("valueTable").setBusy(false);
+				}, 10);
+			});
 		},
 		_fillData: function () {
 			this.byId("headerText").setText(this.byId("employeeSelect").getFirstItem().getText());
@@ -335,11 +355,11 @@ sap.ui.define([
 		onBacklogButtonClick: function (oEvent) {
 			var oTable = this.byId("valueTable"),
 				aFilters = [],
-				i18n = this._i18n,
+				oI18n = this._oI18n,
 				oFilter = new Filter({
 					path: "Status",
 					test: function (oValue) {
-						return oValue.toString().localeCompare(i18n.getText("backlog"), sap.ui.getCore().getConfiguration().getLanguage(), {
+						return oValue.toString().localeCompare(oI18n.getText("backlog"), sap.ui.getCore().getConfiguration().getLanguage(), {
 							sensitivity: "accent"
 						}) === 0;
 					}
@@ -348,8 +368,9 @@ sap.ui.define([
 			oTable.getBinding("items").filter(aFilters);
 			this._updateRowCount();
 			this.byId("filterBar").setVisible(aFilters.length > 0);
-			this.byId("filterLabel").setText(this._i18n.getText("filteredBy") + ": " + this._i18n.getText("colStatus") + " (" + this._i18n.getText(
-				"backlog") + ")");
+			this.byId("filterLabel").setText(this._oI18n.getText("filteredBy") + ": " + this._oI18n.getText("colStatus") + " (" + this._oI18n
+				.getText(
+					"backlog") + ")");
 		},
 		_fillTestData: function (num) {
 			var oJSONModel = new JSONModel(),
@@ -392,46 +413,46 @@ sap.ui.define([
 		},
 		onSaveButtonClick: function (oEvent) {
 			if (this._checkIfFormFilled()) {
-				var rowData = this.byId("valueTable").getModel().getData();
-				var obj = {};
-				obj.Category = this.byId("crCategoryCombo").getValue();
-				obj.Area = this.byId("crAreaCombo").getValue();
-				obj.Planned = this.byId("crPlanned").getState();
-				obj.CalendarWeek = this.byId("crCalendarWeek").getValue();
-				obj.Task = this.byId("crTaskCombo").getValue();
-				obj.Project = this.byId("crProject").getValue();
-				obj.Jira = this.byId("crJira").getValue();
-				obj.Spec = this.byId("crSpec").getValue();
-				obj.BC = this.byId("crBCCombo").getValue();
-				obj.Status = this.byId("crStatusCombo").getValue();
-				obj.Begin = Formatter._formatDate(this.byId("crTimerange").getDateValue());
-				obj.RealBegin = Formatter._formatDate(this.byId("crTimerange").getDateValue());
-				obj.End = Formatter._formatDate(this.byId("crTimerange").getSecondDateValue());
-				obj.RealEnd = Formatter._formatDate(this.byId("crTimerange").getSecondDateValue());
-				obj.Priority = this.byId("crPriority").getValue();
+				var oRowData = this.byId("valueTable").getModel().getData();
+				var oObj = {};
+				oObj.Category = this.byId("crCategoryCombo").getValue();
+				oObj.Area = this.byId("crAreaCombo").getValue();
+				oObj.Planned = this.byId("crPlanned").getState();
+				oObj.CalendarWeek = this.byId("crCalendarWeek").getValue();
+				oObj.Task = this.byId("crTaskCombo").getValue();
+				oObj.Project = this.byId("crProject").getValue();
+				oObj.Jira = this.byId("crJira").getValue();
+				oObj.Spec = this.byId("crSpec").getValue();
+				oObj.BC = this.byId("crBCCombo").getValue();
+				oObj.Status = this.byId("crStatusCombo").getValue();
+				oObj.Begin = Formatter._formatDate(this.byId("crTimerange").getDateValue());
+				oObj.RealBegin = Formatter._formatDate(this.byId("crTimerange").getDateValue());
+				oObj.End = Formatter._formatDate(this.byId("crTimerange").getSecondDateValue());
+				oObj.RealEnd = Formatter._formatDate(this.byId("crTimerange").getSecondDateValue());
+				oObj.Priority = this.byId("crPriority").getValue();
 
-				obj.System = [];
-				this.byId("crSystemMulti").getTokens().forEach(token => obj.System.push({
+				oObj.System = [];
+				this.byId("crSystemMulti").getTokens().forEach(token => oObj.System.push({
 					Name: token.getText().toUpperCase()
 				}));
-				obj.Transport = [];
-				this.byId("crTransportMulti").getTokens().forEach(token => obj.Transport.push({
+				oObj.Transport = [];
+				this.byId("crTransportMulti").getTokens().forEach(token => oObj.Transport.push({
 					Name: token.getText()
 				}));
 
-				obj.Comment = this.byId("crComment").getValue();
-				rowData.rows.push(obj);
+				oObj.Comment = this.byId("crComment").getValue();
+				oRowData.rows.push(oObj);
 
 				var oJSONModel = new JSONModel();
 				oJSONModel.setData({
-					rows: rowData.rows
+					rows: oRowData.rows
 				});
 				this.byId("valueTable").setModel(oJSONModel);
 				this._updateRowCount();
 				this.byId("tabs").setSelectedKey(0);
 				this.byId("createButton").setVisible(false);
 				this.byId("backlogButton").setVisible(true);
-				MessageToast.show(this._i18n.getText("messageSuccessfullCreated"));
+				MessageToast.show(this._oI18n.getText("messageSuccessfullCreated"));
 			}
 		},
 		_checkIfFormFilled: function () {
@@ -448,8 +469,8 @@ sap.ui.define([
 				this.byId("crSystemMulti").getTokens().length <= 0 ||
 				this.byId("crTransportMulti").getTokens().length <= 0 ||
 				!this.byId("crComment").getValue()) {
-				MessageBox.error(this._i18n.getText("messageEmptyFields"), {
-					title: this._i18n.getText("error")
+				MessageBox.error(this._oI18n.getText("messageEmptyFields"), {
+					title: this._oI18n.getText("error")
 				});
 				return false;
 			}
@@ -458,8 +479,8 @@ sap.ui.define([
 				!this.byId("crTimerange").getDateValue() ||
 				!this.byId("crTimerange").getSecondDateValue() ||
 				parseInt(this.byId("crCalendarWeek").getValue(), 10) > 52) {
-				MessageBox.error(this._i18n.getText("messageWrongDates"), {
-					title: this._i18n.getText("error")
+				MessageBox.error(this._oI18n.getText("messageWrongDates"), {
+					title: this._oI18n.getText("error")
 				});
 				return false;
 			}
