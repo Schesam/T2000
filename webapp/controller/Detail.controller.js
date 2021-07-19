@@ -1,4 +1,4 @@
-/* eslint-disable no-console, max-params, sap-timeout-usage*/
+/* eslint-disable no-console, max-params, sap-timeout-usage, sap-no-hardcoded-url*/
 /* eslint complexity: [error, 19] */
 /* global koehler:true, moment:true, Set:true */
 (function () {
@@ -39,8 +39,9 @@ sap.ui.define([
 	"sap/m/MessageBox",
 	"sap/m/MessageToast",
 	"sap/m/Token",
+	"sap/ui/model/odata/v2/ODataModel",
 	"koehler/T2000/moment-with-locales"
-], function (Controller, JSONModel, Filter, Sorter, Formatter, MessageBox, MessageToast, Token, Moment) {
+], function (Controller, JSONModel, Filter, Sorter, Formatter, MessageBox, MessageToast, Token, ODataModel, Moment) {
 	"use strict";
 
 	return Controller.extend("koehler.T2000.controller.Detail", {
@@ -55,6 +56,7 @@ sap.ui.define([
 			this._addValidator(this.byId("crTransportMulti"));
 
 			this._registerGlobals();
+			this._readCurrentUser(this._oDataModel);
 			this._load();
 		},
 		_load: async function () {
@@ -69,7 +71,7 @@ sap.ui.define([
 			return new Promise(function (resolved, rejected) {
 				setTimeout(function () {
 					that._fillData();
-					that._fillTestData(500);
+					that._fillTestData(100);
 					that._updateFilterModel();
 					oView.setBusy(false);
 					resolved("Done");
@@ -86,6 +88,16 @@ sap.ui.define([
 			});
 		},
 		_registerGlobals: function () {
+			this._webUrl = "https://schwarzit.sharepoint.com/";
+			this._apiUrl = "https://schwarzit.sharepoint.com/_api";
+			this._oDataModel = new ODataModel(this._apiUrl + "/", {
+				json: true,
+				useBatch: false,
+				headers: {
+					"Cache-Control": "max-age=0",
+					"X-CSRF-Token":"Fetch"
+				}
+			});
 			this._columnNames = [];
 			this.byId("valueTable").getColumns().forEach(column => {
 				this._columnNames.push(column.getHeader().getText());
@@ -111,6 +123,54 @@ sap.ui.define([
 					};
 				};
 			});
+		},
+		_readCurrentUser: function (oDataModel) {
+			var sPath = "/web/currentuser";
+			debugger;
+			const userData = {
+				Title: "",
+				Id: 0,
+				TeamId: [],
+				isTeamLeader: false
+			};
+			var userDataObj = Object.create(userData);
+			oDataModel.read(
+				sPath, {
+					success: function (oData) {
+						debugger;
+						console.log(oData);
+						userDataObj.Title = oData.Title;
+						userDataObj.Id = oData.Id;
+						this._onReadCurrentUserSuccess(userDataObj, oDataModel);
+					}.bind(this),
+					error: function (oError) {
+						debugger;
+						console.log(oError);
+						this._showErrorMessageBox(oError);
+					}.bind(this)
+				});
+		},
+		_readCurrentUserSuccess: function (userDataObj, oDataModel) {
+			var sPath = "Jesus Christus liebt dich und wird dich richten!";
+			sPath = "/web/lists('FC64A472-2684-4901-88EF-1D9FED7086D5')/items"; //Mitarbeiter-Liste
+			oDataModel.read(
+				sPath, {
+					urlParameters: {
+						$filter: "MitarbeiterId eq " + userDataObj.Id
+					},
+					success: function (oData) {
+						for (let i = 0; i < oData.results.length; i++) {
+							userDataObj.TeamId.push(oData.results[i].TeamId);
+							if (!userDataObj.isTeamLeader && oData.results[i].Teamleiter) {
+								userDataObj.isTeamLeader = oData.results[i].Teamleiter;
+							}
+						}
+						this._userData = userDataObj;
+					}.bind(this),
+					error: function (oError) {
+						console.log(oError);
+					}.bind(this)
+				});
 		},
 		_updateRowCount: function () {
 			var oTitle = this.byId("headerText"),
@@ -392,7 +452,9 @@ sap.ui.define([
 				}, {
 					Name: "987654321"
 				}];
-				oData.results[i].Comment = "Mehrzeiliges Kommentarfeld";
+				oData.results[i].Comment = [{
+					Name: "Mehrzeiliges KommentarfeldMehrzeiliges KommentarfeldMehrzeiliges KommentarfeldMehrzeiliges KommentarfeldMehrzeiliges KommentarfeldMehrzeiliges Kommentarfeld"
+				}];
 				oData.results[i].Creator = "Andreas Köhler";
 				oData.results[i].CreationDate = moment().format("DD.MM.YYYY HH:mm:ss");
 				oData.results[i].Changer = "Andreas Köhler";

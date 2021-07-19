@@ -3,7 +3,7 @@
 	<Shell id="shell">
 		<App id="app">
 			<pages>
-				<Page id="page" title="{i18n>title}" showHeader="true" showNavButton="true" showFooter="true" enableScrolling="false">
+				<Page id="page" title="{i18n>title}" showHeader="true" showNavButton="true" showFooter="true">
 					<content>
 						<IconTabBar id="tabs" expandable="false" expanded="true" applyContentPadding="true" backgroundDesign="Solid" select="onChangeTab">
 							<items>
@@ -17,136 +17,136 @@
 												<core:ListItem text="Igor Aronov"/>
 											</Select>
 										</Toolbar>
-										<ScrollContainer vertical="true" horizontal="true" height="100%">
-											<Table id="valueTable" alternateRowColors="true" growing="true" growingScrollToLoad="true" showSeparators="All" items="{/rows}"
-												width="2100px" growingThreshold="30" sticky="HeaderToolbar,InfoToolbar,ColumnHeaders">
-												<!--autoPopinMode="true" //Erst ab 1.76 möglich -> Wäre aber besser -->
-												<headerToolbar>
-													<OverflowToolbar>
-														<Title id="headerText" text="" level="H2"/>
-														<SearchField width="40%" placeholder="{i18n>search}" id="search" liveChange="onLiveSearch" search="onSearch"/>
-														<ToolbarSpacer/>
-														<Button tooltip="{i18n>sortToolTip}" icon="sap-icon://sort" press="onSortButtonClick"/>
-														<Button tooltip="{i18n>filterToolTip}" icon="sap-icon://filter" press="onFilterButtonClick"/>
-														<Button tooltip="{i18n>groupToolTip}" icon="sap-icon://group-2" press="onGroupButtonClick"/>
-														<ToggleButton tooltip="{i18n>editToolTip}" icon="sap-icon://edit" press="onEditButtonClick"/>
-													</OverflowToolbar>
-												</headerToolbar>
-												<infoToolbar>
-													<OverflowToolbar id="filterBar" visible="false">
-														<Text id="filterLabel"/>
-													</OverflowToolbar>
-												</infoToolbar>
-												<columns>
-													<Column demandPopin="false">
-														<Text text="{i18n>colCategory}"/>
-													</Column>
-													<Column demandPopin="false">
-														<Text text="{i18n>colArea}"/>
-													</Column>
-													<Column demandPopin="false">
-														<Text text="{i18n>colPlanned}"/>
-													</Column>
-													<Column demandPopin="false" width="50px">
-														<Text text="{i18n>colCalendarWeek}"/>
-													</Column>
-													<Column demandPopin="false">
-														<Text text="{i18n>colTask}"/>
-													</Column>
-													<Column demandPopin="false">
-														<Text text="{i18n>colProject}"/>
-													</Column>
-													<Column demandPopin="false">
-														<Text text="{i18n>colJira}"/>
-													</Column>
-													<Column demandPopin="false">
-														<Text text="{i18n>colSpec}"/>
-													</Column>
-													<Column demandPopin="false">
-														<Text text="{i18n>colBC}"/>
-													</Column>
-													<Column demandPopin="false">
-														<Text text="{i18n>colStatus}"/>
-													</Column>
-													<Column demandPopin="false">
-														<Text text="{i18n>colBegin}"/>
-													</Column>
-													<Column demandPopin="false">
-														<Text text="{i18n>colRealBegin}"/>
-													</Column>
-													<Column demandPopin="false">
-														<Text text="{i18n>colEnd}"/>
-													</Column>
-													<Column demandPopin="false">
-														<Text text="{i18n>colRealEnd}"/>
-													</Column>
-													<Column demandPopin="false" width="50px">
-														<Text text="{i18n>colPriority}"/>
-													</Column>
-													<Column demandPopin="false">
-														<Text text="{i18n>colSystem}"/>
-													</Column>
-													<Column demandPopin="false">
-														<Text text="{i18n>colTransport}"/>
-													</Column>
-													<Column demandPopin="false">
-														<Text text="{i18n>colComment}"/>
-													</Column>
-													<Column demandPopin="false" visible="false">
-														<Text text="{i18n>colCreator}"/>
-													</Column>
-													<Column demandPopin="false" visible="false">
-														<Text text="{i18n>colCreationDate}"/>
-													</Column>
-													<Column demandPopin="false" visible="false">
-														<Text text="{i18n>colChanger}"/>
-													</Column>
-													<Column demandPopin="false" visible="false">
-														<Text text="{i18n>colChangingDate}"/>
-													</Column>
-												</columns>
-												<items>
-													<ColumnListItem>
-														<cells>
-															<Text text="{Category}"/>
-															<Link text="{Area}"/>
-															<Switch enabled="false" state="{Planned}" type="AcceptReject"/>
-															<Text text="{CalendarWeek}"/>
-															<Text text="{Task}"/>
-															<Link text="{Project}"/>
-															<Link text="{Jira}" target="_blank" href="https://jira.schwarz/browse/{Jira}"/>
-															<Link text="{Spec}"/>
-															<Text text="{BC}"/>
-															<Text text="{Status}"/>
-															<Text text="{Begin}"/>
-															<Text text="{RealBegin}"/>
-															<Text text="{End}"/>
-															<Text text="{RealEnd}"/>
-															<Text text="{Priority}"/>
-															<Panel content="{System}" expandable="true" expanded="false">
-																<VBox>
-																	<Link text="{Name}"/>
-																</VBox>
-															</Panel>
-															<Panel content="{Transport}" expandable="true" expanded="false">
-																<VBox>
-																	<Link text="{Name}"/>
-																</VBox>
-															</Panel>
-															<Panel content="{Comment}" expandable="true" expanded="false">
-																<VBox>
-																	<TextArea value="{Name}" editable="false" growing="true" wrapping="Soft"/>
-																</VBox>
-															</Panel>
-															<Text text="{Creator}"/>
-															<Text text="{CreationDate}"/>
-															<Text text="{Changer}"/>
-															<Text text="{ChangingDate}"/>
-														</cells>
-													</ColumnListItem>
-												</items>
-											</Table>
-										</ScrollContainer>
+										<!--<ScrollContainer vertical="false" horizontal="true">-->
+										<Table id="valueTable" alternateRowColors="true" growing="true" growingScrollToLoad="true" showSeparators="All" items="{/rows}"
+											popinLayout="GridSmall">
+											<!--autoPopinMode="true" //Erst ab 1.76 möglich -> Wäre aber besser -->
+											<headerToolbar>
+												<OverflowToolbar>
+													<Title id="headerText" text="" level="H2"/>
+													<SearchField width="40%" placeholder="{i18n>search}" id="search" liveChange="onLiveSearch" search="onSearch"/>
+													<ToolbarSpacer/>
+													<Button tooltip="{i18n>sortToolTip}" icon="sap-icon://sort" press="onSortButtonClick"/>
+													<Button tooltip="{i18n>filterToolTip}" icon="sap-icon://filter" press="onFilterButtonClick"/>
+													<Button tooltip="{i18n>groupToolTip}" icon="sap-icon://group-2" press="onGroupButtonClick"/>
+													<ToggleButton icon="sap-icon://edit" tooltip="Enable / Disable Custom Context Menu" press="onEditButtonClick"/>
+												</OverflowToolbar>
+											</headerToolbar>
+											<infoToolbar>
+												<OverflowToolbar id="filterBar" visible="false">
+													<Text id="filterLabel"/>
+												</OverflowToolbar>
+											</infoToolbar>
+											<columns>
+												<Column demandPopin="true" minScreenWidth="Phone">
+													<Text text="{i18n>colCategory}"/>
+												</Column>
+												<Column demandPopin="true" minScreenWidth="Phone">
+													<Text text="{i18n>colArea}"/>
+												</Column>
+												<Column demandPopin="true" minScreenWidth="XXLarge">
+													<Text text="{i18n>colPlanned}"/>
+												</Column>
+												<Column demandPopin="true" minScreenWidth="XXLarge" width="50px">
+													<Text text="{i18n>colCalendarWeek}"/>
+												</Column>
+												<Column demandPopin="true" minScreenWidth="XXLarge">
+													<Text text="{i18n>colTask}"/>
+												</Column>
+												<Column demandPopin="true" minScreenWidth="XXLarge">
+													<Text text="{i18n>colProject}"/>
+												</Column>
+												<Column demandPopin="true" minScreenWidth="1800px">
+													<Text text="{i18n>colJira}"/>
+												</Column>
+												<Column demandPopin="true" minScreenWidth="XXLarge">
+													<Text text="{i18n>colSpec}"/>
+												</Column>
+												<Column demandPopin="true" minScreenWidth="1800px">
+													<Text text="{i18n>colBC}"/>
+												</Column>
+												<Column demandPopin="true" minScreenWidth="Medium">
+													<Text text="{i18n>colStatus}"/>
+												</Column>
+												<Column demandPopin="true" minScreenWidth="Medium">
+													<Text text="{i18n>colBegin}"/>
+												</Column>
+												<Column demandPopin="true" minScreenWidth="Medium">
+													<Text text="{i18n>colRealBegin}"/>
+												</Column>
+												<Column demandPopin="true" minScreenWidth="Medium">
+													<Text text="{i18n>colEnd}"/>
+												</Column>
+												<Column demandPopin="true" minScreenWidth="Medium">
+													<Text text="{i18n>colRealEnd}"/>
+												</Column>
+												<Column demandPopin="true" minScreenWidth="1800px" width="50px">
+													<Text text="{i18n>colPriority}"/>
+												</Column>
+												<Column demandPopin="true" minScreenWidth="2000px">
+													<Text text="{i18n>colSystem}"/>
+												</Column>
+												<Column demandPopin="true" minScreenWidth="2000px">
+													<Text text="{i18n>colTransport}"/>
+												</Column>
+												<Column demandPopin="true" minScreenWidth="2100px">
+													<Text text="{i18n>colComment}"/>
+												</Column>
+												<Column demandPopin="true" minScreenWidth="2100px" visible="false">
+													<Text text="{i18n>colCreator}"/>
+												</Column>
+												<Column demandPopin="true" minScreenWidth="2200px" visible="false">
+													<Text text="{i18n>colCreationDate}"/>
+												</Column>
+												<Column demandPopin="true" minScreenWidth="2200px" visible="false">
+													<Text text="{i18n>colChanger}"/>
+												</Column>
+												<Column demandPopin="true" minScreenWidth="2200px" visible="false">
+													<Text text="{i18n>colChangingDate}"/>
+												</Column>
+											</columns>
+											<items>
+												<ColumnListItem>
+													<cells>
+														<Text text="{Category}"/>
+														<Link text="{Area}"/>
+														<Switch enabled="false" state="{Planned}" type="AcceptReject"/>
+														<Text text="{CalendarWeek}"/>
+														<Text text="{Task}"/>
+														<Link text="{Project}"/>
+														<Link text="{Jira}" target="_blank" href="https://jira.schwarz/browse/{Jira}"/>
+														<Link text="{Spec}"/>
+														<Text text="{BC}"/>
+														<Text text="{Status}"/>
+														<Text text="{Begin}"/>
+														<Text text="{RealBegin}"/>
+														<Text text="{End}"/>
+														<Text text="{RealEnd}"/>
+														<Text text="{Priority}"/>
+														<Panel content="{System}" expandable="true" expanded="false">
+															<VBox>
+																<Link text="{Name}"/>
+															</VBox>
+														</Panel>
+														<Panel content="{Transport}" expandable="true" expanded="false">
+															<VBox>
+																<Link text="{Name}"/>
+															</VBox>
+														</Panel>
+														<Panel content="{Comment}" expandable="true" expanded="false">
+															<VBox>
+																<TextArea value="{Name}" editable="false" growing="true" wrapping="Soft"/>
+															</VBox>
+														</Panel>
+														<Text text="{Creator}"/>
+														<Text text="{CreationDate}"/>
+														<Text text="{Changer}"/>
+														<Text text="{ChangingDate}"/>
+													</cells>
+												</ColumnListItem>
+											</items>
+										</Table>
+										<!--</ScrollContainer>-->
 									</content>
 								</IconTabFilter>
 								<IconTabFilter icon="sap-icon://write-new-document" text="{i18n>new}" design="Vertical" iconDensityAware="false" id="newEntryTab">
