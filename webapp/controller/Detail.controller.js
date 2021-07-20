@@ -459,9 +459,8 @@ sap.ui.define([
 			};
 			this.onFilterDialogConfirm(oEventOwn);
 		},
-		_getTestModel: function (num, employee) {
+		_getTestData: function (num, employee) {
 			var oData = {};
-
 			oData = new Array(num);
 			for (var i = 0; i < num; i++) {
 				oData[i] = {};
@@ -506,7 +505,7 @@ sap.ui.define([
 			this.byId("employeeSelect").getItems().forEach(item => {
 				this._dataModels[item.getKey()] = {
 					employee: item.getText(),
-					results: that._getTestModel(num, item.getText())
+					results: that._getTestData(num, item.getText())
 				};
 			});
 			this._updateData(this.byId("employeeSelect").getFirstItem());
@@ -521,8 +520,9 @@ sap.ui.define([
 		},
 		onSaveButtonClick: function (oEvent) {
 			if (this._checkIfFormFilled()) {
-				var oRowData = this.byId("valueTable").getModel().getData();
-				var oObj = {};
+				var oObj = {},
+					employee = this.byId("crEmployeeSelect");
+
 				oObj.Category = this.byId("crCategoryCombo").getValue();
 				oObj.Area = this.byId("crAreaCombo").getValue();
 				oObj.Planned = this.byId("crPlanned").getState();
@@ -553,13 +553,14 @@ sap.ui.define([
 				oObj.CreationDate = moment().format("DD.MM.YYYY HH:mm:ss");
 				oObj.Changer = "Andreas Köhler";
 				oObj.ChangingDate = moment().format("DD.MM.YYYY HH:mm:ss");
-				oRowData.rows.push(oObj);
+				// oRowData.rows.push(oObj);
 
-				var oJSONModel = new JSONModel();
-				oJSONModel.setData({
-					rows: oRowData.rows
-				});
-				this.byId("valueTable").setModel(oJSONModel);
+				// var oJSONModel = new JSONModel();
+				// oJSONModel.setData({
+				// 	rows: oRowData.rows
+				// });
+				this._dataModels[employee.getSelectedKey()].results.push(oObj);
+				this.byId("valueTable").setModel(this._dataModels[employee.getSelectedKey()]);
 				this._updateRowCount();
 				this.byId("tabs").setSelectedKey(0);
 				this.byId("createButton").setVisible(false);

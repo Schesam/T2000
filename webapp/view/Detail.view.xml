@@ -158,6 +158,19 @@
 													<form:formElements>
 														<form:FormElement>
 															<form:label>
+																<Label text="{i18n>employee}" width="100%"/>
+															</form:label>
+															<form:fields>
+																<Select id="crEmployeeSelect" selectedKey="1">
+																	<core:ListItem text="Andreas Köhler" key="1"/>
+																	<core:ListItem text="Thomas Rempel" key="2"/>
+																	<core:ListItem text="Jurij Rudi" key="3"/>
+																	<core:ListItem text="Igor Aronov" key="4"/>
+																</Select>
+															</form:fields>
+														</form:FormElement>
+														<form:FormElement>
+															<form:label>
 																<Label text="{i18n>colCategory}" width="100%"/>
 															</form:label>
 															<form:fields>
