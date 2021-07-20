@@ -1,4 +1,4 @@
-/* eslint-disable no-console, max-params, sap-timeout-usage, sap-no-hardcoded-url, no-debugger*/
+/* eslint-disable no-console, max-params, sap-timeout-usage, sap-no-hardcoded-url*/
 /* eslint complexity: [error, 19] */
 /* global koehler:true, moment:true, Set:true */
 (function () {
@@ -134,7 +134,7 @@ sap.ui.define([
 		},
 		_readCurrentUser: function (oDataModel) {
 			var sPath = "/web/currentuser";
-			debugger;
+			// debugger;
 			const userData = {
 				Title: "",
 				Id: 0,
@@ -148,7 +148,7 @@ sap.ui.define([
 			oDataModel.read(
 				sPath, {
 					success: function (oData) {
-						debugger;
+						// debugger;
 						console.log(oData);
 						userDataObj.Title = oData.Title;
 						userDataObj.Id = oData.Id;
@@ -157,7 +157,7 @@ sap.ui.define([
 						this._onReadCurrentUserSuccess(userDataObj, oDataModel);
 					}.bind(this),
 					error: function (oError) {
-						debugger;
+						// debugger;
 						console.log(oError);
 						this._showErrorMessageBox(oError);
 					}.bind(this)
@@ -442,7 +442,7 @@ sap.ui.define([
 		},
 		onEmployeeSelect: function (oControlEvent) {
 			this.byId("headerText").setText(oControlEvent.getParameters().selectedItem.getText());
-			this._updateRowCount();
+			this._updateData(oControlEvent.getParameters().selectedItem);
 		},
 		onBacklogButtonClick: function (oEvent) {
 			var oEventOwn = {},
@@ -459,47 +459,62 @@ sap.ui.define([
 			};
 			this.onFilterDialogConfirm(oEventOwn);
 		},
-		_fillTestData: function (num) {
-			var oJSONModel = new JSONModel(),
-				oData = {};
-			oData.results = new Array(num);
+		_getTestModel: function (num, employee) {
+			var oData = {};
+
+			oData = new Array(num);
 			for (var i = 0; i < num; i++) {
-				oData.results[i] = {};
-				oData.results[i].Category = this._categories[this._categories.length * Math.random() | 0];
-				oData.results[i].Area = this._areas[this._areas.length * Math.random() | 0];
-				oData.results[i].Planned = i % 2 === 1;
-				oData.results[i].CalendarWeek = i + 1;
-				oData.results[i].Task = this._tasks[this._tasks.length * Math.random() | 0];
-				oData.results[i].Project = "P0962" + i;
-				oData.results[i].Jira = "FXDFKA-191" + i;
-				oData.results[i].Spec = "009824" + i;
-				oData.results[i].BC = this._bcs[this._bcs.length * Math.random() | 0];
-				oData.results[i].Status = this._status[this._status.length * Math.random() | 0];
-				oData.results[i].Begin = moment().subtract(i + 4, "days").format("DD.MM.YYYY");
-				oData.results[i].RealBegin = moment().subtract(i + 4, "days").format("DD.MM.YYYY");
-				oData.results[i].End = moment().subtract(i, "days").format("DD.MM.YYYY");
-				oData.results[i].RealEnd = moment().subtract(i, "days").format("DD.MM.YYYY");
-				oData.results[i].Priority = i + 1;
-				oData.results[i].System = [{
+				oData[i] = {};
+				oData[i].Category = this._categories[this._categories.length * Math.random() | 0];
+				oData[i].Area = this._areas[this._areas.length * Math.random() | 0];
+				oData[i].Planned = i % 2 === 1;
+				oData[i].CalendarWeek = i + 1;
+				oData[i].Task = this._tasks[this._tasks.length * Math.random() | 0];
+				oData[i].Project = "P0962" + i;
+				oData[i].Jira = "FXDFKA-191" + i;
+				oData[i].Spec = "009824" + i;
+				oData[i].BC = this._bcs[this._bcs.length * Math.random() | 0];
+				oData[i].Status = this._status[this._status.length * Math.random() | 0];
+				oData[i].Begin = moment().subtract(i + 4, "days").format("DD.MM.YYYY");
+				oData[i].RealBegin = moment().subtract(i + 4, "days").format("DD.MM.YYYY");
+				oData[i].End = moment().subtract(i, "days").format("DD.MM.YYYY");
+				oData[i].RealEnd = moment().subtract(i, "days").format("DD.MM.YYYY");
+				oData[i].Priority = i + 1;
+				oData[i].System = [{
 					Name: "E" + i
 				}, {
 					Name: "ET1"
 				}];
-				oData.results[i].Transport = [{
+				oData[i].Transport = [{
 					Name: "123456789"
 				}, {
 					Name: "987654321"
 				}];
-				oData.results[i].Comment = [{
+				oData[i].Comment = [{
 					Name: "Mehrzeiliges KommentarfeldMehrzeiliges KommentarfeldMehrzeiliges KommentarfeldMehrzeiliges KommentarfeldMehrzeiliges KommentarfeldMehrzeiliges Kommentarfeld"
 				}];
-				oData.results[i].Creator = "Andreas Köhler";
-				oData.results[i].CreationDate = moment().format("DD.MM.YYYY HH:mm:ss");
-				oData.results[i].Changer = "Andreas Köhler";
-				oData.results[i].ChangingDate = moment().format("DD.MM.YYYY HH:mm:ss");
+				oData[i].Creator = employee;
+				oData[i].CreationDate = moment().format("DD.MM.YYYY HH:mm:ss");
+				oData[i].Changer = employee;
+				oData[i].ChangingDate = moment().format("DD.MM.YYYY HH:mm:ss");
 			}
+			return oData;
+		},
+		_fillTestData: function (num) {
+			var that = this;
+			this._dataModels = {};
+			this.byId("employeeSelect").getItems().forEach(item => {
+				this._dataModels[item.getKey()] = {
+					employee: item.getText(),
+					results: that._getTestModel(num, item.getText())
+				};
+			});
+			this._updateData(this.byId("employeeSelect").getFirstItem());
+		},
+		_updateData: function (item) {
+			var oJSONModel = new JSONModel();
 			oJSONModel.setData({
-				rows: oData.results
+				rows: this._dataModels[item.getKey()].results
 			});
 			this.byId("valueTable").setModel(oJSONModel);
 			this._updateRowCount();

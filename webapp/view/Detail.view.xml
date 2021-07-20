@@ -12,10 +12,10 @@
 									<content>
 										<Toolbar>
 											<Select id="employeeSelect" change="onEmployeeSelect">
-												<core:ListItem text="Andreas Köhler"/>
-												<core:ListItem text="Thomas Rempel"/>
-												<core:ListItem text="Jurij Rudi"/>
-												<core:ListItem text="Igor Aronov"/>
+												<core:ListItem text="Andreas Köhler" key="1"/>
+												<core:ListItem text="Thomas Rempel" key="2"/>
+												<core:ListItem text="Jurij Rudi" key="3"/>
+												<core:ListItem text="Igor Aronov" key="4"/>
 											</Select>
 										</Toolbar>
 										<ScrollContainer vertical="true" horizontal="true" height="100%">
