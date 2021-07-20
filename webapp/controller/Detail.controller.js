@@ -56,22 +56,32 @@ sap.ui.define([
 			this._addValidator(this.byId("crTransportMulti"));
 
 			this._registerGlobals();
-			this._readCurrentUser(this._oDataModel);
-			this._load();
+			// this._readCurrentUser(this._oDataModel);
+			var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+			oRouter.getRoute("DetailP").attachPatternMatched(this._onObjectMatched, this);
+			oRouter.getRoute("Detail").attachPatternMatched(this._loadNoParam, this);
 		},
-		_load: async function () {
+		_loadNoParam: function (oEvent) {
+			this._load(500);
+		},
+		_onObjectMatched: function (oEvent) {
+			var args = oEvent.getParameter("arguments");
+			var num = args.num;
+			this._load(num);
+		},
+		_load: async function (num) {
 			console.log("Loading");
-			const result = await this._loader();
+			const result = await this._loader(num);
 			console.log(result);
 		},
-		_loader: function () {
+		_loader: function (num) {
 			var that = this;
 			var oView = this.getView();
 			oView.setBusy(true);
 			return new Promise(function (resolved, rejected) {
 				setTimeout(function () {
 					that._fillData();
-					that._fillTestData(500);
+					that._fillTestData(num);
 					that._updateFilterModel();
 					oView.setBusy(false);
 					resolved("Done");
@@ -88,16 +98,16 @@ sap.ui.define([
 			});
 		},
 		_registerGlobals: function () {
-			this._webUrl = "https://schwarzit.sharepoint.com/";
-			this._apiUrl = "https://schwarzit.sharepoint.com/_api";
-			this._oDataModel = new ODataModel(this._apiUrl + "/", {
-				json: true,
-				useBatch: false,
-				headers: {
-					"Cache-Control": "max-age=0",
-					"X-CSRF-Token": "Fetch"
-				}
-			});
+			// this._webUrl = "https://schwarzit.sharepoint.com/";
+			// this._apiUrl = "https://schwarzit.sharepoint.com/_api";
+			// this._oDataModel = new ODataModel(this._apiUrl + "/", {
+			// 	json: true,
+			// 	useBatch: false,
+			// 	headers: {
+			// 		"Cache-Control": "max-age=0",
+			// 		"X-CSRF-Token": "Fetch"
+			// 	}
+			// });
 			this._columnNames = [];
 			this.byId("valueTable").getColumns().forEach(column => {
 				this._columnNames.push(column.getHeader().getText());
@@ -182,7 +192,7 @@ sap.ui.define([
 					}.bind(this),
 					error: function (oError) {
 						console.log(oError);
-					}.bind(this)
+					}
 				});
 		},
 		_updateRowCount: function () {
