@@ -3,7 +3,7 @@
 		<filterItems>
 			<ViewSettingsFilterItem text="{Value}" key="{Key}" multiSelect="false" items="{Items}">
 				<items>
-					<ViewSettingsItem text="{Name}" key="{Key}___{Name}"/>
+					<ViewSettingsItem text="{Name}" key="{Name}___{Key}"/>
 				</items>
 			</ViewSettingsFilterItem>
 		</filterItems>

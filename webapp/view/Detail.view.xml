@@ -19,7 +19,7 @@
 										</Toolbar>
 										<ScrollContainer vertical="true" horizontal="true" height="100%">
 											<Table id="valueTable" alternateRowColors="true" growing="true" growingScrollToLoad="true" showSeparators="All" items="{/rows}"
-												width="2100px" growingThreshold="30" sticky="HeaderToolbar,InfoToolbar,ColumnHeaders">
+												width="2100px" growingThreshold="5" sticky="HeaderToolbar,InfoToolbar,ColumnHeaders">
 												<!--autoPopinMode="true" //Erst ab 1.76 möglich -> Wäre aber besser -->
 												<headerToolbar>
 													<OverflowToolbar>

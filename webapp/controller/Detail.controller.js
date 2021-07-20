@@ -1,4 +1,4 @@
-/* eslint-disable no-console, max-params, sap-timeout-usage, sap-no-hardcoded-url*/
+/* eslint-disable no-console, max-params, sap-timeout-usage, sap-no-hardcoded-url, no-debugger*/
 /* eslint complexity: [error, 19] */
 /* global koehler:true, moment:true, Set:true */
 (function () {
@@ -71,7 +71,7 @@ sap.ui.define([
 			return new Promise(function (resolved, rejected) {
 				setTimeout(function () {
 					that._fillData();
-					that._fillTestData(100);
+					that._fillTestData(500);
 					that._updateFilterModel();
 					oView.setBusy(false);
 					resolved("Done");
@@ -95,7 +95,7 @@ sap.ui.define([
 				useBatch: false,
 				headers: {
 					"Cache-Control": "max-age=0",
-					"X-CSRF-Token":"Fetch"
+					"X-CSRF-Token": "Fetch"
 				}
 			});
 			this._columnNames = [];
@@ -105,6 +105,14 @@ sap.ui.define([
 			this._columnIds = ["Category", "Area", "Planned", "CalendarWeek", "Task", "Project", "Jira", "Spec", "BC", "Status", "Begin",
 				"RealBegin", "End", "RealEnd", "Priority", "System", "Transport", "Comment", "Creator", "CreationDate", "Changer", "ChangingDate"
 			];
+			this._dateColumns = ["Begin", "RealBegin", "End", "RealEnd", "CreationDate", "ChangingDate"];
+			this._hiddenColumns = [];
+			var columns = this.byId("valueTable").getColumns();
+			for (var i = 0; i < columns.length; i++) {
+				if (!columns[i].getVisible()) {
+					this._hiddenColumns.push(this._columnIds[i]);
+				}
+			}
 			this._areas = ["Abwesenheit", "Organisation", "Produkt", "Anforderung"];
 			this._categories = ["I Timebox", "K Timebox", "Task"];
 			this._tasks = ["Krankheit, Urlaub, Teilzeit", "Schulung, Ausbildung", "Team- und eigene Orga", "Incidents/Problems/Support",
@@ -130,8 +138,11 @@ sap.ui.define([
 			const userData = {
 				Title: "",
 				Id: 0,
-				TeamId: [],
-				isTeamLeader: false
+				UserId: {
+					nameId: "",
+					nameIdIssuer: ""
+				},
+				eMail: ""
 			};
 			var userDataObj = Object.create(userData);
 			oDataModel.read(
@@ -140,6 +151,8 @@ sap.ui.define([
 						debugger;
 						console.log(oData);
 						userDataObj.Title = oData.Title;
+						userDataObj.Id = oData.Id;
+						userDataObj.eMail = oData.Email;
 						userDataObj.Id = oData.Id;
 						this._onReadCurrentUserSuccess(userDataObj, oDataModel);
 					}.bind(this),
@@ -214,26 +227,25 @@ sap.ui.define([
 					aArr[prop[0]] = [];
 				})
 			);
-			aArr.Names = [];
+			aArr.Names = {};
 			for (var i = 0; i < this._columnIds.length; i++) {
-				aArr.Names.push({
+				aArr.Names[this._columnIds[i]] = {
 					Key: this._columnIds[i],
 					Value: this._columnNames[i],
 					Items: []
-				});
+				};
 			}
 			aRows.forEach(row => {
 				var aEntries = Object.entries(row);
 				for (var j = 0; j < aEntries.length; j++) {
 					if (!Array.isArray(aEntries[j][1])) {
-						aArr.Names[j].Items.push({
+						aArr.Names[this._columnIds[j]].Items.push({
 							Key: this._columnIds[j],
 							Name: aEntries[j][1]
 						});
 					} else {
 						for (var k = 0; k < aEntries[j][1].length; k++) {
-							// debugger;
-							aArr.Names[j].Items.push({
+							aArr.Names[this._columnIds[j]].Items.push({
 								Key: this._columnIds[j],
 								Name: aEntries[j][1][k].Name
 							});
@@ -242,7 +254,25 @@ sap.ui.define([
 				}
 			});
 			for (i = 0; i < aArr.Names.length; i++) {
-				aArr.Names[i].Items = this._uniqBy(aArr.Names[i].Items, JSON.stringify);
+				aArr.Names[this._columnIds[i]].Items = this._uniqBy(aArr.Names[this._columnIds[i]].Items, JSON.stringify);
+			}
+			for (i = 0; i < this._dateColumns.length; i++) {
+				aArr.Names[this._dateColumns[i]].Items = [{
+					Key: this._dateColumns[i] + "___7___days",
+					Name: this._oI18n.getText("lastWeek")
+				}, {
+					Key: this._dateColumns[i] + "___1___months",
+					Name: this._oI18n.getText("lastMonth")
+				}, {
+					Key: this._dateColumns[i] + "___3___months",
+					Name: this._oI18n.getText("lastThreeMonths")
+				}, {
+					Key: this._dateColumns[i] + "___6___months",
+					Name: this._oI18n.getText("lastSixMonths")
+				}, {
+					Key: this._dateColumns[i] + "___1___years",
+					Name: this._oI18n.getText("lastYear")
+				}];
 			}
 			oJSONModel.setData({
 				rows: aArr
@@ -284,19 +314,24 @@ sap.ui.define([
 		onFilterDialogConfirm: function (oEvent) {
 			var oTable = this.byId("valueTable"),
 				mParams = oEvent.getParameters(),
-				aFilters = [];
+				aFilters = [],
+				that = this;
 
 			mParams.filterItems.forEach(function (oItem) {
 				var aSplit = oItem.getKey().split("___"),
-					sPath = aSplit[0],
-					sVal = aSplit[1],
+					sPath = aSplit[1],
+					sVal = aSplit[0],
 					oFilter = new Filter({
 						path: sPath,
 						test: function (oValue) {
 							if (!Array.isArray(oValue)) {
-								return oValue.toString().localeCompare(sVal, sap.ui.getCore().getConfiguration().getLanguage(), {
-									sensitivity: "accent"
-								}) === 0;
+								if (that._dateColumns.includes(sPath)) {
+									return moment(oValue, "DD.MM.yyyy").isBetween(moment().subtract(aSplit[2], aSplit[3]), moment(), aSplit[3], true);
+								} else {
+									return oValue.toString().localeCompare(sVal, sap.ui.getCore().getConfiguration().getLanguage(), {
+										sensitivity: "accent"
+									}) === 0;
+								}
 							} else {
 								for (var i = 0; i < oValue.length; i++) {
 									if (oValue[i].Name.toString().localeCompare(sVal, sap.ui.getCore().getConfiguration().getLanguage(), {
@@ -341,14 +376,16 @@ sap.ui.define([
 							test: function (oValue) {
 								var entries = Object.entries(oValue);
 								for (var i = 0; i < entries.length; i++) {
-									if (!Array.isArray(entries[i][1])) {
-										if (entries[i][1].toString().toLocaleLowerCase().includes(sQuery.toString().toLocaleLowerCase())) {
-											return true;
-										}
-									} else {
-										for (var j = 0; j < entries[i][1].length; j++) {
-											if (entries[i][1][j].Name.toString().toLocaleLowerCase().includes(sQuery.toString().toLocaleLowerCase())) {
+									if (!that._hiddenColumns.includes(entries[i][0])) {
+										if (!Array.isArray(entries[i][1])) {
+											if (entries[i][1].toString().toLocaleLowerCase().includes(sQuery.toString().toLocaleLowerCase())) {
 												return true;
+											}
+										} else {
+											for (var j = 0; j < entries[i][1].length; j++) {
+												if (entries[i][1][j].Name.toString().toLocaleLowerCase().includes(sQuery.toString().toLocaleLowerCase())) {
+													return true;
+												}
 											}
 										}
 									}
@@ -414,9 +451,10 @@ sap.ui.define([
 				var params = {};
 				params.filterItems = [{
 					getKey: function () {
-						return "Status___" + oI18n.getText("backlog");
+						return oI18n.getText("backlog") + "___Status";
 					}
 				}];
+				params.filterString = oI18n.getText("filteredBy") + ": Status (" + oI18n.getText("backlog") + ")";
 				return params;
 			};
 			this.onFilterDialogConfirm(oEventOwn);
@@ -437,10 +475,10 @@ sap.ui.define([
 				oData.results[i].Spec = "009824" + i;
 				oData.results[i].BC = this._bcs[this._bcs.length * Math.random() | 0];
 				oData.results[i].Status = this._status[this._status.length * Math.random() | 0];
-				oData.results[i].Begin = moment().add(i, "days").format("DD.MM.YYYY");
-				oData.results[i].RealBegin = moment().add(i, "days").format("DD.MM.YYYY");
-				oData.results[i].End = moment().add(i + 3, "days").format("DD.MM.YYYY");
-				oData.results[i].RealEnd = moment().add(i + 3, "days").format("DD.MM.YYYY");
+				oData.results[i].Begin = moment().subtract(i + 4, "days").format("DD.MM.YYYY");
+				oData.results[i].RealBegin = moment().subtract(i + 4, "days").format("DD.MM.YYYY");
+				oData.results[i].End = moment().subtract(i, "days").format("DD.MM.YYYY");
+				oData.results[i].RealEnd = moment().subtract(i, "days").format("DD.MM.YYYY");
 				oData.results[i].Priority = i + 1;
 				oData.results[i].System = [{
 					Name: "E" + i
