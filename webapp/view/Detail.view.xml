@@ -3,7 +3,8 @@
 	<Shell id="shell">
 		<App id="app">
 			<pages>
-				<Page id="page" title="{i18n>title}" showHeader="true" showNavButton="true" showFooter="true" enableScrolling="false">
+				<Page id="page" title="{i18n>title}" showHeader="true" showNavButton="true" showFooter="true">
+					<!--enableScrolling="false"-->
 					<content>
 						<IconTabBar id="tabs" expandable="false" expanded="true" applyContentPadding="true" backgroundDesign="Solid" select="onChangeTab">
 							<items>
