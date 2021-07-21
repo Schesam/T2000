@@ -105,7 +105,8 @@ sap.ui.define([
 			// 	useBatch: false,
 			// 	headers: {
 			// 		"Cache-Control": "max-age=0",
-			// 		"X-CSRF-Token": "Fetch"
+			// 		"X-CSRF-Token": "Fetch",
+			// 		"X-RequestDigest": $("#_REQUESTDIGEST").val()
 			// 	}
 			// });
 			this._columnNames = [];
@@ -597,11 +598,21 @@ sap.ui.define([
 				});
 				return false;
 			}
+			var hadError = false;
+			this.byId("crCalendarWeek").setValueState("None");
 			if (!this._isNumeric(this.byId("crCalendarWeek").getValue()) ||
 				parseInt(this.byId("crCalendarWeek").getValue(), 10) < 1 ||
-				!this.byId("crTimerange").getDateValue() ||
-				!this.byId("crTimerange").getSecondDateValue() ||
 				parseInt(this.byId("crCalendarWeek").getValue(), 10) > 52) {
+				hadError = true;
+				this.byId("crCalendarWeek").setValueState("Error");
+			}
+			this.byId("crTimerange").setValueState("None");
+			if (!this.byId("crTimerange").getDateValue() ||
+				!this.byId("crTimerange").getSecondDateValue()) {
+				hadError = true;
+				this.byId("crTimerange").setValueState("Error");
+			}
+			if (hadError) {
 				MessageBox.error(this._oI18n.getText("messageWrongDates"), {
 					title: this._oI18n.getText("error")
 				});

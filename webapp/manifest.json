@@ -59,9 +59,11 @@
 			}
 		},
 		"resources": {
-			"css": [{
-				"uri": "css/style.css"
-			}]
+			"css": [
+				{
+					"uri": "css/style.css"
+				}
+			]
 		},
 		"routing": {
 			"config": {
@@ -78,19 +80,26 @@
 					"target": []
 				}
 			},
-			"routes": [{
-				"name": "Detail",
-				"pattern": "Detail",
-				"titleTarget": "Detail",
-				"greedy": false,
-				"target": ["Detail"]
-			}, {
-				"name": "DetailP",
-				"pattern": "Detail/:num:",
-				"titleTarget": "Detail",
-				"greedy": false,
-				"target": ["Detail"]
-			}],
+			"routes": [
+				{
+					"name": "Detail",
+					"pattern": "Detail",
+					"titleTarget": "Detail",
+					"greedy": false,
+					"target": [
+						"Detail"
+					]
+				},
+				{
+					"name": "DetailP",
+					"pattern": "Detail/:num:",
+					"titleTarget": "Detail",
+					"greedy": false,
+					"target": [
+						"Detail"
+					]
+				}
+			],
 			"targets": {
 				"App": {
 					"viewType": "XML",

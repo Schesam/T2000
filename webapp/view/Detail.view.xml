@@ -124,17 +124,17 @@
 															<Text text="{End}"/>
 															<Text text="{RealEnd}"/>
 															<Text text="{Priority}"/>
-															<Panel content="{System}" expandable="true" expanded="false">
+															<Panel content="{path:'System', templateShareable:false}" expandable="true" expanded="false">
 																<VBox>
 																	<Link text="{Name}"/>
 																</VBox>
 															</Panel>
-															<Panel content="{Transport}" expandable="true" expanded="false">
+															<Panel content="{path:'Transport', templateShareable:false}" expandable="true" expanded="false">
 																<VBox>
 																	<Link text="{Name}"/>
 																</VBox>
 															</Panel>
-															<Panel content="{Comment}" expandable="true" expanded="false">
+															<Panel content="{path:'Comment', templateShareable:false}" expandable="true" expanded="false">
 																<VBox>
 																	<TextArea value="{Name}" editable="false" growing="true" wrapping="Soft"/>
 																</VBox>
@@ -152,9 +152,9 @@
 								</IconTabFilter>
 								<IconTabFilter icon="sap-icon://write-new-document" text="{i18n>new}" design="Vertical" iconDensityAware="false" id="newEntryTab">
 									<content>
-										<form:Form width="100%" title="{i18n>new}" id="newEntryForm">
+										<form:Form width="100%" id="newEntryForm">
 											<form:formContainers>
-												<form:FormContainer>
+												<form:FormContainer title="{i18n>formPersonData}">
 													<form:formElements>
 														<form:FormElement>
 															<form:label>
@@ -169,6 +169,20 @@
 																</Select>
 															</form:fields>
 														</form:FormElement>
+														<form:FormElement>
+															<form:label>
+																<Label text="{i18n>colBC}"/>
+															</form:label>
+															<form:fields>
+																<ComboBox id="crBCCombo" items="{/rows}" required="true">
+																	<core:ListItem text="{Value}" key="{Key}"/>
+																</ComboBox>
+															</form:fields>
+														</form:FormElement>
+													</form:formElements>
+												</form:FormContainer>
+												<form:FormContainer title="{i18n>formBasisData}">
+													<form:formElements>
 														<form:FormElement>
 															<form:label>
 																<Label text="{i18n>colCategory}" width="100%"/>
@@ -191,22 +205,6 @@
 														</form:FormElement>
 														<form:FormElement>
 															<form:label>
-																<Label text="{i18n>colPlanned}"/>
-															</form:label>
-															<form:fields>
-																<Switch id="crPlanned" type="AcceptReject"/>
-															</form:fields>
-														</form:FormElement>
-														<form:FormElement>
-															<form:label>
-																<Label text="{i18n>colCalendarWeek}"/>
-															</form:label>
-															<form:fields>
-																<DatePicker id="crCalendarWeek" valueFormat="ww" displayFormat="ww" required="true"/>
-															</form:fields>
-														</form:FormElement>
-														<form:FormElement>
-															<form:label>
 																<Label text="{i18n>colTask}"/>
 															</form:label>
 															<form:fields>
@@ -215,38 +213,16 @@
 																</ComboBox>
 															</form:fields>
 														</form:FormElement>
+													</form:formElements>
+												</form:FormContainer>
+												<form:FormContainer title="{i18n>formPlanningData}">
+													<form:formElements>
 														<form:FormElement>
 															<form:label>
-																<Label text="{i18n>colProject}"/>
+																<Label text="{i18n>colPlanned}"/>
 															</form:label>
 															<form:fields>
-																<Input type="Text" id="crProject" required="true"/>
-															</form:fields>
-														</form:FormElement>
-														<form:FormElement>
-															<form:label>
-																<Label text="{i18n>colJira}"/>
-															</form:label>
-															<form:fields>
-																<Input type="Text" id="crJira" required="true"/>
-															</form:fields>
-														</form:FormElement>
-														<form:FormElement>
-															<form:label>
-																<Label text="{i18n>colSpec}"/>
-															</form:label>
-															<form:fields>
-																<Input type="Text" id="crSpec" required="true"/>
-															</form:fields>
-														</form:FormElement>
-														<form:FormElement>
-															<form:label>
-																<Label text="{i18n>colBC}"/>
-															</form:label>
-															<form:fields>
-																<ComboBox id="crBCCombo" items="{/rows}" required="true">
-																	<core:ListItem text="{Value}" key="{Key}"/>
-																</ComboBox>
+																<Switch id="crPlanned" type="AcceptReject"/>
 															</form:fields>
 														</form:FormElement>
 														<form:FormElement>
@@ -257,6 +233,54 @@
 																<ComboBox id="crStatusCombo" items="{/rows}" required="true">
 																	<core:ListItem text="{Value}" key="{Key}"/>
 																</ComboBox>
+															</form:fields>
+														</form:FormElement>
+														<form:FormElement>
+															<form:label>
+																<Label text="{i18n>colPriority}"/>
+															</form:label>
+															<form:fields>
+																<StepInput id="crPriority" required="true"/>
+															</form:fields>
+														</form:FormElement>
+													</form:formElements>
+												</form:FormContainer>
+												<form:FormContainer title="{i18n>formFurtherLinks}">
+													<form:formElements>
+														<form:FormElement>
+															<form:label>
+																<Label text="{i18n>colProject}"/>
+															</form:label>
+															<form:fields>
+																<TextArea growing="true" rows="1" id="crProject" required="true"/>
+															</form:fields>
+														</form:FormElement>
+														<form:FormElement>
+															<form:label>
+																<Label text="{i18n>colJira}"/>
+															</form:label>
+															<form:fields>
+																<TextArea growing="true" rows="1" id="crJira" required="true"/>
+															</form:fields>
+														</form:FormElement>
+														<form:FormElement>
+															<form:label>
+																<Label text="{i18n>colSpec}"/>
+															</form:label>
+															<form:fields>
+																<TextArea growing="true" rows="1" id="crSpec" required="true"/>
+															</form:fields>
+														</form:FormElement>
+													</form:formElements>
+												</form:FormContainer>
+												<form:FormContainer title="{i18n>formTimeData}">
+													<form:formElements>
+														<form:FormElement>
+															<form:label>
+																<Label text="{i18n>colCalendarWeek}"/>
+															</form:label>
+															<form:fields>
+																<DatePicker id="crCalendarWeek" valueFormat="ww" displayFormat="ww" required="true"/>
 															</form:fields>
 														</form:FormElement>
 														<form:FormElement>
@@ -283,17 +307,13 @@
 														<!--		<Input enabled="false" id="crRealEnd"/>-->
 														<!--	</form:fields>-->
 														<!--</form:FormElement>-->
+													</form:formElements>
+												</form:FormContainer>
+												<form:FormContainer title="{i18n>formSAPData}">
+													<form:formElements>
 														<form:FormElement>
 															<form:label>
-																<Label text="{i18n>colPriority}"/>
-															</form:label>
-															<form:fields>
-																<Input type="Number" id="crPriority" required="true"/>
-															</form:fields>
-														</form:FormElement>
-														<form:FormElement>
-															<form:label>
-																<Label text="{i18n>colSystem}"/>
+																<Label text="{i18n>formSystem}"/>
 															</form:label>
 															<form:fields>
 																<MultiInput id="crSystemMulti" required="true" showValueHelp="false"/>
@@ -301,12 +321,16 @@
 														</form:FormElement>
 														<form:FormElement>
 															<form:label>
-																<Label text="{i18n>colTransport}"/>
+																<Label text="{i18n>formTransport}"/>
 															</form:label>
 															<form:fields>
 																<MultiInput id="crTransportMulti" required="true" showValueHelp="false"/>
 															</form:fields>
 														</form:FormElement>
+													</form:formElements>
+												</form:FormContainer>
+												<form:FormContainer title="{i18n>formComment}">
+													<form:formElements>
 														<form:FormElement>
 															<form:label>
 																<Label text="{i18n>colComment}"/>
@@ -319,7 +343,7 @@
 												</form:FormContainer>
 											</form:formContainers>
 											<form:layout>
-												<form:ResponsiveGridLayout adjustLabelSpan="false" columnsL="2" labelSpanL="1" columnsM="1" labelSpanM="2" labelSpanS="12"/>
+												<form:ResponsiveGridLayout adjustLabelSpan="false" columnsL="4" labelSpanL="3" columnsM="2" labelSpanM="3" labelSpanS="12"/>
 											</form:layout>
 										</form:Form>
 									</content>

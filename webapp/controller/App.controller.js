@@ -11,10 +11,10 @@ sap.ui.define([
 					num: jQuery.sap.getUriParameters().get("num")
 				}, true);
 			} else {
-				// oRouter.navTo("Detail", null, true);
-				oRouter.navTo("DetailP", {
-					num: 10
-				}, true);
+				oRouter.navTo("Detail", null, true);
+				// oRouter.navTo("DetailP", {
+				// 	num: 10
+				// }, true);
 			}
 		}
 	});
