@@ -112,7 +112,20 @@ sap.ui.define([
 			this._columnNames = [];
 			var that = this;
 			this.byId("valueTable").attachBrowserEvent("dblclick", function (oEvent) {
-				that._extractRowIndex(sap.ui.getCore().byId($('#' + oEvent.toElement.id).parent()[0].id).getBindingContextPath());
+				try {
+					that._extractRowIndex(sap.ui.getCore().byId($("#" + oEvent.toElement.id).parent()[0].id).getBindingContextPath());
+				} catch (e) {
+					console.log("Probably pressed on Cell, not Row");
+					// console.error(e);
+				}
+			});
+			this.byId("valueTable").attachBrowserEvent("tap", function (oEvent) {
+				try {
+					that._extractRowIndex(sap.ui.getCore().byId($("#" + oEvent.target.id).parent()[0].id).getBindingContextPath());
+				} catch (e) {
+					console.log("Probably pressed on Cell, not Row");
+					// console.error(e);
+				}
 			});
 			this.byId("valueTable").getColumns().forEach(column => {
 				this._columnNames.push(column.getHeader().getText());

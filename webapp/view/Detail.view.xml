@@ -25,7 +25,6 @@
 										<Button tooltip="{i18n>sortToolTip}" icon="sap-icon://sort" press="onSortButtonClick"/>
 										<Button tooltip="{i18n>filterToolTip}" icon="sap-icon://filter" press="onFilterButtonClick"/>
 										<Button tooltip="{i18n>groupToolTip}" icon="sap-icon://group-2" press="onGroupButtonClick"/>
-										<ToggleButton tooltip="{i18n>editToolTip}" icon="sap-icon://edit" press="onEditButtonClick"/>
 									</OverflowToolbar>
 								</headerToolbar>
 								<infoToolbar>
