@@ -4,7 +4,7 @@
 		<App id="app">
 			<pages>
 				<Page id="page" title="{i18n>title}" showHeader="true" showNavButton="true" showFooter="true" backgroundDesign="Solid"
-					enableScrolling="false">
+					enableScrolling="false" navButtonPress="onNavBack">
 					<content>
 						<Toolbar>
 							<Select id="employeeSelect" change="onEmployeeSelect">
@@ -18,7 +18,7 @@
 							<Table id="valueTable" alternateRowColors="true" growing="true" growingScrollToLoad="true" showSeparators="All" items="{/rows}"
 								width="2600px" growingThreshold="30" sticky="HeaderToolbar,InfoToolbar,ColumnHeaders">
 								<headerToolbar>
-									<OverflowToolbar>
+									<OverflowToolbar id="headerBar" class="horizontalStickyness">
 										<Title id="headerText" text="" level="H2"/>
 										<SearchField width="40%" placeholder="{i18n>search}" id="search" liveChange="onLiveSearch" search="onSearch"/>
 										<ToolbarSpacer/>
@@ -28,7 +28,7 @@
 									</OverflowToolbar>
 								</headerToolbar>
 								<infoToolbar>
-									<OverflowToolbar id="filterBar" visible="false">
+									<OverflowToolbar id="filterBar" visible="false" class="horizontalStickyness">
 										<Text id="filterLabel"/>
 									</OverflowToolbar>
 								</infoToolbar>
@@ -146,11 +146,11 @@
 								</items>
 							</Table>
 						</ScrollContainer>
-						<Dialog id="entryDialog" visible="false" title="{i18n>edit}" stretch="{device>/isPhone}">
+						<Dialog id="entryDialog" visible="false" title="{i18n>edit}" stretch="{device>/isMobile}">
 							<content>
 								<form:Form editable="true">
 									<form:layout>
-										<form:ResponsiveGridLayout adjustLabelSpan="false" columnsL="3" labelSpanL="3" columnsM="2" labelSpanM="3" labelSpanS="12"/>
+										<form:ResponsiveGridLayout adjustLabelSpan="false" columnsL="3" labelSpanL="4" columnsM="2" labelSpanM="4" labelSpanS="12"/>
 									</form:layout>
 									<form:formContainers>
 										<form:FormContainer title="{i18n>formPersonData}">

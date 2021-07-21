@@ -59,11 +59,9 @@
 			}
 		},
 		"resources": {
-			"css": [
-				{
-					"uri": "css/style.css"
-				}
-			]
+			"css": [{
+				"uri": "css/style.css"
+			}]
 		},
 		"routing": {
 			"config": {
@@ -80,26 +78,31 @@
 					"target": []
 				}
 			},
-			"routes": [
-				{
-					"name": "Detail",
-					"pattern": "Detail",
-					"titleTarget": "Detail",
-					"greedy": false,
-					"target": [
-						"Detail"
-					]
-				},
-				{
-					"name": "DetailP",
-					"pattern": "Detail/:num:",
-					"titleTarget": "Detail",
-					"greedy": false,
-					"target": [
-						"Detail"
-					]
-				}
-			],
+			"routes": [{
+				"name": "Detail",
+				"pattern": "Detail",
+				"titleTarget": "Detail",
+				"greedy": false,
+				"target": ["Detail"]
+			}, {
+				"name": "DetailP",
+				"pattern": "Detail/:num:",
+				"titleTarget": "Detail",
+				"greedy": false,
+				"target": ["Detail"]
+			}, {
+				"name": "Selection",
+				"pattern": "Selection",
+				"titleTarget": "Selection",
+				"greedy": false,
+				"target": ["Selection"]
+			}, {
+				"name": "SelectionP",
+				"pattern": "Selection/:num:",
+				"titleTarget": "Selection",
+				"greedy": false,
+				"target": ["Selection"]
+			}],
 			"targets": {
 				"App": {
 					"viewType": "XML",
@@ -112,6 +115,11 @@
 					"viewName": "Detail",
 					"viewId": "Detail",
 					"viewLevel": 1
+				},
+				"Selection": {
+					"viewType": "XML",
+					"viewName": "Selection",
+					"transition": "fade"
 				}
 			}
 		}

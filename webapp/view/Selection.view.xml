@@ -1,0 +1,17 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" controllerName="koehler.T2000.controller.Selection"
+	xmlns:html="http://www.w3.org/1999/xhtml">
+	<App>
+		<pages>
+			<Page id="page" title="{i18n>mainMenu}" showHeader="true">
+				<content>
+					<FlexBox alignItems="Stretch" justifyContent="Center" fitContainer="true" wrap="Wrap">
+						<items>
+							<Button text="{i18n>evaluation}" type="Emphasized" press="_onEigenePress" icon="sap-icon://general-leave-request" class="selectionButton"/>
+							<Button text="{i18n>backlog}" type="Emphasized" press="onBacklogPress" icon="sap-icon://customer-and-supplier" class="selectionButton"/>
+						</items>
+					</FlexBox>
+				</content>
+			</Page>
+		</pages>
+	</App>
+</mvc:View>
