@@ -3,358 +3,151 @@
 	<Shell id="shell">
 		<App id="app">
 			<pages>
-				<Page id="page" title="{i18n>title}" showHeader="true" showNavButton="true" showFooter="true">
-					<!--enableScrolling="false"-->
+				<Page id="page" title="{i18n>title}" showHeader="true" showNavButton="true" showFooter="true" backgroundDesign="Solid"
+					enableScrolling="false">
 					<content>
-						<IconTabBar id="tabs" expandable="false" expanded="true" applyContentPadding="true" backgroundDesign="Solid" select="onChangeTab">
-							<items>
-								<IconTabFilter icon="sap-icon://notes" text="{i18n>show}" design="Vertical" iconDensityAware="false" id="showEntriesTab">
-									<content>
-										<Toolbar>
-											<Select id="employeeSelect" change="onEmployeeSelect">
-												<core:ListItem text="Andreas Köhler" key="1"/>
-												<core:ListItem text="Thomas Rempel" key="2"/>
-												<core:ListItem text="Jurij Rudi" key="3"/>
-												<core:ListItem text="Igor Aronov" key="4"/>
-											</Select>
-										</Toolbar>
-										<ScrollContainer vertical="true" horizontal="true" height="100%">
-											<Table id="valueTable" alternateRowColors="true" growing="true" growingScrollToLoad="true" showSeparators="All" items="{/rows}"
-												width="2100px" growingThreshold="5" sticky="HeaderToolbar,InfoToolbar,ColumnHeaders">
-												<!--autoPopinMode="true" //Erst ab 1.76 möglich -> Wäre aber besser -->
-												<headerToolbar>
-													<OverflowToolbar>
-														<Title id="headerText" text="" level="H2"/>
-														<SearchField width="40%" placeholder="{i18n>search}" id="search" liveChange="onLiveSearch" search="onSearch"/>
-														<ToolbarSpacer/>
-														<Button tooltip="{i18n>sortToolTip}" icon="sap-icon://sort" press="onSortButtonClick"/>
-														<Button tooltip="{i18n>filterToolTip}" icon="sap-icon://filter" press="onFilterButtonClick"/>
-														<Button tooltip="{i18n>groupToolTip}" icon="sap-icon://group-2" press="onGroupButtonClick"/>
-														<ToggleButton tooltip="{i18n>editToolTip}" icon="sap-icon://edit" press="onEditButtonClick"/>
-													</OverflowToolbar>
-												</headerToolbar>
-												<infoToolbar>
-													<OverflowToolbar id="filterBar" visible="false">
-														<Text id="filterLabel"/>
-													</OverflowToolbar>
-												</infoToolbar>
-												<columns>
-													<Column demandPopin="false">
-														<Text text="{i18n>colCategory}"/>
-													</Column>
-													<Column demandPopin="false">
-														<Text text="{i18n>colArea}"/>
-													</Column>
-													<Column demandPopin="false">
-														<Text text="{i18n>colPlanned}"/>
-													</Column>
-													<Column demandPopin="false" width="50px">
-														<Text text="{i18n>colCalendarWeek}"/>
-													</Column>
-													<Column demandPopin="false">
-														<Text text="{i18n>colTask}"/>
-													</Column>
-													<Column demandPopin="false">
-														<Text text="{i18n>colProject}"/>
-													</Column>
-													<Column demandPopin="false">
-														<Text text="{i18n>colJira}"/>
-													</Column>
-													<Column demandPopin="false">
-														<Text text="{i18n>colSpec}"/>
-													</Column>
-													<Column demandPopin="false">
-														<Text text="{i18n>colBC}"/>
-													</Column>
-													<Column demandPopin="false">
-														<Text text="{i18n>colStatus}"/>
-													</Column>
-													<Column demandPopin="false">
-														<Text text="{i18n>colBegin}"/>
-													</Column>
-													<Column demandPopin="false">
-														<Text text="{i18n>colRealBegin}"/>
-													</Column>
-													<Column demandPopin="false">
-														<Text text="{i18n>colEnd}"/>
-													</Column>
-													<Column demandPopin="false">
-														<Text text="{i18n>colRealEnd}"/>
-													</Column>
-													<Column demandPopin="false" width="50px">
-														<Text text="{i18n>colPriority}"/>
-													</Column>
-													<Column demandPopin="false">
-														<Text text="{i18n>colSystem}"/>
-													</Column>
-													<Column demandPopin="false">
-														<Text text="{i18n>colTransport}"/>
-													</Column>
-													<Column demandPopin="false">
-														<Text text="{i18n>colComment}"/>
-													</Column>
-													<Column demandPopin="false" visible="true">
-														<Text text="{i18n>colCreator}"/>
-													</Column>
-													<Column demandPopin="false" visible="true">
-														<Text text="{i18n>colCreationDate}"/>
-													</Column>
-													<Column demandPopin="false" visible="true">
-														<Text text="{i18n>colChanger}"/>
-													</Column>
-													<Column demandPopin="false" visible="true">
-														<Text text="{i18n>colChangingDate}"/>
-													</Column>
-													<Column demandPopin="false">
-														<Label text="{i18n>edit}"/>
-													</Column>
-												</columns>
-												<items>
-													<ColumnListItem>
-														<cells>
-															<Text text="{Category}"/>
-															<Link text="{Area}"/>
-															<Switch enabled="false" state="{Planned}" type="AcceptReject"/>
-															<Text text="{CalendarWeek}"/>
-															<Text text="{Task}"/>
-															<Link text="{Project}"/>
-															<Link text="{Jira}" target="_blank" href="https://jira.schwarz/browse/{Jira}"/>
-															<Link text="{Spec}"/>
-															<Text text="{BC}"/>
-															<Text text="{Status}"/>
-															<Text text="{Begin}"/>
-															<Text text="{RealBegin}"/>
-															<Text text="{End}"/>
-															<Text text="{RealEnd}"/>
-															<Text text="{Priority}"/>
-															<Panel content="{path:'System', templateShareable:false}" expandable="true" expanded="false">
-																<VBox>
-																	<Link text="{Name}"/>
-																</VBox>
-															</Panel>
-															<Panel content="{path:'Transport', templateShareable:false}" expandable="true" expanded="false">
-																<VBox>
-																	<Link text="{Name}"/>
-																</VBox>
-															</Panel>
-															<Panel content="{path:'Comment', templateShareable:false}" expandable="true" expanded="false">
-																<VBox>
-																	<TextArea value="{Name}" editable="false" growing="true" wrapping="Soft"/>
-																</VBox>
-															</Panel>
-															<Text text="{Creator}"/>
-															<Text text="{CreationDate}"/>
-															<Text text="{Changer}"/>
-															<Text text="{ChangingDate}"/>
-															<Button type="Emphasized" icon="sap-icon://edit" press="onEditClick" tooltip="{i18n>edit}"/>
-														</cells>
-													</ColumnListItem>
-												</items>
-											</Table>
-										</ScrollContainer>
-									</content>
-								</IconTabFilter>
-								<IconTabFilter icon="sap-icon://write-new-document" text="{i18n>new}" design="Vertical" iconDensityAware="false" id="newEntryTab">
-									<content>
-										<form:Form width="100%" id="newEntryForm">
-											<form:formContainers>
-												<form:FormContainer title="{i18n>formPersonData}">
-													<form:formElements>
-														<form:FormElement>
-															<form:label>
-																<Label text="{i18n>employee}" width="100%"/>
-															</form:label>
-															<form:fields>
-																<Select id="crEmployeeSelect" selectedKey="1">
-																	<core:ListItem text="Andreas Köhler" key="1"/>
-																	<core:ListItem text="Thomas Rempel" key="2"/>
-																	<core:ListItem text="Jurij Rudi" key="3"/>
-																	<core:ListItem text="Igor Aronov" key="4"/>
-																</Select>
-															</form:fields>
-														</form:FormElement>
-														<form:FormElement>
-															<form:label>
-																<Label text="{i18n>colBC}"/>
-															</form:label>
-															<form:fields>
-																<ComboBox id="crBCCombo" items="{/rows}" required="true">
-																	<core:ListItem text="{Value}" key="{Key}"/>
-																</ComboBox>
-															</form:fields>
-														</form:FormElement>
-													</form:formElements>
-												</form:FormContainer>
-												<form:FormContainer title="{i18n>formBasisData}">
-													<form:formElements>
-														<form:FormElement>
-															<form:label>
-																<Label text="{i18n>colCategory}" width="100%"/>
-															</form:label>
-															<form:fields>
-																<ComboBox id="crCategoryCombo" items="{/rows}" required="true">
-																	<core:ListItem text="{Value}" key="{Key}"/>
-																</ComboBox>
-															</form:fields>
-														</form:FormElement>
-														<form:FormElement>
-															<form:label>
-																<Label text="{i18n>colArea}"/>
-															</form:label>
-															<form:fields>
-																<ComboBox id="crAreaCombo" items="{/rows}" required="true">
-																	<core:ListItem text="{Value}" key="{Key}"/>
-																</ComboBox>
-															</form:fields>
-														</form:FormElement>
-														<form:FormElement>
-															<form:label>
-																<Label text="{i18n>colTask}"/>
-															</form:label>
-															<form:fields>
-																<ComboBox id="crTaskCombo" items="{/rows}" required="true">
-																	<core:ListItem text="{Value}" key="{Key}"/>
-																</ComboBox>
-															</form:fields>
-														</form:FormElement>
-													</form:formElements>
-												</form:FormContainer>
-												<form:FormContainer title="{i18n>formPlanningData}">
-													<form:formElements>
-														<form:FormElement>
-															<form:label>
-																<Label text="{i18n>colPlanned}"/>
-															</form:label>
-															<form:fields>
-																<Switch id="crPlanned" type="AcceptReject"/>
-															</form:fields>
-														</form:FormElement>
-														<form:FormElement>
-															<form:label>
-																<Label text="{i18n>colStatus}"/>
-															</form:label>
-															<form:fields>
-																<ComboBox id="crStatusCombo" items="{/rows}" required="true">
-																	<core:ListItem text="{Value}" key="{Key}"/>
-																</ComboBox>
-															</form:fields>
-														</form:FormElement>
-														<form:FormElement>
-															<form:label>
-																<Label text="{i18n>colPriority}"/>
-															</form:label>
-															<form:fields>
-																<StepInput id="crPriority" required="true"/>
-															</form:fields>
-														</form:FormElement>
-													</form:formElements>
-												</form:FormContainer>
-												<form:FormContainer title="{i18n>formFurtherLinks}">
-													<form:formElements>
-														<form:FormElement>
-															<form:label>
-																<Label text="{i18n>colProject}"/>
-															</form:label>
-															<form:fields>
-																<TextArea growing="true" rows="1" id="crProject" required="true"/>
-															</form:fields>
-														</form:FormElement>
-														<form:FormElement>
-															<form:label>
-																<Label text="{i18n>colJira}"/>
-															</form:label>
-															<form:fields>
-																<TextArea growing="true" rows="1" id="crJira" required="true"/>
-															</form:fields>
-														</form:FormElement>
-														<form:FormElement>
-															<form:label>
-																<Label text="{i18n>colSpec}"/>
-															</form:label>
-															<form:fields>
-																<TextArea growing="true" rows="1" id="crSpec" required="true"/>
-															</form:fields>
-														</form:FormElement>
-													</form:formElements>
-												</form:FormContainer>
-												<form:FormContainer title="{i18n>formTimeData}">
-													<form:formElements>
-														<form:FormElement>
-															<form:label>
-																<Label text="{i18n>colCalendarWeek}"/>
-															</form:label>
-															<form:fields>
-																<DatePicker id="crCalendarWeek" valueFormat="ww" displayFormat="ww" required="true"/>
-															</form:fields>
-														</form:FormElement>
-														<form:FormElement>
-															<form:label>
-																<Label text="{i18n>timeRange}"/>
-															</form:label>
-															<form:fields>
-																<DateRangeSelection id="crTimerange" displayFormat="EEEE, dd. MMMM YYYY" valueFormat="dd.MM.YYYY" required="true"/>
-															</form:fields>
-														</form:FormElement>
-														<!--<form:FormElement>-->
-														<!--	<form:label>-->
-														<!--		<Label text="{i18n>colRealBegin}"/>-->
-														<!--	</form:label>-->
-														<!--	<form:fields>-->
-														<!--		<Input enabled="false" id="crRealBegin"/>-->
-														<!--	</form:fields>-->
-														<!--</form:FormElement>-->
-														<!--<form:FormElement>-->
-														<!--	<form:label>-->
-														<!--		<Label text="{i18n>colRealEnd}"/>-->
-														<!--	</form:label>-->
-														<!--	<form:fields>-->
-														<!--		<Input enabled="false" id="crRealEnd"/>-->
-														<!--	</form:fields>-->
-														<!--</form:FormElement>-->
-													</form:formElements>
-												</form:FormContainer>
-												<form:FormContainer title="{i18n>formSAPData}">
-													<form:formElements>
-														<form:FormElement>
-															<form:label>
-																<Label text="{i18n>formSystem}"/>
-															</form:label>
-															<form:fields>
-																<MultiInput id="crSystemMulti" required="true" showValueHelp="false"/>
-															</form:fields>
-														</form:FormElement>
-														<form:FormElement>
-															<form:label>
-																<Label text="{i18n>formTransport}"/>
-															</form:label>
-															<form:fields>
-																<MultiInput id="crTransportMulti" required="true" showValueHelp="false"/>
-															</form:fields>
-														</form:FormElement>
-													</form:formElements>
-												</form:FormContainer>
-												<form:FormContainer title="{i18n>formComment}">
-													<form:formElements>
-														<form:FormElement>
-															<form:label>
-																<Label text="{i18n>colComment}"/>
-															</form:label>
-															<form:fields>
-																<TextArea growing="true" required="true" id="crComment"/>
-															</form:fields>
-														</form:FormElement>
-													</form:formElements>
-												</form:FormContainer>
-											</form:formContainers>
-											<form:layout>
-												<form:ResponsiveGridLayout adjustLabelSpan="false" columnsL="4" labelSpanL="3" columnsM="2" labelSpanM="3" labelSpanS="12"/>
-											</form:layout>
-										</form:Form>
-									</content>
-								</IconTabFilter>
-							</items>
-						</IconTabBar>
-						<Dialog id="editDialog" visible="false" title="{i18n>edit}" stretch="{device>/isPhone}">
+						<Toolbar>
+							<Select id="employeeSelect" change="onEmployeeSelect">
+								<core:ListItem text="Andreas Köhler" key="1"/>
+								<core:ListItem text="Thomas Rempel" key="2"/>
+								<core:ListItem text="Jurij Rudi" key="3"/>
+								<core:ListItem text="Igor Aronov" key="4"/>
+							</Select>
+						</Toolbar>
+						<ScrollContainer vertical="true" horizontal="true" height="calc(100% - 44px)">
+							<Table id="valueTable" alternateRowColors="true" growing="true" growingScrollToLoad="true" showSeparators="All" items="{/rows}"
+								width="2600px" growingThreshold="30" sticky="HeaderToolbar,InfoToolbar,ColumnHeaders">
+								<headerToolbar>
+									<OverflowToolbar>
+										<Title id="headerText" text="" level="H2"/>
+										<SearchField width="40%" placeholder="{i18n>search}" id="search" liveChange="onLiveSearch" search="onSearch"/>
+										<ToolbarSpacer/>
+										<Button tooltip="{i18n>sortToolTip}" icon="sap-icon://sort" press="onSortButtonClick"/>
+										<Button tooltip="{i18n>filterToolTip}" icon="sap-icon://filter" press="onFilterButtonClick"/>
+										<Button tooltip="{i18n>groupToolTip}" icon="sap-icon://group-2" press="onGroupButtonClick"/>
+										<ToggleButton tooltip="{i18n>editToolTip}" icon="sap-icon://edit" press="onEditButtonClick"/>
+									</OverflowToolbar>
+								</headerToolbar>
+								<infoToolbar>
+									<OverflowToolbar id="filterBar" visible="false">
+										<Text id="filterLabel"/>
+									</OverflowToolbar>
+								</infoToolbar>
+								<columns>
+									<Column demandPopin="false">
+										<Text text="{i18n>colCategory}"/>
+									</Column>
+									<Column demandPopin="false">
+										<Text text="{i18n>colArea}"/>
+									</Column>
+									<Column demandPopin="false">
+										<Text text="{i18n>colPlanned}"/>
+									</Column>
+									<Column demandPopin="false" width="50px">
+										<Text text="{i18n>colCalendarWeek}"/>
+									</Column>
+									<Column demandPopin="false">
+										<Text text="{i18n>colTask}"/>
+									</Column>
+									<Column demandPopin="false">
+										<Text text="{i18n>colProject}"/>
+									</Column>
+									<Column demandPopin="false">
+										<Text text="{i18n>colJira}"/>
+									</Column>
+									<Column demandPopin="false">
+										<Text text="{i18n>colSpec}"/>
+									</Column>
+									<Column demandPopin="false">
+										<Text text="{i18n>colBC}"/>
+									</Column>
+									<Column demandPopin="false">
+										<Text text="{i18n>colStatus}"/>
+									</Column>
+									<Column demandPopin="false">
+										<Text text="{i18n>colBegin}"/>
+									</Column>
+									<Column demandPopin="false">
+										<Text text="{i18n>colRealBegin}"/>
+									</Column>
+									<Column demandPopin="false">
+										<Text text="{i18n>colEnd}"/>
+									</Column>
+									<Column demandPopin="false">
+										<Text text="{i18n>colRealEnd}"/>
+									</Column>
+									<Column demandPopin="false" width="50px">
+										<Text text="{i18n>colPriority}"/>
+									</Column>
+									<Column demandPopin="false">
+										<Text text="{i18n>colSystem}"/>
+									</Column>
+									<Column demandPopin="false">
+										<Text text="{i18n>colTransport}"/>
+									</Column>
+									<Column demandPopin="false">
+										<Text text="{i18n>colComment}"/>
+									</Column>
+									<Column demandPopin="false" visible="true">
+										<Text text="{i18n>colCreator}"/>
+									</Column>
+									<Column demandPopin="false" visible="true">
+										<Text text="{i18n>colCreationDate}"/>
+									</Column>
+									<Column demandPopin="false" visible="true">
+										<Text text="{i18n>colChanger}"/>
+									</Column>
+									<Column demandPopin="false" visible="true">
+										<Text text="{i18n>colChangingDate}"/>
+									</Column>
+									<Column demandPopin="false">
+										<Label text="{i18n>edit}"/>
+									</Column>
+								</columns>
+								<items>
+									<ColumnListItem>
+										<cells>
+											<Text text="{Category}"/>
+											<Link text="{Area}"/>
+											<Switch enabled="false" state="{Planned}" type="AcceptReject"/>
+											<Text text="{CalendarWeek}"/>
+											<Text text="{Task}"/>
+											<Link text="{Project}"/>
+											<Link text="{Jira}" target="_blank" href="https://jira.schwarz/browse/{Jira}"/>
+											<Link text="{Spec}"/>
+											<Text text="{BC}"/>
+											<Text text="{Status}"/>
+											<Text text="{Begin}"/>
+											<Text text="{RealBegin}"/>
+											<Text text="{End}"/>
+											<Text text="{RealEnd}"/>
+											<Text text="{Priority}"/>
+											<Panel content="{path:'System', templateShareable:false}" expandable="true" expanded="false">
+												<VBox>
+													<Link text="{Name}"/>
+												</VBox>
+											</Panel>
+											<Panel content="{path:'Transport', templateShareable:false}" expandable="true" expanded="false">
+												<VBox>
+													<Link text="{Name}"/>
+												</VBox>
+											</Panel>
+											<Panel content="{path:'Comment', templateShareable:false}" expandable="true" expanded="false">
+												<VBox>
+													<TextArea value="{Name}" editable="false" growing="true" wrapping="Soft"/>
+												</VBox>
+											</Panel>
+											<Text text="{Creator}"/>
+											<Text text="{CreationDate}"/>
+											<Text text="{Changer}"/>
+											<Text text="{ChangingDate}"/>
+											<Button type="Emphasized" icon="sap-icon://edit" press="onEditClick" tooltip="{i18n>edit}"/>
+										</cells>
+									</ColumnListItem>
+								</items>
+							</Table>
+						</ScrollContainer>
+						<Dialog id="entryDialog" visible="false" title="{i18n>edit}" stretch="{device>/isPhone}">
 							<content>
 								<form:Form editable="true">
 									<form:layout>
@@ -368,7 +161,7 @@
 														<Label text="{i18n>employee}" width="100%"/>
 													</form:label>
 													<form:fields>
-														<Select id="editEmployeeSelect" selectedKey="{/Employee}">
+														<Select id="employeeSelectD" selectedKey="{/Employee}">
 															<core:ListItem text="Andreas Köhler" key="1"/>
 															<core:ListItem text="Thomas Rempel" key="2"/>
 															<core:ListItem text="Jurij Rudi" key="3"/>
@@ -376,7 +169,7 @@
 														</Select>
 													</form:fields>
 												</form:FormElement>
-												<form:FormElement>
+												<form:FormElement id="editBCElement">
 													<form:label>
 														<Label text="{i18n>colBC}"/>
 													</form:label>
@@ -384,11 +177,22 @@
 														<Input id="editBC" required="true" value="{/BC}"/>
 													</form:fields>
 												</form:FormElement>
+												<!--das-->
+												<form:FormElement id="crBCElement" visible="false">
+													<form:label>
+														<Label text="{i18n>colBC}"/>
+													</form:label>
+													<form:fields>
+														<ComboBox id="crBCCombo" items="{/rows}" required="true">
+															<core:ListItem text="{Value}" key="{Key}"/>
+														</ComboBox>
+													</form:fields>
+												</form:FormElement>
 											</form:formElements>
 										</form:FormContainer>
 										<form:FormContainer title="{i18n>formBasisData}">
 											<form:formElements>
-												<form:FormElement>
+												<form:FormElement id="editCategoryElement">
 													<form:label>
 														<Label text="{i18n>colCategory}" width="100%"/>
 													</form:label>
@@ -396,7 +200,7 @@
 														<Input id="editCategory" value="{/Category}" required="true"/>
 													</form:fields>
 												</form:FormElement>
-												<form:FormElement>
+												<form:FormElement id="editAreaElement">
 													<form:label>
 														<Label text="{i18n>colArea}"/>
 													</form:label>
@@ -404,12 +208,43 @@
 														<Input id="editArea" value="{/Area}" required="true"/>
 													</form:fields>
 												</form:FormElement>
-												<form:FormElement>
+												<form:FormElement id="editTaskElement">
 													<form:label>
 														<Label text="{i18n>colTask}"/>
 													</form:label>
 													<form:fields>
 														<Input id="editTask" value="{/Task}" required="true"/>
+													</form:fields>
+												</form:FormElement>
+												<!--das-->
+												<form:FormElement id="crCategoryElement" visible="false">
+													<form:label>
+														<Label text="{i18n>colCategory}" width="100%"/>
+													</form:label>
+													<form:fields>
+														<ComboBox id="crCategoryCombo" items="{/rows}" required="true">
+															<core:ListItem text="{Value}" key="{Key}"/>
+														</ComboBox>
+													</form:fields>
+												</form:FormElement>
+												<form:FormElement id="crAreaElement" visible="false">
+													<form:label>
+														<Label text="{i18n>colArea}"/>
+													</form:label>
+													<form:fields>
+														<ComboBox id="crAreaCombo" items="{/rows}" required="true">
+															<core:ListItem text="{Value}" key="{Key}"/>
+														</ComboBox>
+													</form:fields>
+												</form:FormElement>
+												<form:FormElement id="crTaskElement" visible="false">
+													<form:label>
+														<Label text="{i18n>colTask}"/>
+													</form:label>
+													<form:fields>
+														<ComboBox id="crTaskCombo" items="{/rows}" required="true">
+															<core:ListItem text="{Value}" key="{Key}"/>
+														</ComboBox>
 													</form:fields>
 												</form:FormElement>
 											</form:formElements>
@@ -421,10 +256,10 @@
 														<Label text="{i18n>colPlanned}"/>
 													</form:label>
 													<form:fields>
-														<Switch id="editPlanned" type="AcceptReject" state="{/Planned}"/>
+														<Switch id="planned" type="AcceptReject" state="{/Planned}"/>
 													</form:fields>
 												</form:FormElement>
-												<form:FormElement>
+												<form:FormElement id="editStatusElement">
 													<form:label>
 														<Label text="{i18n>colStatus}"/>
 													</form:label>
@@ -432,12 +267,23 @@
 														<Input id="editStatus" value="{/Status}" required="true"/>
 													</form:fields>
 												</form:FormElement>
+												<!--das-->
+												<form:FormElement id="crStatusElement" visible="false">
+													<form:label>
+														<Label text="{i18n>colStatus}"/>
+													</form:label>
+													<form:fields>
+														<ComboBox id="crStatusCombo" items="{/rows}" required="true">
+															<core:ListItem text="{Value}" key="{Key}"/>
+														</ComboBox>
+													</form:fields>
+												</form:FormElement>
 												<form:FormElement>
 													<form:label>
 														<Label text="{i18n>colPriority}"/>
 													</form:label>
 													<form:fields>
-														<StepInput id="editPriority" required="true" value="{/Priority}"/>
+														<StepInput id="priority" required="true" value="{/Priority}"/>
 													</form:fields>
 												</form:FormElement>
 											</form:formElements>
@@ -449,7 +295,7 @@
 														<Label text="{i18n>colProject}"/>
 													</form:label>
 													<form:fields>
-														<TextArea growing="true" rows="1" id="editProject" required="true" value="{/Project}"/>
+														<TextArea growing="true" rows="1" id="project" required="true" value="{/Project}"/>
 													</form:fields>
 												</form:FormElement>
 												<form:FormElement>
@@ -457,7 +303,7 @@
 														<Label text="{i18n>colJira}"/>
 													</form:label>
 													<form:fields>
-														<TextArea growing="true" rows="1" id="editJira" required="true" value="{/Jira}"/>
+														<TextArea growing="true" rows="1" id="jira" required="true" value="{/Jira}"/>
 													</form:fields>
 												</form:FormElement>
 												<form:FormElement>
@@ -465,7 +311,7 @@
 														<Label text="{i18n>colSpec}"/>
 													</form:label>
 													<form:fields>
-														<TextArea growing="true" rows="1" id="editSpec" required="true" value="{/Spec}"/>
+														<TextArea growing="true" rows="1" id="spec" required="true" value="{/Spec}"/>
 													</form:fields>
 												</form:FormElement>
 											</form:formElements>
@@ -477,10 +323,10 @@
 														<Label text="{i18n>colCalendarWeek}"/>
 													</form:label>
 													<form:fields>
-														<DatePicker id="editCalendarWeek" valueFormat="ww" displayFormat="ww" required="true" value="{/CalendarWeek}"/>
+														<DatePicker id="calendarWeek" valueFormat="ww" displayFormat="ww" required="true" value="{/CalendarWeek}"/>
 													</form:fields>
 												</form:FormElement>
-												<form:FormElement>
+												<form:FormElement id="editBeginElement">
 													<form:label>
 														<Label text="{i18n>colBegin}"/>
 													</form:label>
@@ -488,7 +334,7 @@
 														<DatePicker id="editBegin" displayFormat="EEEE, dd. MMMM YYYY" valueFormat="dd.MM.YYYY" required="true" value="{/Begin}"/>
 													</form:fields>
 												</form:FormElement>
-												<form:FormElement>
+												<form:FormElement id="editRealBeginElement">
 													<form:label>
 														<Label text="{i18n>colRealBegin}"/>
 													</form:label>
@@ -496,7 +342,7 @@
 														<DatePicker id="editRealBegin" displayFormat="EEEE, dd. MMMM YYYY" valueFormat="dd.MM.YYYY" required="true" value="{/RealBegin}"/>
 													</form:fields>
 												</form:FormElement>
-												<form:FormElement>
+												<form:FormElement id="editEndElement">
 													<form:label>
 														<Label text="{i18n>colEnd}"/>
 													</form:label>
@@ -504,12 +350,21 @@
 														<DatePicker id="editEnd" displayFormat="EEEE, dd. MMMM YYYY" valueFormat="dd.MM.YYYY" required="true" value="{/End}"/>
 													</form:fields>
 												</form:FormElement>
-												<form:FormElement>
+												<form:FormElement id="editRealEndElement">
 													<form:label>
 														<Label text="{i18n>colRealEnd}"/>
 													</form:label>
 													<form:fields>
 														<DatePicker id="editRealEnd" displayFormat="EEEE, dd. MMMM YYYY" valueFormat="dd.MM.YYYY" required="true" value="{/RealEnd}"/>
+													</form:fields>
+												</form:FormElement>
+												<!--das-->
+												<form:FormElement id="crTimeRangeElement" visible="false">
+													<form:label>
+														<Label text="{i18n>timeRange}"/>
+													</form:label>
+													<form:fields>
+														<DateRangeSelection id="crTimerange" displayFormat="EEEE, dd. MMMM YYYY" valueFormat="dd.MM.YYYY" required="true"/>
 													</form:fields>
 												</form:FormElement>
 											</form:formElements>
@@ -521,7 +376,7 @@
 														<Label text="{i18n>formSystem}"/>
 													</form:label>
 													<form:fields>
-														<MultiInput id="editSystemMulti" required="true" showValueHelp="false" tokens="{/System}">
+														<MultiInput id="systemMulti" required="true" showValueHelp="false" tokens="{/System}">
 															<tokens>
 																<Token text="{Name}"/>
 															</tokens>
@@ -533,7 +388,7 @@
 														<Label text="{i18n>formTransport}"/>
 													</form:label>
 													<form:fields>
-														<MultiInput id="editTransportMulti" required="true" showValueHelp="false" tokens="{/Transport}">
+														<MultiInput id="transportMulti" required="true" showValueHelp="false" tokens="{/Transport}">
 															<tokens>
 																<Token text="{Name}"/>
 															</tokens>
@@ -549,7 +404,7 @@
 														<Label text="{i18n>colComment}"/>
 													</form:label>
 													<form:fields>
-														<TextArea growing="true" required="true" id="editComment" value="{/Comment/0/Name}"/>
+														<TextArea growing="true" required="true" id="comment" value="{/Comment/0/Name}"/>
 													</form:fields>
 												</form:FormElement>
 											</form:formElements>
@@ -558,6 +413,7 @@
 								</form:Form>
 							</content>
 							<buttons>
+								<Button text="{i18n>new}" type="Accept" iconDensityAware="false" press="onSaveButtonClick" id="createButton"/>
 								<Button id="saveButton" press="onSaveChanges" type="Accept" text="{i18n>save}"/>
 								<Button id="cancelButton" press="onCancelChanges" type="Reject" text="{i18n>cancel}"/>
 							</buttons>
@@ -566,7 +422,7 @@
 					<footer>
 						<Toolbar>
 							<ToolbarSpacer/>
-							<Button text="{i18n>new}" type="Accept" iconDensityAware="false" press="onSaveButtonClick" visible="false" id="createButton"/>
+							<Button id="openCreationButton" text="{i18n>new}" type="Emphasized" press="onCreationButtonClick"/>
 							<Button id="backlogButton" text="{i18n>backlog}" type="Emphasized" press="onBacklogButtonClick"/>
 						</Toolbar>
 					</footer>
