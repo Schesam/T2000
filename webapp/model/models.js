@@ -7,7 +7,9 @@ sap.ui.define([
 	return {
 
 		createDeviceModel: function () {
-			var oModel = new JSONModel(Device);
+			var oModel = new sap.ui.model.json.JSONModel({
+				isPhone: sap.ui.Device.system.phone
+			});
 			oModel.setDefaultBindingMode("OneWay");
 			return oModel;
 		}

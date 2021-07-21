@@ -1,5 +1,5 @@
 /* eslint-disable no-console, max-params, sap-timeout-usage, sap-no-hardcoded-url*/
-/* eslint complexity: [error, 19] */
+/* eslint complexity: [error, 20] */
 /* global koehler:true, moment:true, Set:true */
 (function () {
 	jQuery.sap.declare("koehler.T2000.Formatter");
@@ -110,6 +110,9 @@ sap.ui.define([
 			// 	}
 			// });
 			this._columnNames = [];
+			this.byId("valueTable").attachBrowserEvent("dblclick", function (oEvent) {
+				this._extractRowIndex(sap.ui.getCore().byId($('#' + oEvent.toElement.id).parent()[0].id).getBindingContextPath());
+			});
 			this.byId("valueTable").getColumns().forEach(column => {
 				this._columnNames.push(column.getHeader().getText());
 			});
@@ -453,6 +456,7 @@ sap.ui.define([
 		},
 		onEmployeeSelect: function (oControlEvent) {
 			this.byId("headerText").setText(oControlEvent.getParameters().selectedItem.getText());
+			this.byId("filterBar").setVisible(false);
 			this._updateData(oControlEvent.getParameters().selectedItem);
 		},
 		onBacklogButtonClick: function (oEvent) {
@@ -564,20 +568,66 @@ sap.ui.define([
 				oObj.CreationDate = moment().format("DD.MM.YYYY HH:mm:ss");
 				oObj.Changer = "Andreas Köhler";
 				oObj.ChangingDate = moment().format("DD.MM.YYYY HH:mm:ss");
-				// oRowData.rows.push(oObj);
-
-				// var oJSONModel = new JSONModel();
-				// oJSONModel.setData({
-				// 	rows: oRowData.rows
-				// });
 				this._dataModels[employee.getSelectedKey()].results.push(oObj);
-				this.byId("valueTable").setModel(this._dataModels[employee.getSelectedKey()]);
+				var oJSONModel = new JSONModel();
+				oJSONModel.setData({
+					rows: this._dataModels[employee.getSelectedKey()].results
+				});
+				this.byId("valueTable").setModel(oJSONModel);
 				this._updateRowCount();
 				this.byId("tabs").setSelectedKey(0);
 				this.byId("createButton").setVisible(false);
 				this.byId("backlogButton").setVisible(true);
 				MessageToast.show(this._oI18n.getText("messageSuccessfullCreated"));
 			}
+		},
+		onSaveChanges: function (oControlEvent) {
+			this.byId("valueTable").setBusy(true);
+			var oObj = {},
+				employee = this.byId("editEmployeeSelect");
+
+			oObj.Category = this.byId("editCategory").getValue();
+			oObj.Area = this.byId("editArea").getValue();
+			oObj.Planned = this.byId("editPlanned").getState();
+			oObj.CalendarWeek = this.byId("editCalendarWeek").getValue();
+			oObj.Task = this.byId("editTask").getValue();
+			oObj.Project = this.byId("editProject").getValue();
+			oObj.Jira = this.byId("editJira").getValue();
+			oObj.Spec = this.byId("editSpec").getValue();
+			oObj.BC = this.byId("editBC").getValue();
+			oObj.Status = this.byId("editStatus").getValue();
+			oObj.Begin = Formatter._formatDate(this.byId("editBegin").getDateValue());
+			oObj.RealBegin = Formatter._formatDate(this.byId("editRealBegin").getDateValue());
+			oObj.End = Formatter._formatDate(this.byId("editEnd").getDateValue());
+			oObj.RealEnd = Formatter._formatDate(this.byId("editRealEnd").getDateValue());
+			oObj.Priority = this.byId("editPriority").getValue();
+
+			oObj.System = [];
+			this.byId("editSystemMulti").getTokens().forEach(token => oObj.System.push({
+				Name: token.getText().toUpperCase()
+			}));
+			oObj.Transport = [];
+			this.byId("editTransportMulti").getTokens().forEach(token => oObj.Transport.push({
+				Name: token.getText()
+			}));
+
+			oObj.Comment = this.byId("editComment").getValue();
+			oObj.Creator = this.byId("editDialog").getModel().getData().Creator;
+			oObj.CreationDate = this.byId("editDialog").getModel().getData().CreationDate;
+			oObj.Changer = "Andreas Köhler";
+			oObj.ChangingDate = moment().format("DD.MM.YYYY HH:mm:ss");
+			this._dataModels[employee.getSelectedKey()].results[this._rowIndex] = oObj;
+			var oJSONModel = new JSONModel();
+			oJSONModel.setData({
+				rows: this._dataModels[employee.getSelectedKey()].results
+			});
+			this.byId("valueTable").setModel(oJSONModel);
+			this._updateRowCount();
+			this.byId("tabs").setSelectedKey(0);
+			this.byId("createButton").setVisible(false);
+			this.byId("backlogButton").setVisible(true);
+			this.byId("valueTable").setBusy(false);
+			MessageToast.show(this._oI18n.getText("messageSuccessfullEdited"));
 		},
 		_checkIfFormFilled: function () {
 			if (!this.byId("crCategoryCombo").getValue() ||
@@ -619,6 +669,59 @@ sap.ui.define([
 				return false;
 			}
 			return true;
+		},
+		onEditClick: function (oControlEvent) {
+			this._extractRowIndex(oControlEvent.getSource().getParent().getBindingContextPath());
+		},
+		_extractRowIndex: function (bindingPath) {
+			this._rowIndex = bindingPath.substr(bindingPath.lastIndexOf("/") + 1);
+			this._openEditDialog(this._rowIndex);
+		},
+		_openEditDialog: function (rowIndex) {
+			var oDialogModel = new JSONModel(this._clone(this.byId("valueTable").getModel().getData().rows[
+				rowIndex]));
+			oDialogModel.getData().Employee = this.byId("employeeSelect").getSelectedItem().getKey();
+			this.byId("editDialog").setModel(oDialogModel);
+			if (!this.byId("editDialog").getVisible()) {
+				this.byId("editDialog").setVisible(true);
+			}
+			this.byId("editDialog").open();
+		},
+		onCancelChanges: function (oControlEvent) {
+			this.byId("editDialog").close();
+		},
+		_clone: function (obj) {
+			var copy;
+
+			if (obj === null || typeof obj !== "object") {
+				return obj;
+			}
+
+			if (obj instanceof Date) {
+				copy = new Date();
+				copy.setTime(obj.getTime());
+				return copy;
+			}
+
+			if (obj instanceof Array) {
+				copy = [];
+				for (var i = 0, len = obj.length; i < len; i++) {
+					copy[i] = this._clone(obj[i]);
+				}
+				return copy;
+			}
+
+			if (obj instanceof Object) {
+				copy = {};
+				for (var attr in obj) {
+					if (obj.hasOwnProperty(attr)) {
+						copy[attr] = this._clone(obj[attr]);
+					}
+				}
+				return copy;
+			}
+
+			throw new Error("Object couldnt be cloned!");
 		},
 		_isNumeric: function (str) {
 			if (typeof str !== "string" && typeof str !== "number") {
