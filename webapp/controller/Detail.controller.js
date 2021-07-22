@@ -102,6 +102,7 @@ sap.ui.define([
 				this.byId("valueTable").attachBrowserEvent("tap", function (oEvent) {
 					try {
 						that._extractRowIndex(sap.ui.getCore().byId($("#" + oEvent.target.id).parent()[0].id).getBindingContextPath());
+						that._openEntryDialog(that._rowIndex);
 					} catch (e) {
 						console.log("Probably pressed on Cell, not Row");
 						console.error(e);
@@ -111,6 +112,7 @@ sap.ui.define([
 				this.byId("valueTable").attachBrowserEvent("dblclick", function (oEvent) {
 					try {
 						that._extractRowIndex(sap.ui.getCore().byId($("#" + oEvent.toElement.id).parent()[0].id).getBindingContextPath());
+						that._openEntryDialog(that._rowIndex);
 					} catch (e) {
 						console.log("Probably pressed on Cell, not Row");
 						console.error(e);
@@ -124,9 +126,9 @@ sap.ui.define([
 			this.byId("valueTable").getColumns().forEach(column => {
 				this._columnNames.push(column.getHeader().getText());
 			});
-			this._columnIds = ["Category", "Area", "Planned", "CalendarWeek", "Task", "Project", "Jira", "Spec", "BC", "Status", "Begin",
-				"RealBegin", "End", "RealEnd", "Estimation", "Priority", "System", "Transport", "Comment", "Creator", "CreationDate", "Changer",
-				"ChangingDate"
+			this._columnIds = ["Category", "Area", "Planned", "CalendarWeek", "Task", "Project", "ProjectType", "Jira", "Spec", "BC", "Status",
+				"Begin", "RealBegin", "End", "RealEnd", "Estimation", "Priority", "System", "Transport", "Comment", "Creator", "CreationDate",
+				"Changer", "ChangingDate"
 			];
 			this._dateColumns = ["Begin", "RealBegin", "End", "RealEnd", "CreationDate", "ChangingDate"];
 			this._hiddenColumns = [];
@@ -137,11 +139,11 @@ sap.ui.define([
 				}
 			}
 			this._areas = ["Abwesenheit", "Organisation", "Produkt", "Anforderung"];
-			this._categories = ["I Timebox", "K Timebox", "Task"];
+			this._categories = ["Testkategorie", "Timebox", "Task"];
 			this._tasks = ["Krankheit, Urlaub, Teilzeit", "Schulung, Ausbildung", "Team- und eigene Orga", "Incidents/Problems/Support",
 				"PreZero", "VZ-Dispo 2020", "PreBull", "BBY", "S4HANA"
 			];
-			this._bcs = ["Silke Wünsch", "Amine Abida", "Emanuel", "Andreas", "Mike", "Sonstige", "Andreas"];
+			this._bcs = ["Silke Wünsch", "Amine Abida", "Emanuel", "Andreas", "Mike", "Sonstige"];
 			this._status = ["Backlog", "Umsetzung", "Analyse", "Begleitung"];
 			this._dialogs = {};
 			this._groupFunctions = {};
@@ -411,7 +413,8 @@ sap.ui.define([
 				oData[i].Planned = i % 2 === 1;
 				oData[i].CalendarWeek = i + 1;
 				oData[i].Task = this._tasks[this._tasks.length * Math.random() | 0];
-				oData[i].Project = "P0962" + i;
+				oData[i].Project = "P096" + i;
+				oData[i].ProjectType = "pm_project_list.do?sysparm_query=u_project_number_on_task=";
 				oData[i].Jira = "FXDFKA-191" + i;
 				oData[i].Spec = "009824" + i;
 				oData[i].BC = this._bcs[this._bcs.length * Math.random() | 0];
@@ -466,6 +469,7 @@ sap.ui.define([
 			oObj.Planned = this.byId("planned").getState();
 			oObj.CalendarWeek = this.byId("calendarWeek").getValue();
 			oObj.Project = this.byId("project").getValue();
+			oObj.ProjectType = this.byId("projectTypeSelect").getValue();
 			oObj.Jira = this.byId("jira").getValue();
 			oObj.Spec = this.byId("spec").getValue();
 			oObj.Priority = this.byId("priority").getValue();
@@ -552,6 +556,7 @@ sap.ui.define([
 				!this.byId("crTaskCombo").getValue() && !this.byId("editTask").getValue() ||
 				!this.byId("crStatusCombo").getValue() && !this.byId("editStatus").getValue() ||
 				!this.byId("project").getValue() ||
+				!this.byId("projectTypeSelect").getValue() ||
 				!this.byId("jira").getValue() ||
 				!this.byId("spec").getValue() ||
 				!this.byId("crBCCombo").getValue() && !this.byId("editBC").getValue() ||
@@ -617,10 +622,10 @@ sap.ui.define([
 		},
 		onEditClick: function (oControlEvent) {
 			this._extractRowIndex(oControlEvent.getSource().getParent().getBindingContextPath());
+			this._openEntryDialog(this._rowIndex);
 		},
 		_extractRowIndex: function (bindingPath) {
 			this._rowIndex = bindingPath.substr(bindingPath.lastIndexOf("/") + 1);
-			this._openEntryDialog(this._rowIndex);
 		},
 		_openEntryDialog: function (rowIndex) {
 			var oDialogModel = new JSONModel(this._appController.clone(this.byId("valueTable").getModel().getData().rows[

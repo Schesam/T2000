@@ -52,6 +52,9 @@
 									<Column demandPopin="false">
 										<Text text="{i18n>colProject}"/>
 									</Column>
+									<!--<Column demandPopin="false" visible="false">-->
+									<!--	<Text text="{i18n>colProjectID}"/>-->
+									<!--</Column>-->
 									<Column demandPopin="false">
 										<Text text="{i18n>colJira}"/>
 									</Column>
@@ -85,10 +88,10 @@
 									<Column demandPopin="false">
 										<Text text="{i18n>colSystem}"/>
 									</Column>
-									<Column demandPopin="false">
+									<Column demandPopin="false" width="120px">
 										<Text text="{i18n>colTransport}"/>
 									</Column>
-									<Column demandPopin="false">
+									<Column demandPopin="false" width="200px">
 										<Text text="{i18n>colComment}"/>
 									</Column>
 									<Column demandPopin="false" visible="true">
@@ -115,9 +118,10 @@
 											<Switch enabled="false" state="{Planned}" type="AcceptReject"/>
 											<Text text="{CalendarWeek}"/>
 											<Text text="{Task}"/>
-											<Link text="{Project}"/>
+											<Link text="{Project}" target="_blank" href="https://it4you.schwarz/{ProjectType}{Project}"/>
+											<!--<Text text="{ProjectID}"/>-->
 											<Link text="{Jira}" target="_blank" href="https://jira.schwarz/browse/{Jira}"/>
-											<Link text="{Spec}"/>
+											<Link text="{Spec}" target="_blank" href="https://it4you.schwarz/u_sdur_task_list.do?sysparm_query=number=SPEC{Spec}"/>
 											<Text text="{BC}"/>
 											<Text text="{Status}"/>
 											<Text text="{Begin}"/>
@@ -133,7 +137,7 @@
 											</Panel>
 											<Panel content="{path:'Transport', templateShareable:false}" expandable="true" expanded="false">
 												<VBox>
-													<Link text="{Name}"/>
+													<Link text="{Name}" width="80px"/>
 												</VBox>
 											</Panel>
 											<Panel content="{path:'Comment', templateShareable:false}" expandable="true" expanded="false">
@@ -301,6 +305,26 @@
 													</form:label>
 													<form:fields>
 														<TextArea growing="true" rows="1" id="project" required="true" value="{/Project}"/>
+													</form:fields>
+												</form:FormElement>
+												<!--<form:FormElement>-->
+												<!--	<form:label>-->
+												<!--		<Label text="{i18n>colProjectID}"/>-->
+												<!--	</form:label>-->
+												<!--	<form:fields>-->
+												<!--		<TextArea growing="true" rows="1" id="projectID" required="true" value="{/ProjectID}"/>-->
+												<!--	</form:fields>-->
+												<!--</form:FormElement>-->
+												<form:FormElement>
+													<form:label>
+														<Label text="{i18n>projectType}"/>
+													</form:label>
+													<form:fields>
+														<Select id="projectTypeSelect" selectedKey="{ProjectType}">
+															<core:ListItem text="{i18n>ap}" key="u_sdur_task_list.do?sysparm_query=number="/>
+															<core:ListItem text="{i18n>projectNumber}" key="pm_project_list.do?sysparm_query=u_project_number_on_task="/>
+															<core:ListItem text="{i18n>number}" key="pm_project_list.do?sysparm_query=number="/>
+														</Select>
 													</form:fields>
 												</form:FormElement>
 												<form:FormElement>
