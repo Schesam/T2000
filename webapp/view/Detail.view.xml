@@ -12,6 +12,7 @@
 								<core:ListItem text="Thomas Rempel" key="2"/>
 								<core:ListItem text="Jurij Rudi" key="3"/>
 								<core:ListItem text="Igor Aronov" key="4"/>
+								<core:ListItem text="Michaela Bany" key="5"/>
 							</Select>
 						</Toolbar>
 						<ScrollContainer vertical="true" horizontal="true" height="calc(100% - 44px)">
@@ -75,6 +76,9 @@
 									<Column demandPopin="false">
 										<Text text="{i18n>colRealEnd}"/>
 									</Column>
+									<Column demandPopin="false">
+										<Text text="{i18n>colEstimation}"/>
+									</Column>
 									<Column demandPopin="false" width="50px">
 										<Text text="{i18n>colPriority}"/>
 									</Column>
@@ -120,6 +124,7 @@
 											<Text text="{RealBegin}"/>
 											<Text text="{End}"/>
 											<Text text="{RealEnd}"/>
+											<Text text="{Estimation}"/>
 											<Text text="{Priority}"/>
 											<Panel content="{path:'System', templateShareable:false}" expandable="true" expanded="false">
 												<VBox>
@@ -165,6 +170,7 @@
 															<core:ListItem text="Thomas Rempel" key="2"/>
 															<core:ListItem text="Jurij Rudi" key="3"/>
 															<core:ListItem text="Igor Aronov" key="4"/>
+															<core:ListItem text="Michaela Bany" key="5"/>
 														</Select>
 													</form:fields>
 												</form:FormElement>
@@ -364,6 +370,14 @@
 													</form:label>
 													<form:fields>
 														<DateRangeSelection id="crTimerange" displayFormat="EEEE, dd. MMMM YYYY" valueFormat="dd.MM.YYYY" required="true"/>
+													</form:fields>
+												</form:FormElement>
+												<form:FormElement>
+													<form:label>
+														<Label text="{i18n>colEstimation}"/>
+													</form:label>
+													<form:fields>
+														<Input id="estimation" required="true" value="{/Estimation}"/>
 													</form:fields>
 												</form:FormElement>
 											</form:formElements>

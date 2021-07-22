@@ -62,7 +62,7 @@ sap.ui.define([
 			if (obj instanceof Array) {
 				copy = [];
 				for (var i = 0, len = obj.length; i < len; i++) {
-					copy[i] = this._clone(obj[i]);
+					copy[i] = this.clone(obj[i]);
 				}
 				return copy;
 			}
@@ -71,7 +71,7 @@ sap.ui.define([
 				copy = {};
 				for (var attr in obj) {
 					if (obj.hasOwnProperty(attr)) {
-						copy[attr] = this._clone(obj[attr]);
+						copy[attr] = this.clone(obj[attr]);
 					}
 				}
 				return copy;

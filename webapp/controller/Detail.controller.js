@@ -104,7 +104,7 @@ sap.ui.define([
 						that._extractRowIndex(sap.ui.getCore().byId($("#" + oEvent.target.id).parent()[0].id).getBindingContextPath());
 					} catch (e) {
 						console.log("Probably pressed on Cell, not Row");
-						// console.error(e);
+						console.error(e);
 					}
 				});
 			} else {
@@ -113,7 +113,7 @@ sap.ui.define([
 						that._extractRowIndex(sap.ui.getCore().byId($("#" + oEvent.toElement.id).parent()[0].id).getBindingContextPath());
 					} catch (e) {
 						console.log("Probably pressed on Cell, not Row");
-						// console.error(e);
+						console.error(e);
 					}
 				});
 			}
@@ -125,7 +125,8 @@ sap.ui.define([
 				this._columnNames.push(column.getHeader().getText());
 			});
 			this._columnIds = ["Category", "Area", "Planned", "CalendarWeek", "Task", "Project", "Jira", "Spec", "BC", "Status", "Begin",
-				"RealBegin", "End", "RealEnd", "Priority", "System", "Transport", "Comment", "Creator", "CreationDate", "Changer", "ChangingDate"
+				"RealBegin", "End", "RealEnd", "Estimation", "Priority", "System", "Transport", "Comment", "Creator", "CreationDate", "Changer",
+				"ChangingDate"
 			];
 			this._dateColumns = ["Begin", "RealBegin", "End", "RealEnd", "CreationDate", "ChangingDate"];
 			this._hiddenColumns = [];
@@ -417,6 +418,7 @@ sap.ui.define([
 				oData[i].Status = this._status[this._status.length * Math.random() | 0];
 				oData[i].Begin = moment().subtract(i + 4, "days").format("DD.MM.YYYY");
 				oData[i].RealBegin = moment().subtract(i + 4, "days").format("DD.MM.YYYY");
+				oData[i].Estimation = 4 * 8;
 				oData[i].End = moment().subtract(i, "days").format("DD.MM.YYYY");
 				oData[i].RealEnd = moment().subtract(i, "days").format("DD.MM.YYYY");
 				oData[i].Priority = i + 1;
@@ -513,64 +515,79 @@ sap.ui.define([
 			}
 		},
 		onSaveChanges: function (oControlEvent) {
-			this.byId("valueTable").setBusy(true);
-			var oObj = this._prepareSave(),
-				oEmployee = this.byId("employeeSelectD");
-			oObj.Category = this.byId("editCategory").getValue();
-			oObj.Area = this.byId("editArea").getValue();
-			oObj.Task = this.byId("editTask").getValue();
-			oObj.BC = this.byId("editBC").getValue();
-			oObj.Status = this.byId("editStatus").getValue();
-			oObj.Begin = Formatter._formatDate(this.byId("editBegin").getDateValue());
-			oObj.RealBegin = Formatter._formatDate(this.byId("editRealBegin").getDateValue());
-			oObj.End = Formatter._formatDate(this.byId("editEnd").getDateValue());
-			oObj.RealEnd = Formatter._formatDate(this.byId("editRealEnd").getDateValue());
-			oObj.Creator = this.byId("entryDialog").getModel().getData().Creator;
-			oObj.CreationDate = this.byId("entryDialog").getModel().getData().CreationDate;
+			if (this._checkFormEntries()) {
+				this.byId("valueTable").setBusy(true);
+				var oObj = this._prepareSave(),
+					oEmployee = this.byId("employeeSelectD");
+				oObj.Category = this.byId("editCategory").getValue();
+				oObj.Area = this.byId("editArea").getValue();
+				oObj.Task = this.byId("editTask").getValue();
+				oObj.BC = this.byId("editBC").getValue();
+				oObj.Status = this.byId("editStatus").getValue();
+				oObj.Begin = Formatter._formatDate(this.byId("editBegin").getDateValue());
+				oObj.RealBegin = Formatter._formatDate(this.byId("editRealBegin").getDateValue());
+				oObj.End = Formatter._formatDate(this.byId("editEnd").getDateValue());
+				oObj.RealEnd = Formatter._formatDate(this.byId("editRealEnd").getDateValue());
+				oObj.Estimation = this.byId("estimation").getValue();
+				oObj.Creator = this.byId("entryDialog").getModel().getData().Creator;
+				oObj.CreationDate = this.byId("entryDialog").getModel().getData().CreationDate;
 
-			this._dataModels[oEmployee.getSelectedKey()].results[this._rowIndex] = oObj;
-			var oJSONModel = new JSONModel();
-			oJSONModel.setData({
-				rows: this._dataModels[oEmployee.getSelectedKey()].results
-			});
-			this.byId("valueTable").setModel(oJSONModel);
-			this._updateRowCount();
-			this.byId("valueTable").setBusy(false);
-			MessageToast.show(this._oI18n.getText("messageSuccessfullEdited"));
-			this.byId("valueTable").setBusy(false);
+				this._dataModels[oEmployee.getSelectedKey()].results[this._rowIndex] = oObj;
+				var oJSONModel = new JSONModel();
+				oJSONModel.setData({
+					rows: this._dataModels[oEmployee.getSelectedKey()].results
+				});
+				this.byId("valueTable").setModel(oJSONModel);
+				this._updateRowCount();
+				this.byId("valueTable").setBusy(false);
+				MessageToast.show(this._oI18n.getText("messageSuccessfullEdited"));
+				this.byId("valueTable").setBusy(false);
+				this.byId("entryDialog").close();
+			}
 		},
 		_checkFormEntries: function () {
-			if (!this.byId("crCategoryCombo").getValue() ||
-				!this.byId("crAreaCombo").getValue() ||
-				!this.byId("crCalendarWeek").getValue() ||
-				!this.byId("crTaskCombo").getValue() ||
-				!this.byId("crProject").getValue() ||
-				!this.byId("crJira").getValue() ||
-				!this.byId("crSpec").getValue() ||
-				!this.byId("crBCCombo").getValue() ||
-				!this.byId("crStatusCombo").getValue() ||
-				!this.byId("crPriority").getValue() ||
-				this.byId("crSystemMulti").getTokens().length <= 0 ||
-				this.byId("crTransportMulti").getTokens().length <= 0 ||
-				!this.byId("crComment").getValue()) {
+			if (!this.byId("crCategoryCombo").getValue() && !this.byId("editCategory").getValue() ||
+				!this.byId("crAreaCombo").getValue() && !this.byId("editArea").getValue() ||
+				!this.byId("calendarWeek").getValue() ||
+				!this.byId("crTaskCombo").getValue() && !this.byId("editTask").getValue() ||
+				!this.byId("crStatusCombo").getValue() && !this.byId("editStatus").getValue() ||
+				!this.byId("project").getValue() ||
+				!this.byId("jira").getValue() ||
+				!this.byId("spec").getValue() ||
+				!this.byId("crBCCombo").getValue() && !this.byId("editBC").getValue() ||
+				!this.byId("priority").getValue() ||
+				((!this.byId("crTimerange").getDateValue() || !this.byId("crTimerange").getSecondDateValue()) && !(this.byId("editBegin").getValue() &&
+					this.byId("editRealBegin").getValue() && this.byId("editEnd").getValue() && this.byId("editRealEnd").getValue())) ||
+				!this.byId("estimation").getValue() ||
+				this.byId("systemMulti").getTokens().length <= 0 ||
+				this.byId("transportMulti").getTokens().length <= 0 ||
+				!this.byId("comment").getValue()) {
 				MessageBox.error(this._oI18n.getText("messageEmptyFields"), {
 					title: this._oI18n.getText("error")
 				});
 				return false;
 			}
 			var hadError = false;
-			this.byId("crCalendarWeek").setValueState("None");
-			if (!this._appController.isNumeric(this.byId("crCalendarWeek").getValue()) ||
-				parseInt(this.byId("crCalendarWeek").getValue(), 10) < 1 ||
-				parseInt(this.byId("crCalendarWeek").getValue(), 10) > 52) {
+			this.byId("calendarWeek").setValueState("None");
+			if (!this._appController.isNumeric(this.byId("calendarWeek").getValue()) ||
+				parseInt(this.byId("calendarWeek").getValue(), 10) < 1 ||
+				parseInt(this.byId("calendarWeek").getValue(), 10) > 52) {
 				hadError = true;
-				this.byId("crCalendarWeek").setValueState("Error");
+				this.byId("calendarWeek").setValueState("Error");
 			}
 			this.byId("crTimerange").setValueState("None");
-			if (!this.byId("crTimerange").getDateValue() ||
-				!this.byId("crTimerange").getSecondDateValue()) {
+			this.byId("editBegin").setValueState("None");
+			this.byId("editRealBegin").setValueState("None");
+			this.byId("editEnd").setValueState("None");
+			this.byId("editRealEnd").setValueState("None");
+			if ((!this.byId("crTimerange").getDateValue() || !this.byId("crTimerange").getSecondDateValue()) && !(this.byId("editBegin").getValue() &&
+					this.byId("editRealBegin").getValue() && this.byId("editEnd").getValue() && this.byId("editRealEnd").getValue())) {
 				hadError = true;
 				this.byId("crTimerange").setValueState("Error");
+				this.byId("editEnd").setValueState("Error");
+				this.byId("editRealEnd").setValueState("Error");
+				this.byId("editBegin").setValueState("Error");
+				this.byId("editRealBegin").setValueState("Error");
 			}
 			if (hadError) {
 				MessageBox.error(this._oI18n.getText("messageWrongDates"), {
@@ -579,11 +596,11 @@ sap.ui.define([
 				return false;
 			}
 
-			this.byId("crTransportMulti").setValueState("None");
-			this.byId("crSystemMulti").setValueState("None");
-			if (this.byId("crSystemMulti").getTokens().length !== this.byId("crTransportMulti").getTokens().length) {
-				this.byId("crTransportMulti").setValueState("Error");
-				this.byId("crSystemMulti").setValueState("Error");
+			this.byId("transportMulti").setValueState("None");
+			this.byId("systemMulti").setValueState("None");
+			if (this.byId("systemMulti").getTokens().length !== this.byId("transportMulti").getTokens().length) {
+				this.byId("transportMulti").setValueState("Error");
+				this.byId("systemMulti").setValueState("Error");
 				MessageBox.error(this._oI18n.getText("messageWrongDates"), {
 					title: this._oI18n.getText("error")
 				});
