@@ -20,7 +20,7 @@ sap.ui.define([
 			if (Controller.prototype.onInit) {
 				Controller.prototype.onInit.apply(this, arguments);
 			}
-			this._appController = sap.ui.controller("koehler.T2000.controller.App");
+			this._oAppController = sap.ui.controller("koehler.T2000.controller.App");
 			this._oI18n = this.getOwnerComponent().getModel("i18n").getResourceBundle();
 			this.getView().setBusyIndicatorDelay(0);
 
@@ -51,9 +51,7 @@ sap.ui.define([
 			this._load(500);
 		},
 		_onObjectMatched: function (oEvent) {
-			var args = oEvent.getParameter("arguments");
-			var num = args.num;
-			this._load(num);
+			this._load(oEvent.getParameter("arguments").num);
 		},
 		_load: async function (num) {
 			console.log("Loading");
@@ -95,14 +93,14 @@ sap.ui.define([
 			// 		"X-RequestDigest": $("#_REQUESTDIGEST").val()
 			// 	}
 			// });
-			this._columnNames = [];
+			this._aColumnNames = [];
 			var that = this;
-			var dev = sap.ui.Device.system;
-			if (dev.tablet || dev.phone) {
+			var oDev = sap.ui.Device.system;
+			if (oDev.tablet || oDev.phone) {
 				this.byId("valueTable").attachBrowserEvent("tap", function (oEvent) {
 					try {
 						that._extractRowIndex(sap.ui.getCore().byId($("#" + oEvent.target.id).parent()[0].id).getBindingContextPath());
-						that._openEntryDialog(that._rowIndex);
+						that._openEntryDialog(that._nRowIndex);
 					} catch (e) {
 						console.log("Probably pressed on Cell, not Row");
 						console.error(e);
@@ -112,7 +110,7 @@ sap.ui.define([
 				this.byId("valueTable").attachBrowserEvent("dblclick", function (oEvent) {
 					try {
 						that._extractRowIndex(sap.ui.getCore().byId($("#" + oEvent.toElement.id).parent()[0].id).getBindingContextPath());
-						that._openEntryDialog(that._rowIndex);
+						that._openEntryDialog(that._nRowIndex);
 					} catch (e) {
 						console.log("Probably pressed on Cell, not Row");
 						console.error(e);
@@ -124,31 +122,31 @@ sap.ui.define([
 				that.byId("filterBar").setWidth($(window).width() + "px");
 			});
 			this.byId("valueTable").getColumns().forEach(column => {
-				this._columnNames.push(column.getHeader().getText());
+				this._aColumnNames.push(column.getHeader().getText());
 			});
-			this._columnIds = ["Category", "Area", "Planned", "CalendarWeek", "Task", "Project", "ProjectType", "Jira", "Spec", "BC", "Status",
+			this._aColumnIds = ["Category", "Area", "Planned", "CalendarWeek", "Task", "Project", "ProjectType", "Jira", "Spec", "BC", "Status",
 				"Begin", "RealBegin", "End", "RealEnd", "Estimation", "Priority", "System", "Transport", "Comment", "Creator", "CreationDate",
 				"Changer", "ChangingDate"
 			];
-			this._dateColumns = ["Begin", "RealBegin", "End", "RealEnd", "CreationDate", "ChangingDate"];
-			this._hiddenColumns = [];
-			var columns = this.byId("valueTable").getColumns();
-			for (var i = 0; i < columns.length; i++) {
-				if (!columns[i].getVisible()) {
-					this._hiddenColumns.push(this._columnIds[i]);
+			this._aDateColumns = ["Begin", "RealBegin", "End", "RealEnd", "CreationDate", "ChangingDate"];
+			this._aHiddenColumns = [];
+			var aColumns = this.byId("valueTable").getColumns();
+			for (var i = 0; i < aColumns.length; i++) {
+				if (!aColumns[i].getVisible()) {
+					this._aHiddenColumns.push(this._aColumnIds[i]);
 				}
 			}
-			this._areas = ["Abwesenheit", "Organisation", "Produkt", "Anforderung"];
-			this._categories = ["Testkategorie", "Timebox", "Task"];
-			this._tasks = ["Krankheit, Urlaub, Teilzeit", "Schulung, Ausbildung", "Team- und eigene Orga", "Incidents/Problems/Support",
+			this._aAreas = ["Abwesenheit", "Organisation", "Produkt", "Anforderung"];
+			this._aCategories = ["Testkategorie", "Timebox", "Task"];
+			this._aTasks = ["Krankheit, Urlaub, Teilzeit", "Schulung, Ausbildung", "Team- und eigene Orga", "Incidents/Problems/Support",
 				"PreZero", "VZ-Dispo 2020", "PreBull", "BBY", "S4HANA"
 			];
-			this._bcs = ["Silke Wünsch", "Amine Abida", "Emanuel", "Andreas", "Mike", "Sonstige"];
-			this._status = ["Backlog", "Umsetzung", "Analyse", "Begleitung"];
-			this._dialogs = {};
-			this._groupFunctions = {};
-			this._columnIds.forEach(id => {
-				this._groupFunctions[id] = function (oContext) {
+			this._aBcs = ["Silke Wünsch", "Amine Abida", "Emanuel", "Andreas", "Mike", "Sonstige"];
+			this._aStatus = ["Backlog", "Umsetzung", "Analyse", "Begleitung"];
+			this._oDialogs = {};
+			this._oGroupFunctions = {};
+			this._aColumnIds.forEach(id => {
+				this._oGroupFunctions[id] = function (oContext) {
 					var sName = oContext.getProperty(id);
 					return {
 						key: sName,
@@ -170,11 +168,11 @@ sap.ui.define([
 			return this.byId("valueTable").getBinding("items").getLength();
 		},
 		_createDialog: function (fragmentName) {
-			var oDialog = this._dialogs[fragmentName];
+			var oDialog = this._oDialogs[fragmentName];
 
 			if (!oDialog) {
 				oDialog = sap.ui.xmlfragment(fragmentName, this);
-				this._dialogs[fragmentName] = oDialog;
+				this._oDialogs[fragmentName] = oDialog;
 			}
 			return oDialog;
 		},
@@ -193,10 +191,10 @@ sap.ui.define([
 				})
 			);
 			aArr.Names = {};
-			for (var i = 0; i < this._columnIds.length; i++) {
-				aArr.Names[this._columnIds[i]] = {
-					Key: this._columnIds[i],
-					Value: this._columnNames[i],
+			for (var i = 0; i < this._aColumnIds.length; i++) {
+				aArr.Names[this._aColumnIds[i]] = {
+					Key: this._aColumnIds[i],
+					Value: this._aColumnNames[i],
 					Items: []
 				};
 			}
@@ -204,14 +202,14 @@ sap.ui.define([
 				var aEntries = Object.entries(row);
 				for (var j = 0; j < aEntries.length; j++) {
 					if (!Array.isArray(aEntries[j][1])) {
-						aArr.Names[this._columnIds[j]].Items.push({
-							Key: this._columnIds[j],
+						aArr.Names[this._aColumnIds[j]].Items.push({
+							Key: this._aColumnIds[j],
 							Name: aEntries[j][1]
 						});
 					} else {
 						for (var k = 0; k < aEntries[j][1].length; k++) {
-							aArr.Names[this._columnIds[j]].Items.push({
-								Key: this._columnIds[j],
+							aArr.Names[this._aColumnIds[j]].Items.push({
+								Key: this._aColumnIds[j],
 								Name: aEntries[j][1][k].Name
 							});
 						}
@@ -219,23 +217,23 @@ sap.ui.define([
 				}
 			});
 			for (i = 0; i < Object.entries(aArr.Names).length; i++) {
-				aArr.Names[this._columnIds[i]].Items = this._appController.uniqBy(aArr.Names[this._columnIds[i]].Items, JSON.stringify);
+				aArr.Names[this._aColumnIds[i]].Items = this._oAppController.uniqBy(aArr.Names[this._aColumnIds[i]].Items, JSON.stringify);
 			}
-			for (i = 0; i < this._dateColumns.length; i++) {
-				aArr.Names[this._dateColumns[i]].Items = [{
-					Key: this._dateColumns[i] + "___7___days",
+			for (i = 0; i < this._aDateColumns.length; i++) {
+				aArr.Names[this._aDateColumns[i]].Items = [{
+					Key: this._aDateColumns[i] + "___7___days",
 					Name: this._oI18n.getText("lastWeek")
 				}, {
-					Key: this._dateColumns[i] + "___1___months",
+					Key: this._aDateColumns[i] + "___1___months",
 					Name: this._oI18n.getText("lastMonth")
 				}, {
-					Key: this._dateColumns[i] + "___3___months",
+					Key: this._aDateColumns[i] + "___3___months",
 					Name: this._oI18n.getText("lastThreeMonths")
 				}, {
-					Key: this._dateColumns[i] + "___6___months",
+					Key: this._aDateColumns[i] + "___6___months",
 					Name: this._oI18n.getText("lastSixMonths")
 				}, {
-					Key: this._dateColumns[i] + "___1___years",
+					Key: this._aDateColumns[i] + "___1___years",
 					Name: this._oI18n.getText("lastYear")
 				}];
 			}
@@ -261,7 +259,7 @@ sap.ui.define([
 				sPath = mParams.groupItem.getKey();
 				aSorters.push(new Sorter(this._getColIdForIndex(sPath), mParams.groupDescending));
 				oTable.getBinding("items").sort(aSorters);
-				aGroups.push(new Sorter(sPath, mParams.groupDescending, this._groupFunctions[this._getColIdForIndex(sPath)]));
+				aGroups.push(new Sorter(sPath, mParams.groupDescending, this._oGroupFunctions[this._getColIdForIndex(sPath)]));
 				oTable.getBinding("items").sort(aGroups);
 			} else {
 				oTable.getBinding("items").sort();
@@ -274,7 +272,7 @@ sap.ui.define([
 			this.byId("valueTable").getBinding("items").sort(aSorters);
 		},
 		_getColIdForIndex: function (index) {
-			return this._columnIds[index];
+			return this._aColumnIds[index];
 		},
 		onFilterDialogConfirm: function (oEvent) {
 			var oTable = this.byId("valueTable"),
@@ -290,7 +288,7 @@ sap.ui.define([
 						path: sPath,
 						test: function (oValue) {
 							if (!Array.isArray(oValue)) {
-								if (that._dateColumns.includes(sPath)) {
+								if (that._aDateColumns.includes(sPath)) {
 									return moment(oValue, "DD.MM.yyyy").isBetween(moment().subtract(aSplit[2], aSplit[3]), moment(), aSplit[3], true);
 								} else {
 									return oValue.toString().localeCompare(sVal, sap.ui.getCore().getConfiguration().getLanguage(), {
@@ -339,16 +337,16 @@ sap.ui.define([
 						aFilter.push(new Filter({
 							path: "",
 							test: function (oValue) {
-								var entries = Object.entries(oValue);
-								for (var i = 0; i < entries.length; i++) {
-									if (!that._hiddenColumns.includes(entries[i][0])) {
-										if (!Array.isArray(entries[i][1])) {
-											if (entries[i][1].toString().toLocaleLowerCase().includes(sQuery.toString().toLocaleLowerCase())) {
+								var aEntries = Object.entries(oValue);
+								for (var i = 0; i < aEntries.length; i++) {
+									if (!that._aHiddenColumns.includes(aEntries[i][0])) {
+										if (!Array.isArray(aEntries[i][1])) {
+											if (aEntries[i][1].toString().toLocaleLowerCase().includes(sQuery.toString().toLocaleLowerCase())) {
 												return true;
 											}
 										} else {
-											for (var j = 0; j < entries[i][1].length; j++) {
-												if (entries[i][1][j].Name.toString().toLocaleLowerCase().includes(sQuery.toString().toLocaleLowerCase())) {
+											for (var j = 0; j < aEntries[i][1].length; j++) {
+												if (aEntries[i][1][j].Name.toString().toLocaleLowerCase().includes(sQuery.toString().toLocaleLowerCase())) {
 													return true;
 												}
 											}
@@ -368,20 +366,20 @@ sap.ui.define([
 		},
 		_fillData: function () {
 			this.byId("headerText").setText(this.byId("employeeSelect").getFirstItem().getText());
-			this.byId("crStatusCombo").setModel(this._appController.getModelForArray(this._status, ""));
-			this.byId("crCategoryCombo").setModel(this._appController.getModelForArray(this._categories, ""));
-			this.byId("crAreaCombo").setModel(this._appController.getModelForArray(this._areas, ""));
-			this.byId("crTaskCombo").setModel(this._appController.getModelForArray(this._tasks, ""));
-			this.byId("crBCCombo").setModel(this._appController.getModelForArray(this._bcs, ""));
+			this.byId("crStatusCombo").setModel(this._oAppController.getModelForArray(this._aStatus, ""));
+			this.byId("crCategoryCombo").setModel(this._oAppController.getModelForArray(this._aCategories, ""));
+			this.byId("crAreaCombo").setModel(this._oAppController.getModelForArray(this._aAreas, ""));
+			this.byId("crTaskCombo").setModel(this._oAppController.getModelForArray(this._aTasks, ""));
+			this.byId("crBCCombo").setModel(this._oAppController.getModelForArray(this._aBcs, ""));
 
 			var oFilterDialog = this._createDialog("koehler.T2000.fragment.FilterDialog");
 			oFilterDialog.setModel(this.getOwnerComponent().getModel("i18n"), "i18n");
 
 			var oSortDialog = this._createDialog("koehler.T2000.fragment.SortDialog");
-			oSortDialog.setModel(this._appController.getModelForArray(this._columnNames, ""));
+			oSortDialog.setModel(this._oAppController.getModelForArray(this._aColumnNames, ""));
 
 			var oGroupDialog = this._createDialog("koehler.T2000.fragment.GroupDialog");
-			oGroupDialog.setModel(this._appController.getModelForArray(this._columnNames, ""));
+			oGroupDialog.setModel(this._oAppController.getModelForArray(this._aColumnNames, ""));
 		},
 		onEmployeeSelect: function (oControlEvent) {
 			this.byId("headerText").setText(oControlEvent.getParameters().selectedItem.getText());
@@ -392,33 +390,44 @@ sap.ui.define([
 			var oEventOwn = {},
 				oI18n = this._oI18n;
 			oEventOwn.getParameters = function () {
-				var params = {};
-				params.filterItems = [{
+				var oParams = {};
+				oParams.filterItems = [{
 					getKey: function () {
 						return oI18n.getText("backlog") + "___Status";
 					}
 				}];
-				params.filterString = oI18n.getText("filteredBy") + ": Status (" + oI18n.getText("backlog") + ")";
-				return params;
+				oParams.filterString = oI18n.getText("filteredBy") + ": Status (" + oI18n.getText("backlog") + ")";
+				return oParams;
 			};
 			this.onFilterDialogConfirm(oEventOwn);
 		},
 		_getTestData: function (num, employee) {
-			var oData = {};
+			var oData = {},
+				aProjects = [{
+					Name: "P096",
+					Type: "pm_project_list.do?sysparm_query=u_project_number_on_task="
+				}, {
+					Name: "AP009153",
+					Type: "u_sdur_task_list.do?sysparm_query=number="
+				}, {
+					Name: "PRJ001269",
+					Type: "pm_project_list.do?sysparm_query=number="
+				}];
 			oData = new Array(num);
+
 			for (var i = 0; i < num; i++) {
 				oData[i] = {};
-				oData[i].Category = this._categories[this._categories.length * Math.random() | 0];
-				oData[i].Area = this._areas[this._areas.length * Math.random() | 0];
+				oData[i].Category = this._aCategories[this._aCategories.length * Math.random() | 0];
+				oData[i].Area = this._aAreas[this._aAreas.length * Math.random() | 0];
 				oData[i].Planned = i % 2 === 1;
 				oData[i].CalendarWeek = i + 1;
-				oData[i].Task = this._tasks[this._tasks.length * Math.random() | 0];
-				oData[i].Project = "P096" + i;
-				oData[i].ProjectType = "pm_project_list.do?sysparm_query=u_project_number_on_task=";
+				oData[i].Task = this._aTasks[this._aTasks.length * Math.random() | 0];
+				oData[i].Project = aProjects[i % 3].Name + parseInt(i / 3, 10);
+				oData[i].ProjectType = aProjects[i % 3].Type;
 				oData[i].Jira = "FXDFKA-191" + i;
 				oData[i].Spec = "009824" + i;
-				oData[i].BC = this._bcs[this._bcs.length * Math.random() | 0];
-				oData[i].Status = this._status[this._status.length * Math.random() | 0];
+				oData[i].BC = this._aBcs[this._aBcs.length * Math.random() | 0];
+				oData[i].Status = this._aStatus[this._aStatus.length * Math.random() | 0];
 				oData[i].Begin = moment().subtract(i + 4, "days").format("DD.MM.YYYY");
 				oData[i].RealBegin = moment().subtract(i + 4, "days").format("DD.MM.YYYY");
 				oData[i].Estimation = 4 * 8;
@@ -447,9 +456,9 @@ sap.ui.define([
 		},
 		_fillTestData: function (num) {
 			var that = this;
-			this._dataModels = {};
+			this._aDataModels = {};
 			this.byId("employeeSelect").getItems().forEach(item => {
-				this._dataModels[item.getKey()] = {
+				this._aDataModels[item.getKey()] = {
 					employee: item.getText(),
 					results: that._getTestData(num, item.getText())
 				};
@@ -459,7 +468,7 @@ sap.ui.define([
 		_updateData: function (item) {
 			var oJSONModel = new JSONModel();
 			oJSONModel.setData({
-				rows: this._dataModels[item.getKey()].results
+				rows: this._aDataModels[item.getKey()].results
 			});
 			this.byId("valueTable").setModel(oJSONModel);
 			this._updateRowCount();
@@ -493,7 +502,7 @@ sap.ui.define([
 			if (this._checkFormEntries()) {
 				this.byId("valueTable").setBusy(true);
 				var oObj = this._prepareSave();
-				var employee = this.byId("employeeSelectD");
+				var oEmployee = this.byId("employeeSelectD");
 
 				oObj.Category = this.byId("crCategoryCombo").getValue();
 				oObj.Area = this.byId("crAreaCombo").getValue();
@@ -507,10 +516,10 @@ sap.ui.define([
 
 				oObj.Creator = "Andreas Köhler";
 				oObj.CreationDate = moment().format("DD.MM.YYYY HH:mm:ss");
-				this._dataModels[employee.getSelectedKey()].results.push(oObj);
+				this._aDataModels[oEmployee.getSelectedKey()].results.push(oObj);
 				var oJSONModel = new JSONModel();
 				oJSONModel.setData({
-					rows: this._dataModels[employee.getSelectedKey()].results
+					rows: this._aDataModels[oEmployee.getSelectedKey()].results
 				});
 				this.byId("valueTable").setModel(oJSONModel);
 				this._updateRowCount();
@@ -536,10 +545,10 @@ sap.ui.define([
 				oObj.Creator = this.byId("entryDialog").getModel().getData().Creator;
 				oObj.CreationDate = this.byId("entryDialog").getModel().getData().CreationDate;
 
-				this._dataModels[oEmployee.getSelectedKey()].results[this._rowIndex] = oObj;
+				this._aDataModels[oEmployee.getSelectedKey()].results[this._nRowIndex] = oObj;
 				var oJSONModel = new JSONModel();
 				oJSONModel.setData({
-					rows: this._dataModels[oEmployee.getSelectedKey()].results
+					rows: this._aDataModels[oEmployee.getSelectedKey()].results
 				});
 				this.byId("valueTable").setModel(oJSONModel);
 				this._updateRowCount();
@@ -572,12 +581,12 @@ sap.ui.define([
 				});
 				return false;
 			}
-			var hadError = false;
+			var bHadError = false;
 			this.byId("calendarWeek").setValueState("None");
-			if (!this._appController.isNumeric(this.byId("calendarWeek").getValue()) ||
+			if (!this._oAppController.isNumeric(this.byId("calendarWeek").getValue()) ||
 				parseInt(this.byId("calendarWeek").getValue(), 10) < 1 ||
 				parseInt(this.byId("calendarWeek").getValue(), 10) > 52) {
-				hadError = true;
+				bHadError = true;
 				this.byId("calendarWeek").setValueState("Error");
 			}
 			this.byId("crTimerange").setValueState("None");
@@ -587,14 +596,14 @@ sap.ui.define([
 			this.byId("editRealEnd").setValueState("None");
 			if ((!this.byId("crTimerange").getDateValue() || !this.byId("crTimerange").getSecondDateValue()) && !(this.byId("editBegin").getValue() &&
 					this.byId("editRealBegin").getValue() && this.byId("editEnd").getValue() && this.byId("editRealEnd").getValue())) {
-				hadError = true;
+				bHadError = true;
 				this.byId("crTimerange").setValueState("Error");
 				this.byId("editEnd").setValueState("Error");
 				this.byId("editRealEnd").setValueState("Error");
 				this.byId("editBegin").setValueState("Error");
 				this.byId("editRealBegin").setValueState("Error");
 			}
-			if (hadError) {
+			if (bHadError) {
 				MessageBox.error(this._oI18n.getText("messageWrongDates"), {
 					title: this._oI18n.getText("error")
 				});
@@ -618,20 +627,22 @@ sap.ui.define([
 			if (!this.byId("entryDialog").getVisible()) {
 				this.byId("entryDialog").setVisible(true);
 			}
+			this.byId("entryDialog").setTitle(this._oI18n.getText("new"));
 			this.byId("entryDialog").open();
 		},
 		onEditClick: function (oControlEvent) {
 			this._extractRowIndex(oControlEvent.getSource().getParent().getBindingContextPath());
-			this._openEntryDialog(this._rowIndex);
+			this._openEntryDialog(this._nRowIndex);
 		},
 		_extractRowIndex: function (bindingPath) {
-			this._rowIndex = bindingPath.substr(bindingPath.lastIndexOf("/") + 1);
+			this._nRowIndex = bindingPath.substr(bindingPath.lastIndexOf("/") + 1);
 		},
 		_openEntryDialog: function (rowIndex) {
-			var oDialogModel = new JSONModel(this._appController.clone(this.byId("valueTable").getModel().getData().rows[
+			var oDialogModel = new JSONModel(this._oAppController.clone(this.byId("valueTable").getModel().getData().rows[
 				rowIndex]));
 			oDialogModel.getData().Employee = this.byId("employeeSelect").getSelectedItem().getKey();
 			this.byId("entryDialog").setModel(oDialogModel);
+			this.byId("entryDialog").setTitle(this._oI18n.getText("edit"));
 			this._prepareDialog(true);
 			if (!this.byId("entryDialog").getVisible()) {
 				this.byId("entryDialog").setVisible(true);
