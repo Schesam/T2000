@@ -5,6 +5,22 @@
     left: 0;
 }
 
-.selectionButton {
-	
+.selectionButton {}
+
+.tableWidth {
+    min-width: 2800px;
+}
+
+.employeeSelect {
+    background: none;
+    border: none;
+}
+
+.employeeText {
+    font-size: medium;
+    left: 40px;
+}
+
+.leftZero {
+    left: 0;
 }

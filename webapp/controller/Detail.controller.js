@@ -34,8 +34,29 @@ sap.ui.define([
 			this.byId("headerBar").setWidth($(window).width() + "px");
 			this.byId("filterBar").setWidth($(window).width() + "px");
 		},
+		onBeforeRendering: function () {
+			// jQuery.sap.byId("container-T2000---Detail--employeeSelect-labelText").addClass("employeeText");
+			// jQuery.sap.byId("container-T2000---Detail--employeeSelect-label").addClass("employeeText");
+			// jQuery.sap.byId("container-T2000---Detail--employeeSelect-arrow").addClass("leftZero");
+			// $("container-T2000---Detail--employeeSelect-labelText").addClass("employeeText");
+			// $("container-T2000---Detail--employeeSelect-label").addClass("employeeText");
+			// $("container-T2000---Detail--employeeSelect-arrow").addClass("leftZero");
+			// $("#container-T2000---Detail--employeeSelect-labelText").addClass("employeeText");
+			// $("#container-T2000---Detail--employeeSelect-label").addClass("employeeText");
+			// $("#container-T2000---Detail--employeeSelect-arrow").addClass("leftZero");
+		},
 		onAfterRendering: function () {
 			this._registerGlobals();
+			// debugger;
+			// jQuery.sap.byId("container-T2000---Detail--employeeSelect-labelText").addClass("employeeText");
+			// jQuery.sap.byId("container-T2000---Detail--employeeSelect-label").addClass("employeeText");
+			// jQuery.sap.byId("container-T2000---Detail--employeeSelect-arrow").addClass("leftZero");
+			// $("container-T2000---Detail--employeeSelect-labelText").addClass("employeeText");
+			// $("container-T2000---Detail--employeeSelect-label").addClass("employeeText");
+			// $("container-T2000---Detail--employeeSelect-arrow").addClass("leftZero");
+			$("#container-T2000---Detail--employeeSelect-labelText").addClass("employeeText");
+			$("#container-T2000---Detail--employeeSelect-label").addClass("employeeText");
+			$("#container-T2000---Detail--employeeSelect-arrow").addClass("leftZero");
 		},
 		onNavBack: function (oEvent) {
 			var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
@@ -102,7 +123,7 @@ sap.ui.define([
 						that._extractRowIndex(sap.ui.getCore().byId($("#" + oEvent.target.id).parent()[0].id).getBindingContextPath());
 						that._openEntryDialog(that._nRowIndex);
 					} catch (e) {
-						console.log("Probably pressed on Cell, not Row");
+						console.log("Editing is just available when pressing on a Row!");
 						console.error(e);
 					}
 				});
@@ -112,7 +133,7 @@ sap.ui.define([
 						that._extractRowIndex(sap.ui.getCore().byId($("#" + oEvent.toElement.id).parent()[0].id).getBindingContextPath());
 						that._openEntryDialog(that._nRowIndex);
 					} catch (e) {
-						console.log("Probably pressed on Cell, not Row");
+						console.log("Editing is just available when pressing on a Row!");
 						console.error(e);
 					}
 				});
@@ -124,7 +145,7 @@ sap.ui.define([
 			this.byId("valueTable").getColumns().forEach(column => {
 				this._aColumnNames.push(column.getHeader().getText());
 			});
-			this._aColumnIds = ["Category", "Area", "Planned", "CalendarWeek", "Task", "Project", "ProjectType", "Jira", "Spec", "BC", "Status",
+			this._aColumnIds = ["Category", "Area", "Planned", "CalendarWeek", "Task", "Project", "Jira", "Spec", "BC", "Status",
 				"Begin", "RealBegin", "End", "RealEnd", "Estimation", "Priority", "System", "Transport", "Comment", "Creator", "CreationDate",
 				"Changer", "ChangingDate"
 			];
@@ -162,6 +183,7 @@ sap.ui.define([
 				oldText = oldText.substring(0, oldText.lastIndexOf("("));
 			}
 			oTitle.setText(oldText + " (" + this._getRowCount() + ")");
+			oTitle.setText(this._getRowCount());
 			// this._updateFilterModel();
 		},
 		_getRowCount: function () {
@@ -200,6 +222,9 @@ sap.ui.define([
 			}
 			aRows.forEach(row => {
 				var aEntries = Object.entries(row);
+				aEntries.splice(aEntries.findIndex(function findeTyp(aTyp) {
+					return aTyp[0] === "ProjectType";
+				}), 1);
 				for (var j = 0; j < aEntries.length; j++) {
 					if (!Array.isArray(aEntries[j][1])) {
 						aArr.Names[this._aColumnIds[j]].Items.push({
@@ -365,7 +390,7 @@ sap.ui.define([
 			});
 		},
 		_fillData: function () {
-			this.byId("headerText").setText(this.byId("employeeSelect").getFirstItem().getText());
+			// this.byId("headerText").setText(this.byId("employeeSelect").getFirstItem().getText());
 			this.byId("crStatusCombo").setModel(this._oAppController.getModelForArray(this._aStatus, ""));
 			this.byId("crCategoryCombo").setModel(this._oAppController.getModelForArray(this._aCategories, ""));
 			this.byId("crAreaCombo").setModel(this._oAppController.getModelForArray(this._aAreas, ""));
@@ -382,7 +407,7 @@ sap.ui.define([
 			oGroupDialog.setModel(this._oAppController.getModelForArray(this._aColumnNames, ""));
 		},
 		onEmployeeSelect: function (oControlEvent) {
-			this.byId("headerText").setText(oControlEvent.getParameters().selectedItem.getText());
+			// this.byId("headerText").setText(oControlEvent.getParameters().selectedItem.getText());
 			this.byId("filterBar").setVisible(false);
 			this._updateData(oControlEvent.getParameters().selectedItem);
 		},
@@ -402,7 +427,7 @@ sap.ui.define([
 			this.onFilterDialogConfirm(oEventOwn);
 		},
 		_getTestData: function (num, employee) {
-			var oData = {},
+			var oData = new Array(num),
 				aProjects = [{
 					Name: "P096",
 					Type: "pm_project_list.do?sysparm_query=u_project_number_on_task="
@@ -413,14 +438,13 @@ sap.ui.define([
 					Name: "PRJ001269",
 					Type: "pm_project_list.do?sysparm_query=number="
 				}];
-			oData = new Array(num);
 
 			for (var i = 0; i < num; i++) {
 				oData[i] = {};
 				oData[i].Category = this._aCategories[this._aCategories.length * Math.random() | 0];
 				oData[i].Area = this._aAreas[this._aAreas.length * Math.random() | 0];
-				oData[i].Planned = i % 2 === 1;
-				oData[i].CalendarWeek = i + 1;
+				oData[i].Planned = Math.floor(Math.random() * 2) === 1;
+				oData[i].CalendarWeek = Math.floor(Math.random() * 52) + 1;
 				oData[i].Task = this._aTasks[this._aTasks.length * Math.random() | 0];
 				oData[i].Project = aProjects[i % 3].Name + parseInt(i / 3, 10);
 				oData[i].ProjectType = aProjects[i % 3].Type;
@@ -481,6 +505,9 @@ sap.ui.define([
 			oObj.ProjectType = this.byId("projectTypeSelect").getValue();
 			oObj.Jira = this.byId("jira").getValue();
 			oObj.Spec = this.byId("spec").getValue();
+			if (oObj.Spec.toLowerCase().startsWith("spec")) {
+				oObj.Spec = oObj.Spec.substring(4);
+			}
 			oObj.Priority = this.byId("priority").getValue();
 			oObj.System = [];
 			this.byId("systemMulti").getTokens().forEach(token => oObj.System.push({

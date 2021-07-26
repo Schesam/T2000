@@ -6,20 +6,18 @@
 				<Page id="page" title="{i18n>title}" showHeader="true" showNavButton="true" showFooter="true" backgroundDesign="Solid"
 					enableScrolling="false" navButtonPress="onNavBack">
 					<content>
-						<Toolbar>
-							<Select id="employeeSelect" change="onEmployeeSelect">
-								<core:ListItem text="Andreas Köhler" key="1"/>
-								<core:ListItem text="Thomas Rempel" key="2"/>
-								<core:ListItem text="Jurij Rudi" key="3"/>
-								<core:ListItem text="Igor Aronov" key="4"/>
-								<core:ListItem text="Michaela Bany" key="5"/>
-							</Select>
-						</Toolbar>
 						<ScrollContainer vertical="true" horizontal="true" height="calc(100% - 44px)">
 							<Table id="valueTable" alternateRowColors="true" growing="true" growingScrollToLoad="true" showSeparators="All" items="{/rows}"
-								width="2800px" growingThreshold="30" sticky="HeaderToolbar,InfoToolbar,ColumnHeaders">
+								growingThreshold="30" sticky="HeaderToolbar,InfoToolbar,ColumnHeaders" class="tableWidth">
 								<headerToolbar>
 									<OverflowToolbar id="headerBar" class="horizontalStickyness">
+										<Select id="employeeSelect" change="onEmployeeSelect" class="employeeSelect" width="190px">
+											<core:ListItem text="Andreas Köhler" key="1" class="mediumText"/>
+											<core:ListItem text="Thomas Rempel" key="2"/>
+											<core:ListItem text="Jurij Rudi" key="3"/>
+											<core:ListItem text="Igor Aronov" key="4"/>
+											<core:ListItem text="Michaela Bany" key="5"/>
+										</Select>
 										<Title id="headerText" text="" level="H2"/>
 										<SearchField width="40%" placeholder="{i18n>search}" id="search" liveChange="onLiveSearch" search="onSearch"/>
 										<ToolbarSpacer/>
@@ -52,9 +50,6 @@
 									<Column demandPopin="false">
 										<Text text="{i18n>colProject}"/>
 									</Column>
-									<!--<Column demandPopin="false" visible="false">-->
-									<!--	<Text text="{i18n>colProjectID}"/>-->
-									<!--</Column>-->
 									<Column demandPopin="false" width="130px">
 										<Text text="{i18n>colJira}"/>
 									</Column>
@@ -119,7 +114,6 @@
 											<Text text="{CalendarWeek}"/>
 											<Text text="{Task}"/>
 											<Link text="{Project}" target="_blank" href="https://it4you.schwarz/{ProjectType}{Project}"/>
-											<!--<Text text="{ProjectID}"/>-->
 											<Link text="{Jira}" target="_blank" href="https://jira.schwarz/browse/{Jira}"/>
 											<Link text="{Spec}" target="_blank" href="https://it4you.schwarz/u_sdur_task_list.do?sysparm_query=number=SPEC{Spec}"/>
 											<Text text="{BC}"/>
@@ -258,93 +252,6 @@
 												</form:FormElement>
 											</form:formElements>
 										</form:FormContainer>
-										<form:FormContainer title="{i18n>formPlanningData}">
-											<form:formElements>
-												<form:FormElement>
-													<form:label>
-														<Label text="{i18n>colPlanned}"/>
-													</form:label>
-													<form:fields>
-														<Switch id="planned" type="AcceptReject" state="{/Planned}"/>
-													</form:fields>
-												</form:FormElement>
-												<form:FormElement id="editStatusElement">
-													<form:label>
-														<Label text="{i18n>colStatus}"/>
-													</form:label>
-													<form:fields>
-														<Input id="editStatus" value="{/Status}" required="true"/>
-													</form:fields>
-												</form:FormElement>
-												<!--das-->
-												<form:FormElement id="crStatusElement" visible="false">
-													<form:label>
-														<Label text="{i18n>colStatus}"/>
-													</form:label>
-													<form:fields>
-														<ComboBox id="crStatusCombo" items="{/rows}" required="true">
-															<core:ListItem text="{Value}" key="{Key}"/>
-														</ComboBox>
-													</form:fields>
-												</form:FormElement>
-												<form:FormElement>
-													<form:label>
-														<Label text="{i18n>colPriority}"/>
-													</form:label>
-													<form:fields>
-														<StepInput id="priority" required="true" value="{/Priority}"/>
-													</form:fields>
-												</form:FormElement>
-											</form:formElements>
-										</form:FormContainer>
-										<form:FormContainer title="{i18n>formFurtherLinks}">
-											<form:formElements>
-												<form:FormElement>
-													<form:label>
-														<Label text="{i18n>colProject}"/>
-													</form:label>
-													<form:fields>
-														<TextArea growing="true" rows="1" id="project" required="true" value="{/Project}"/>
-													</form:fields>
-												</form:FormElement>
-												<!--<form:FormElement>-->
-												<!--	<form:label>-->
-												<!--		<Label text="{i18n>colProjectID}"/>-->
-												<!--	</form:label>-->
-												<!--	<form:fields>-->
-												<!--		<TextArea growing="true" rows="1" id="projectID" required="true" value="{/ProjectID}"/>-->
-												<!--	</form:fields>-->
-												<!--</form:FormElement>-->
-												<form:FormElement>
-													<form:label>
-														<Label text="{i18n>projectType}"/>
-													</form:label>
-													<form:fields>
-														<Select id="projectTypeSelect" selectedKey="{/ProjectType}">
-															<core:ListItem text="{i18n>ap}" key="u_sdur_task_list.do?sysparm_query=number="/>
-															<core:ListItem text="{i18n>projectNumber}" key="pm_project_list.do?sysparm_query=u_project_number_on_task="/>
-															<core:ListItem text="{i18n>number}" key="pm_project_list.do?sysparm_query=number="/>
-														</Select>
-													</form:fields>
-												</form:FormElement>
-												<form:FormElement>
-													<form:label>
-														<Label text="{i18n>colJira}"/>
-													</form:label>
-													<form:fields>
-														<TextArea growing="true" rows="1" id="jira" required="true" value="{/Jira}"/>
-													</form:fields>
-												</form:FormElement>
-												<form:FormElement>
-													<form:label>
-														<Label text="{i18n>colSpec}"/>
-													</form:label>
-													<form:fields>
-														<TextArea growing="true" rows="1" id="spec" required="true" value="{/Spec}"/>
-													</form:fields>
-												</form:FormElement>
-											</form:formElements>
-										</form:FormContainer>
 										<form:FormContainer title="{i18n>formTimeData}">
 											<form:formElements>
 												<form:FormElement>
@@ -402,6 +309,85 @@
 													</form:label>
 													<form:fields>
 														<Input id="estimation" required="true" value="{/Estimation}"/>
+													</form:fields>
+												</form:FormElement>
+											</form:formElements>
+										</form:FormContainer>
+										<form:FormContainer title="{i18n>formFurtherLinks}">
+											<form:formElements>
+												<form:FormElement>
+													<form:label>
+														<Label text="{i18n>colProject}"/>
+													</form:label>
+													<form:fields>
+														<TextArea growing="true" rows="1" id="project" required="true" value="{/Project}"/>
+													</form:fields>
+												</form:FormElement>
+												<form:FormElement>
+													<form:label>
+														<Label text="{i18n>projectType}"/>
+													</form:label>
+													<form:fields>
+														<Select id="projectTypeSelect" selectedKey="{/ProjectType}">
+															<core:ListItem text="{i18n>ap}" key="u_sdur_task_list.do?sysparm_query=number="/>
+															<core:ListItem text="{i18n>projectNumber}" key="pm_project_list.do?sysparm_query=u_project_number_on_task="/>
+															<core:ListItem text="{i18n>number}" key="pm_project_list.do?sysparm_query=number="/>
+														</Select>
+													</form:fields>
+												</form:FormElement>
+												<form:FormElement>
+													<form:label>
+														<Label text="{i18n>colJira}"/>
+													</form:label>
+													<form:fields>
+														<TextArea growing="true" rows="1" id="jira" required="true" value="{/Jira}"/>
+													</form:fields>
+												</form:FormElement>
+												<form:FormElement>
+													<form:label>
+														<Label text="{i18n>colSpec}"/>
+													</form:label>
+													<form:fields>
+														<TextArea growing="true" rows="1" id="spec" required="true" value="{/Spec}"/>
+													</form:fields>
+												</form:FormElement>
+											</form:formElements>
+										</form:FormContainer>
+										<form:FormContainer title="{i18n>formPlanningData}">
+											<form:formElements>
+												<form:FormElement>
+													<form:label>
+														<Label text="{i18n>colPlanned}"/>
+													</form:label>
+													<form:fields>
+														<Switch id="planned" type="AcceptReject" state="{/Planned}"/>
+													</form:fields>
+												</form:FormElement>
+												<form:FormElement id="editStatusElement">
+													<form:label>
+														<Label text="{i18n>colStatus}"/>
+													</form:label>
+													<form:fields>
+														<Input id="editStatus" value="{/Status}" required="true"/>
+													</form:fields>
+												</form:FormElement>
+												<!--das-->
+												<form:FormElement id="crStatusElement" visible="false">
+													<form:label>
+														<Label text="{i18n>colStatus}"/>
+													</form:label>
+													<form:fields>
+														<ComboBox id="crStatusCombo" items="{/rows}" required="true">
+															<core:ListItem text="{Value}" key="{Key}"/>
+														</ComboBox>
+													</form:fields>
+												</form:FormElement>
+												<form:FormElement>
+													<form:label>
+														<Label text="{i18n>colPriority}"/>
+													</form:label>
+													<form:fields>
+														<StepInput id="priority" required="true" value="{/Priority}"/>
 													</form:fields>
 												</form:FormElement>
 											</form:formElements>
