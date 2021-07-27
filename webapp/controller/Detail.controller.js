@@ -95,8 +95,7 @@ sap.ui.define([
 			// });
 			this._aColumnNames = [];
 			var that = this;
-			var oDev = sap.ui.Device.system;
-			if (oDev.tablet || oDev.phone) {
+			if (sap.ui.Device.support.touch) {
 				this.byId("valueTable").attachBrowserEvent("tap", function (oEvent) {
 					try {
 						that._extractRowIndex(sap.ui.getCore().byId($("#" + oEvent.target.id).parent()[0].id).getBindingContextPath());

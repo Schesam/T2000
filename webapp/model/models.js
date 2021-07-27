@@ -11,7 +11,8 @@ sap.ui.define([
 				isPhone: Device.system.phone,
 				isTablet: Device.system.tablet,
 				isDesktop: Device.system.desktop,
-				isMobile: Device.system.phone || Device.system.tablet
+				isMobile: Device.system.phone || Device.system.tablet,
+				isTouch: sap.ui.Device.support.touch
 			});
 			oModel.setDefaultBindingMode("OneWay");
 			return oModel;
