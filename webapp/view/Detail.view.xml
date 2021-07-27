@@ -6,13 +6,13 @@
 				<Page id="page" title="{i18n>title}" showHeader="true" showNavButton="true" showFooter="true" backgroundDesign="Solid"
 					enableScrolling="false" navButtonPress="onNavBack">
 					<content>
-						<ScrollContainer vertical="true" horizontal="true" height="calc(100% - 44px)">
+						<ScrollContainer vertical="true" horizontal="true" height="calc(100%)">
 							<Table id="valueTable" alternateRowColors="true" growing="true" growingScrollToLoad="true" showSeparators="All" items="{/rows}"
 								growingThreshold="30" sticky="HeaderToolbar,InfoToolbar,ColumnHeaders" class="tableWidth">
 								<headerToolbar>
 									<OverflowToolbar id="headerBar" class="horizontalStickyness">
 										<Select id="employeeSelect" change="onEmployeeSelect" class="employeeSelect" width="190px">
-											<core:ListItem text="Andreas Köhler" key="1" class="mediumText"/>
+											<core:ListItem text="Andreas Köhler" key="1"/>
 											<core:ListItem text="Thomas Rempel" key="2"/>
 											<core:ListItem text="Jurij Rudi" key="3"/>
 											<core:ListItem text="Igor Aronov" key="4"/>

@@ -34,29 +34,8 @@ sap.ui.define([
 			this.byId("headerBar").setWidth($(window).width() + "px");
 			this.byId("filterBar").setWidth($(window).width() + "px");
 		},
-		onBeforeRendering: function () {
-			// jQuery.sap.byId("container-T2000---Detail--employeeSelect-labelText").addClass("employeeText");
-			// jQuery.sap.byId("container-T2000---Detail--employeeSelect-label").addClass("employeeText");
-			// jQuery.sap.byId("container-T2000---Detail--employeeSelect-arrow").addClass("leftZero");
-			// $("container-T2000---Detail--employeeSelect-labelText").addClass("employeeText");
-			// $("container-T2000---Detail--employeeSelect-label").addClass("employeeText");
-			// $("container-T2000---Detail--employeeSelect-arrow").addClass("leftZero");
-			// $("#container-T2000---Detail--employeeSelect-labelText").addClass("employeeText");
-			// $("#container-T2000---Detail--employeeSelect-label").addClass("employeeText");
-			// $("#container-T2000---Detail--employeeSelect-arrow").addClass("leftZero");
-		},
 		onAfterRendering: function () {
 			this._registerGlobals();
-			// debugger;
-			// jQuery.sap.byId("container-T2000---Detail--employeeSelect-labelText").addClass("employeeText");
-			// jQuery.sap.byId("container-T2000---Detail--employeeSelect-label").addClass("employeeText");
-			// jQuery.sap.byId("container-T2000---Detail--employeeSelect-arrow").addClass("leftZero");
-			// $("container-T2000---Detail--employeeSelect-labelText").addClass("employeeText");
-			// $("container-T2000---Detail--employeeSelect-label").addClass("employeeText");
-			// $("container-T2000---Detail--employeeSelect-arrow").addClass("leftZero");
-			$("#container-T2000---Detail--employeeSelect-labelText").addClass("employeeText");
-			$("#container-T2000---Detail--employeeSelect-label").addClass("employeeText");
-			$("#container-T2000---Detail--employeeSelect-arrow").addClass("leftZero");
 		},
 		onNavBack: function (oEvent) {
 			var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
@@ -123,8 +102,8 @@ sap.ui.define([
 						that._extractRowIndex(sap.ui.getCore().byId($("#" + oEvent.target.id).parent()[0].id).getBindingContextPath());
 						that._openEntryDialog(that._nRowIndex);
 					} catch (e) {
-						console.log("Editing is just available when pressing on a Row!");
-						console.error(e);
+						console.warn("Editing is just available when pressing on a Row!");
+						// console.error(e);
 					}
 				});
 			} else {
@@ -133,8 +112,8 @@ sap.ui.define([
 						that._extractRowIndex(sap.ui.getCore().byId($("#" + oEvent.toElement.id).parent()[0].id).getBindingContextPath());
 						that._openEntryDialog(that._nRowIndex);
 					} catch (e) {
-						console.log("Editing is just available when pressing on a Row!");
-						console.error(e);
+						console.warn("Editing is just available when pressing on a Row!");
+						// console.error(e);
 					}
 				});
 			}
@@ -502,7 +481,7 @@ sap.ui.define([
 			oObj.Planned = this.byId("planned").getState();
 			oObj.CalendarWeek = this.byId("calendarWeek").getValue();
 			oObj.Project = this.byId("project").getValue();
-			oObj.ProjectType = this.byId("projectTypeSelect").getValue();
+			oObj.ProjectType = this.byId("projectTypeSelect").getSelectedItem().getText();
 			oObj.Jira = this.byId("jira").getValue();
 			oObj.Spec = this.byId("spec").getValue();
 			if (oObj.Spec.toLowerCase().startsWith("spec")) {
@@ -592,7 +571,7 @@ sap.ui.define([
 				!this.byId("crTaskCombo").getValue() && !this.byId("editTask").getValue() ||
 				!this.byId("crStatusCombo").getValue() && !this.byId("editStatus").getValue() ||
 				!this.byId("project").getValue() ||
-				!this.byId("projectTypeSelect").getValue() ||
+				!this.byId("projectTypeSelect").getSelectedItem().getText() ||
 				!this.byId("jira").getValue() ||
 				!this.byId("spec").getValue() ||
 				!this.byId("crBCCombo").getValue() && !this.byId("editBC").getValue() ||
@@ -642,7 +621,7 @@ sap.ui.define([
 			if (this.byId("systemMulti").getTokens().length !== this.byId("transportMulti").getTokens().length) {
 				this.byId("transportMulti").setValueState("Error");
 				this.byId("systemMulti").setValueState("Error");
-				MessageBox.error(this._oI18n.getText("messageWrongDates"), {
+				MessageBox.error(this._oI18n.getText("messageTransportSystemMismatch"), {
 					title: this._oI18n.getText("error")
 				});
 				return false;

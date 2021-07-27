@@ -1,5 +1,3 @@
-/* Enter your custom styles here */
-
 .horizontalStickyness {
     position: sticky;
     left: 0;
@@ -16,11 +14,11 @@
     border: none;
 }
 
-.employeeText {
-    font-size: medium;
-    left: 40px;
+#container-T2000---Detail--employeeSelect-arrow {
+    left: 0;
 }
 
-.leftZero {
-    left: 0;
+#container-T2000---Detail--employeeSelect-label {
+    font-size: medium;
+    left: 40px;
 }
