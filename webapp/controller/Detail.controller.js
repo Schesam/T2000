@@ -138,6 +138,10 @@ sap.ui.define([
 					});
 				}
 			}
+			this._aHiddenColumns.push({
+				ID: "ProjectType",
+				Name: "ProjectType"
+			});
 			this._aAreas = ["Abwesenheit", "Organisation", "Produkt", "Anforderung"];
 			this._aCategories = ["Testkategorie", "Timebox", "Task"];
 			this._aTasks = ["Krankheit, Urlaub, Teilzeit", "Schulung, Ausbildung", "Team- und eigene Orga", "Incidents/Problems/Support",
