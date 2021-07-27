@@ -132,7 +132,10 @@ sap.ui.define([
 			var aColumns = this.byId("valueTable").getColumns();
 			for (var i = 0; i < aColumns.length; i++) {
 				if (!aColumns[i].getVisible()) {
-					this._aHiddenColumns.push(this._aColumnIds[i]);
+					this._aHiddenColumns.push({
+						ID: this._aColumnIds[i],
+						Name: this._aColumnNames[i]
+					});
 				}
 			}
 			this._aAreas = ["Abwesenheit", "Organisation", "Produkt", "Anforderung"];
@@ -240,6 +243,9 @@ sap.ui.define([
 					Name: this._oI18n.getText("lastYear")
 				}];
 			}
+			this._aHiddenColumns.forEach(col => {
+				delete aArr.Names[col.ID];
+			});
 			oJSONModel.setData({
 				rows: aArr
 			});
@@ -342,7 +348,7 @@ sap.ui.define([
 							test: function (oValue) {
 								var aEntries = Object.entries(oValue);
 								for (var i = 0; i < aEntries.length; i++) {
-									if (!that._aHiddenColumns.includes(aEntries[i][0])) {
+									if (!that._includes(that._aHiddenColumns, "ID", aEntries[i][0])) {
 										if (!Array.isArray(aEntries[i][1])) {
 											if (aEntries[i][1].toString().toLocaleLowerCase().includes(sQuery.toString().toLocaleLowerCase())) {
 												return true;
@@ -378,11 +384,27 @@ sap.ui.define([
 			var oFilterDialog = this._createDialog("koehler.T2000.fragment.FilterDialog");
 			oFilterDialog.setModel(this.getOwnerComponent().getModel("i18n"), "i18n");
 
-			var oSortDialog = this._createDialog("koehler.T2000.fragment.SortDialog");
-			oSortDialog.setModel(this._oAppController.getModelForArray(this._aColumnNames, ""));
+			var oSortDialog = this._createDialog("koehler.T2000.fragment.SortDialog"),
+				aFiltered = [],
+				that = this;
+			this._aColumnNames.forEach(col => {
+				if (!that._includes(that._aHiddenColumns, "Name", col)) {
+					aFiltered.push(col);
+				}
+			});
+			oSortDialog.setModel(this._oAppController.getModelForArray(aFiltered, ""));
 
 			var oGroupDialog = this._createDialog("koehler.T2000.fragment.GroupDialog");
-			oGroupDialog.setModel(this._oAppController.getModelForArray(this._aColumnNames, ""));
+			oGroupDialog.setModel(this._oAppController.getModelForArray(aFiltered, ""));
+		},
+		_includes: function (arr, prop, val) {
+			var bRet = false;
+			arr.forEach(entry => {
+				if (entry[prop] === val) {
+					bRet = true;
+				}
+			});
+			return bRet;
 		},
 		onEmployeeSelect: function (oControlEvent) {
 			// this.byId("headerText").setText(oControlEvent.getParameters().selectedItem.getText());

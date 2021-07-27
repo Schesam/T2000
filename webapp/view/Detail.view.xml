@@ -89,7 +89,7 @@
 									<Column demandPopin="false" width="200px">
 										<Text text="{i18n>colComment}"/>
 									</Column>
-									<Column demandPopin="false" visible="true">
+									<Column demandPopin="false" visible="false">
 										<Text text="{i18n>colCreator}"/>
 									</Column>
 									<Column demandPopin="false" visible="true">
