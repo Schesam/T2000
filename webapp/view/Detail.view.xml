@@ -7,8 +7,8 @@
 					enableScrolling="false" navButtonPress="onNavBack">
 					<content>
 						<ScrollContainer vertical="true" horizontal="true" height="calc(100%)">
-							<Table id="valueTable" alternateRowColors="true" growing="true" growingScrollToLoad="true" showSeparators="All" items="{/rows}"
-								growingThreshold="30" sticky="HeaderToolbar,InfoToolbar,ColumnHeaders" class="tableWidth">
+							<Table id="valueTable" alternateRowColors="true" growing="true" growingScrollToLoad="true" showSeparators="All"
+								items="{path:'/rows', templateShareable:false}" growingThreshold="30" sticky="HeaderToolbar,InfoToolbar,ColumnHeaders" class="tableWidth">
 								<headerToolbar>
 									<OverflowToolbar id="headerBar" class="horizontalStickyness">
 										<Select id="employeeSelect" change="onEmployeeSelect" class="employeeSelect" width="190px">
@@ -92,7 +92,7 @@
 									<Column demandPopin="false" visible="false">
 										<Text text="{i18n>colCreator}"/>
 									</Column>
-									<Column demandPopin="false" visible="true">
+									<Column demandPopin="false" visible="false">
 										<Text text="{i18n>colCreationDate}"/>
 									</Column>
 									<Column demandPopin="false" visible="true">

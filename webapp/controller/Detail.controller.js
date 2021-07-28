@@ -352,19 +352,21 @@ sap.ui.define([
 							test: function (oValue) {
 								var aEntries = Object.entries(oValue);
 								for (var i = 0; i < aEntries.length; i++) {
-									if (!that._includes(that._aHiddenColumns, "ID", aEntries[i][0])) {
-										if (!Array.isArray(aEntries[i][1])) {
-											if (aEntries[i][1].toString().toLocaleLowerCase().includes(sQuery.toString().toLocaleLowerCase())) {
+									if (that._includes(that._aHiddenColumns, "ID", aEntries[i][0])) {
+										continue;
+									}
+									if (!Array.isArray(aEntries[i][1])) {
+										if (aEntries[i][1].toString().toLocaleLowerCase().includes(sQuery.toString().toLocaleLowerCase())) {
+											return true;
+										}
+									} else {
+										for (var j = 0; j < aEntries[i][1].length; j++) {
+											if (aEntries[i][1][j].Name.toString().toLocaleLowerCase().includes(sQuery.toString().toLocaleLowerCase())) {
 												return true;
-											}
-										} else {
-											for (var j = 0; j < aEntries[i][1].length; j++) {
-												if (aEntries[i][1][j].Name.toString().toLocaleLowerCase().includes(sQuery.toString().toLocaleLowerCase())) {
-													return true;
-												}
 											}
 										}
 									}
+
 								}
 								return false;
 							}
@@ -378,7 +380,6 @@ sap.ui.define([
 			});
 		},
 		_fillData: function () {
-			// this.byId("headerText").setText(this.byId("employeeSelect").getFirstItem().getText());
 			this.byId("crStatusCombo").setModel(this._oAppController.getModelForArray(this._aStatus, ""));
 			this.byId("crCategoryCombo").setModel(this._oAppController.getModelForArray(this._aCategories, ""));
 			this.byId("crAreaCombo").setModel(this._oAppController.getModelForArray(this._aAreas, ""));
@@ -411,7 +412,6 @@ sap.ui.define([
 			return bRet;
 		},
 		onEmployeeSelect: function (oControlEvent) {
-			// this.byId("headerText").setText(oControlEvent.getParameters().selectedItem.getText());
 			this.byId("filterBar").setVisible(false);
 			this._updateData(oControlEvent.getParameters().selectedItem);
 		},
@@ -473,7 +473,11 @@ sap.ui.define([
 					Name: "987654321"
 				}];
 				oData[i].Comment = [{
-					Name: "Mehrzeiliges KommentarfeldMehrzeiliges KommentarfeldMehrzeiliges KommentarfeldMehrzeiliges KommentarfeldMehrzeiliges KommentarfeldMehrzeiliges Kommentarfeld"
+					Name: "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore " +
+						"et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut " +
+						"aliquid ex ea commodi consequat. Quis aute iure reprehenderit in voluptate velit esse cillum dolore " +
+						"eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia " +
+						"deserunt mollit anim id est laborum."
 				}];
 				oData[i].Creator = employee;
 				oData[i].CreationDate = moment().format("DD.MM.YYYY HH:mm:ss");
