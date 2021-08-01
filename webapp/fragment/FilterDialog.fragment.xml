@@ -1,7 +1,7 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
-	<ViewSettingsDialog confirm="onFilterDialogConfirm" filterItems="{/rows/Names}">
+	<ViewSettingsDialog confirm="onFilterDialogConfirm" filterItems="{path:'/rows/Names', templateShareable:false}">
 		<filterItems>
-			<ViewSettingsFilterItem text="{Value}" key="{Key}" multiSelect="false" items="{Items}">
+			<ViewSettingsFilterItem text="{Value}" key="{Key}" multiSelect="false" items="{path:'Items', templateShareable:false}">
 				<items>
 					<ViewSettingsItem text="{Name}" key="{Name}___{Key}"/>
 				</items>

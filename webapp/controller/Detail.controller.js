@@ -243,7 +243,7 @@ sap.ui.define([
 					Key: this._aDateColumns[i] + "___6___months",
 					Name: this._oI18n.getText("lastSixMonths")
 				}, {
-					Key: this._aDateColumns[i] + "___1___years",
+					Key: this._aDateColumns[i] + "___1___year",
 					Name: this._oI18n.getText("lastYear")
 				}];
 			}
@@ -280,8 +280,23 @@ sap.ui.define([
 		},
 		onSortDialogConfirm: function (oEvent) {
 			var mParams = oEvent.getParameters(),
-				aSorters = [];
-			aSorters.push(new Sorter(this._getColIdForIndex(mParams.sortItem.getKey()), mParams.sortDescending));
+				aSorters = [],
+				colId = this._getColIdForIndex(mParams.sortItem.getKey());
+			if (!this._aDateColumns.includes(colId)) {
+				aSorters.push(new Sorter(colId, mParams.sortDescending));
+			} else {
+				aSorters.push(new Sorter(colId, mParams.sortDescending, false, function (val1, val2) {
+					var d1 = moment(val1, "DD.MM.yyyy"),
+						d2 = moment(val2, "DD.MM.yyyy");
+					if (d1.isBefore(d2)) {
+						return -1;
+					} else if (d1.isAfter(d2)) {
+						return 1;
+					} else {
+						return 0;
+					}
+				}));
+			}
 			this.byId("valueTable").getBinding("items").sort(aSorters);
 		},
 		_getColIdForIndex: function (index) {
@@ -302,7 +317,7 @@ sap.ui.define([
 						test: function (oValue) {
 							if (!Array.isArray(oValue)) {
 								if (that._aDateColumns.includes(sPath)) {
-									return moment(oValue, "DD.MM.yyyy").isBetween(moment().subtract(aSplit[2], aSplit[3]), moment(), aSplit[3], true);
+									return moment(oValue, "DD.MM.yyyy").isBetween(moment().subtract(aSplit[2], aSplit[3]), moment(), undefined, "[]");
 								} else {
 									return oValue.toString().localeCompare(sVal, sap.ui.getCore().getConfiguration().getLanguage(), {
 										sensitivity: "accent"

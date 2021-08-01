@@ -88,6 +88,9 @@ sap.ui.define([
 		getModelForArray: function (arr, firstElementText) {
 			var oJSONModel = new JSONModel(),
 				oData = {};
+			if (!arr) {
+				return oJSONModel;
+			}
 
 			oData.row = new Array(arr.length + (firstElementText ? 1 : 0));
 			if (firstElementText) {
