@@ -1,5 +1,5 @@
 /* eslint-disable no-console, max-params, sap-timeout-usage, sap-no-hardcoded-url*/
-/* eslint complexity: [error, 25] */
+/* eslint complexity: [error, 27] */
 /* global moment:true */
 sap.ui.define([
 	"sap/ui/core/mvc/Controller",
@@ -290,11 +290,11 @@ sap.ui.define([
 						d2 = moment(val2, "DD.MM.yyyy");
 					if (d1.isBefore(d2)) {
 						return -1;
-					} else if (d1.isAfter(d2)) {
-						return 1;
-					} else {
-						return 0;
 					}
+					if (d1.isAfter(d2)) {
+						return 1;
+					}
+					return 0;
 				}));
 			}
 			this.byId("valueTable").getBinding("items").sort(aSorters);
@@ -644,8 +644,13 @@ sap.ui.define([
 			this.byId("editRealBegin").setValueState("None");
 			this.byId("editEnd").setValueState("None");
 			this.byId("editRealEnd").setValueState("None");
-			if ((!this.byId("crTimerange").getDateValue() || !this.byId("crTimerange").getSecondDateValue()) && !(this.byId("editBegin").getValue() &&
-					this.byId("editRealBegin").getValue() && this.byId("editEnd").getValue() && this.byId("editRealEnd").getValue())) {
+			if (((!this.byId("crTimerange").getDateValue() || !this.byId("crTimerange").getSecondDateValue()) && !(this.byId("editBegin").getValue() &&
+					this.byId("editRealBegin").getValue() && this.byId("editEnd").getValue() && this.byId("editRealEnd").getValue())) ||
+				(!moment(this.byId("crTimerange").getDateValue()).isValid() || !moment(this.byId("crTimerange").getSecondDateValue()).isValid()) &&
+				!(moment(this.byId("editBegin").getValue()).isValid() &&
+					moment(this.byId("editRealBegin").getValue()).isValid() &&
+					moment(this.byId("editEnd").getValue()).isValid() &&
+					moment(this.byId("editRealEnd").getValue()).isValid())) {
 				bHadError = true;
 				this.byId("crTimerange").setValueState("Error");
 				this.byId("editEnd").setValueState("Error");
